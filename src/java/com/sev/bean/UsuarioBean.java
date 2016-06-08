@@ -5,8 +5,10 @@
  */
 package com.sev.bean;
 
+import com.sev.dao.UsuarioDAO;
 import com.sev.entity.Usuario;
 import java.io.Serializable;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.faces.bean.ManagedBean;
@@ -19,31 +21,40 @@ import javax.faces.bean.ViewScoped;
 @ManagedBean
 @ViewScoped
 public class UsuarioBean implements Serializable {
-    private List<Usuario> listadoUsuarios = new ArrayList<>();
 
-    public UsuarioBean() {
-        for (int i = 0; i < 5; i++) {
-            Usuario u = new Usuario();
-            u.setNombres("Axel Adrian");
-            u.setApellidos("Latorre Villalobos");
-            u.setEmail("alatorre@gmail.com");
-            u.setRol(1);
-            listadoUsuarios.add(u);
-        }
-    
-    }
-    
-    public void editar(Usuario u){
+    private List<Usuario> listadoUsuarios = new ArrayList<>();
+    private List<Usuario> filteredUsers;
+    private Usuario usuario = new Usuario();
+    private UsuarioDAO daoUsuario = new UsuarioDAO();
+
+    public UsuarioBean() throws SQLException {
+        listadoUsuarios = daoUsuario.findAll();
         
     }
-    
-    public void eliminar(Usuario u){
-        System.out.println("tenemos "+listadoUsuarios.size());
-        listadoUsuarios.remove(u);
-        System.out.println("ahora tenemos "+listadoUsuarios.size());
+
+    public void showEditDialog(Usuario u) {
+        usuario = u;
     }
-    
-    
+
+    public void onCancelDialog() {
+        setUsuario(new Usuario());
+    }
+
+    public void commitEdit() throws SQLException {
+        daoUsuario.editUsuario(usuario);
+        listadoUsuarios=daoUsuario.findAll();
+    }
+
+    public void commitCreate() throws SQLException {
+        daoUsuario.createUsuario(usuario);
+        listadoUsuarios=daoUsuario.findAll();
+    }
+
+    public void eliminar(Usuario u)throws SQLException {
+        daoUsuario.deleteUsuario(u);
+        listadoUsuarios=daoUsuario.findAll();
+    }
+
     public List<Usuario> getListadoUsuarios() {
         return listadoUsuarios;
     }
@@ -51,6 +62,21 @@ public class UsuarioBean implements Serializable {
     public void setListadoUsuarios(List<Usuario> listadoUsuarios) {
         this.listadoUsuarios = listadoUsuarios;
     }
-    
+
+    public Usuario getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
+    }
+
+    public List<Usuario> getFilteredUsers() {
+        return filteredUsers;
+    }
+
+    public void setFilteredUsers(List<Usuario> filteredUsers) {
+        this.filteredUsers = filteredUsers;
+    }
     
 }

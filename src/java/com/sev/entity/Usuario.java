@@ -12,21 +12,22 @@ import java.io.Serializable;
  * @author alatorre
  */
 public class Usuario implements Serializable{
-    int idUsuario;
+    String cedula;
     String nombres;
     String apellidos;
     String email;
     String nickname;
     String password;
     int rol;
+    String descripcionRol;
     String prioridad;
 
-    public int getIdusuario() {
-        return idUsuario;
+    public String getCedula() {
+        return cedula;
     }
 
-    public void setIdusuario(int idusuario) {
-        this.idUsuario = idusuario;
+    public void setCedula(String cedula) {
+        this.cedula = cedula;
     }
 
     public String getNombres() {
@@ -81,6 +82,14 @@ public class Usuario implements Serializable{
         return prioridad;
     }
 
+    public String getDescripcionRol() {
+        return descripcionRol;
+    }
+
+    public void setDescripcionRol(String descripcionRol) {
+        this.descripcionRol = descripcionRol;
+    }
+    
     public void setPrioridad(String prioridad) {
         this.prioridad = prioridad;
     }
