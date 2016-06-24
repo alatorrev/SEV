@@ -7,6 +7,8 @@
                 xmlns:f="http://xmlns.jcp.org/jsf/core"
                 template="/WEB-INF/template.xhtml">
     <ui:define name="content">
+        <h:outputScript name="jquery/jquery.js" library="primefaces" target="head"/>
+        <h:outputStylesheet name="style.css" />
         <div class="Container100 ui-fluid">
             <div class="ContainerIndent">
                 <p:panel>
@@ -39,11 +41,11 @@
                                 <h:outputText value="#{us.email}"/>
                             </p:column>
                             <p:column headerText="Rol">
-                                <h:outputText value="#{us.rol}"/>
+                                <h:outputText value="#{us.descripcionRol}"/>
                             </p:column>
-                            <p:column headerText="Rol">
+                           <!-- <p:column headerText="Rol">
                                 <p:inputSwitch />
-                            </p:column>
+                            </p:column>-->
                             <p:column  style="text-align: center">
                                 <i class="icon-edit">
                                     <p:commandLink value="editar" actionListener="#{usuarioBean.showEditDialog(us)}" oncomplete="PF('wdlgDatos').show();" update="dlgDatos"/>
@@ -68,6 +70,11 @@
                                 <p:inputText value="#{usuarioBean.usuario.apellidos}"/>
                                 <p:outputLabel value="Email"/>
                                 <p:inputText value="#{usuarioBean.usuario.email}"/>
+                                <p:outputLabel value="Rol"/>
+                                <p:selectOneMenu id="roles" value="#{usuarioBean.idRolSeleted}">
+                                    <f:selectItem itemLabel="Seleccionar.." itemValue="" />
+                                    <f:selectItems value="#{usuarioBean.selectorRoles}" var="rol" itemLabel="#{rol.descripcion}" itemValue="#{rol.idRol}" />
+                                </p:selectOneMenu>
                                 <p:commandButton ajax="true" value="Editar" actionListener="#{usuarioBean.commitEdit()}"  oncomplete="PF('wdlgDatos').hide();" update=":frm:uTable">
                                     <p:confirm header="Confirmación" message="Está seguro de realizar esta acción" icon="ui-icon-alert" />
                                 </p:commandButton>
@@ -86,6 +93,11 @@
                                 <p:inputText value="#{usuarioBean.usuario.apellidos}"/>
                                 <p:outputLabel value="Email"/>
                                 <p:inputText value="#{usuarioBean.usuario.email}"/>
+                                <p:outputLabel value="Rol"/>
+                                <p:selectOneMenu id="roles" value="#{usuarioBean.idRolSeleted}">
+                                    <f:selectItem itemLabel="Seleccionar.." itemValue="" />
+                                    <f:selectItems value="#{usuarioBean.selectorRoles}" var="rol" itemLabel="#{rol.descripcion}" itemValue="#{rol.idRol}" />
+                                </p:selectOneMenu>
                                 <p:commandButton ajax="true" actionListener="#{usuarioBean.commitCreate()}" value="Crear" oncomplete="PF('wdlgCrearUsuario').hide();" update=":frm:uTable" >
                                     <p:confirm header="Confirmación" message="Está seguro de realizar esta acción" icon="ui-icon-alert" />
                                 </p:commandButton>

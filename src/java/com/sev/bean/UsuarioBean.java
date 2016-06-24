@@ -5,7 +5,9 @@
  */
 package com.sev.bean;
 
+import com.sev.dao.RolDAO;
 import com.sev.dao.UsuarioDAO;
+import com.sev.entity.Rol;
 import com.sev.entity.Usuario;
 import java.io.Serializable;
 import java.sql.SQLException;
@@ -26,8 +28,12 @@ public class UsuarioBean implements Serializable {
     private List<Usuario> filteredUsers;
     private Usuario usuario = new Usuario();
     private UsuarioDAO daoUsuario = new UsuarioDAO();
+    private int idRolSeleted;
+    private List<Rol> selectorRoles = new ArrayList<>();
 
     public UsuarioBean() throws SQLException {
+        RolDAO daoRol = new RolDAO();
+        selectorRoles=daoRol.findAll();
         listadoUsuarios = daoUsuario.findAll();
         
     }
@@ -38,6 +44,7 @@ public class UsuarioBean implements Serializable {
 
     public void onCancelDialog() {
         setUsuario(new Usuario());
+        setIdRolSeleted(0);
     }
 
     public void commitEdit() throws SQLException {
@@ -46,6 +53,7 @@ public class UsuarioBean implements Serializable {
     }
 
     public void commitCreate() throws SQLException {
+        usuario.setRol(idRolSeleted);
         daoUsuario.createUsuario(usuario);
         listadoUsuarios=daoUsuario.findAll();
     }
@@ -53,6 +61,14 @@ public class UsuarioBean implements Serializable {
     public void eliminar(Usuario u)throws SQLException {
         daoUsuario.deleteUsuario(u);
         listadoUsuarios=daoUsuario.findAll();
+    }
+
+    public List<Rol> getSelectorRoles() {
+        return selectorRoles;
+    }
+
+    public void setSelectorRoles(List<Rol> selectorRoles) {
+        this.selectorRoles = selectorRoles;
     }
 
     public List<Usuario> getListadoUsuarios() {
@@ -77,6 +93,14 @@ public class UsuarioBean implements Serializable {
 
     public void setFilteredUsers(List<Usuario> filteredUsers) {
         this.filteredUsers = filteredUsers;
+    }
+
+    public int getIdRolSeleted() {
+        return idRolSeleted;
+    }
+
+    public void setIdRolSeleted(int idRolSeleted) {
+        this.idRolSeleted = idRolSeleted;
     }
     
 }
