@@ -125,11 +125,11 @@ body{background-color: #F6F8F8; margin:0px;}
 						.layout-header-widgets-submenu li a{padding:10px; display:block; text-align:left; overflow:hidden;}
 	
 	/* MENU BAR */
-	#layout-menubar{float:left; padding-top:55px; background-color: #3D3D3D; position:relative; z-index: 998;}
+	#layout-menubar{float:left; padding-top:55px; background-color: #4E4E4E; position:relative; z-index: 998;}
 	.bigmenu{width:260px; border-right: solid 1px #272727;}
 		.layout-menubarinner-box{width:230px; display:table; padding:10px 15px; overflow: hidden;}
-			#layout-menubar-resize{display:inline-block; padding:5px; background-color:#2B2B2B; color:#FFD100; float:right;}
-			#layout-menubar-resize2{display:none; padding:5px; background-color:#2B2B2B; color:#FFD100; float:right;}
+			#layout-menubar-resize{display:inline-block; padding:5px; background-color:#4E4E4E; color:#FFD100; float:right;}
+			#layout-menubar-resize2{display:none; padding:5px; background-color:#4E4E4E; color:#FFD100; float:right;}
 			.layout-menubar-search{width:200px; padding:0px 0px 3px 0px; border:0px; border:none; background-color:transparent; outline:none; border-bottom:solid 1px #5A5A5A;
 								   color:#5A5A5A !important; font-size:14px;}
 			.layout-menubar-search:focus{color:#939393 !important;}

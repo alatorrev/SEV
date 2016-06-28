@@ -6,7 +6,7 @@
       xmlns:p="http://primefaces.org/ui">
 
     <h:head>
-        <title>SENTINEL BLUE | Prime Faces Layouts Header</title>
+        <title>SEV</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
 
         <h:outputScript name="js/login.js" library="sentinel-layout" />
@@ -16,12 +16,14 @@
     </h:head>
 
     <h:body class="fontRegular login-back white-back">
+        <p:growl id="growl" sticky="true" showDetail="true"/>
+        
         <h:form> 
             <div class="Container">
                 <div class="Container80 MaxWid500 Fnone MarAuto TexAlCenter PaddingTopPercent10">
                     <a href="" id="login-logo">
                         <h:graphicImage name="images/LOGO.svg" styleClass="Fleft" library="sentinel-layout"/>
-                        <span class="Fs30 FontTitilliumSemiBoldItalic Fleft"><span class="softblue">SENTINEL</span><span class="hardblue">LAYOUT</span></span>
+                        <span class="Fs30 FontTitilliumSemiBoldItalic Fleft"><span class="softblue">SEGUIMIENTO EJECUTIVOS </span><span class="hardblue">DE VENTAS</span></span>
                     </a>
                     <div class="EmptyBox10"></div>
                 </div>
@@ -47,6 +49,7 @@
                              </div>-->
                             <div class="EmptyBox30"></div>
                             <p:commandButton  value="Log In" styleClass="Fs16" action="#{loginBean.authenticate()}"  />
+                            
                             <div class="EmptyBox50"></div>
                         </div>
 

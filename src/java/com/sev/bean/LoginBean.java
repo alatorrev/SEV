@@ -13,6 +13,7 @@ import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
+import org.primefaces.context.RequestContext;
 
 /**
  *
@@ -34,12 +35,12 @@ public class LoginBean implements Serializable {
         setSessionUsuario(usuarioDAO.loginAction(email, contrasena));
         if (sessionUsuario != null) {
             FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("Usuario", sessionUsuario);
-            return "correcto";
+              return "correcto";
         } else {
-            String texto = "Credenciales incorrectas";
+            RequestContext.getCurrentInstance().update("growl");
             FacesContext context = FacesContext.getCurrentInstance();
-            context.addMessage("", new FacesMessage(FacesMessage.SEVERITY_WARN, "Atención", texto));
-            return "incorrecto";
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Atención", "Usuario o Contraseña incorrecto"));
+            return "incorrecto";           
         }
     }
 
