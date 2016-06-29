@@ -16,7 +16,6 @@ public class Usuario implements Serializable{
     String nombres;
     String apellidos;
     String email;
-    String nickname;
     String password;
     int rol;
     String descripcionRol;
@@ -52,14 +51,6 @@ public class Usuario implements Serializable{
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public String getNickname() {
-        return nickname;
-    }
-
-    public void setNickname(String nickname) {
-        this.nickname = nickname;
     }
 
     public String getPassword() {

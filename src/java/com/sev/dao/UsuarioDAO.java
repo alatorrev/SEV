@@ -24,16 +24,15 @@ public class UsuarioDAO implements Serializable {
         Conexion con = new Conexion();
         con.getConnection().setAutoCommit(false);
         PreparedStatement pst;
-        String query = "insert into usuario values(?,?,?,?,?,?,?)";
+        String query = "insert into usuario values(?,?,?,?,?)";
         pst = con.getConnection().prepareStatement(query);
         try {
             pst.setString(1, us.getCedula());
             pst.setString(2, us.getNombres());
             pst.setString(3, us.getApellidos());
             pst.setString(4, us.getEmail());
-            pst.setString(5, us.getNickname());
-            pst.setString(6, us.getPassword());
-            pst.setString(7, us.getPrioridad());
+            pst.setString(5, us.getPassword());
+            pst.setString(6, us.getPrioridad());
             pst.executeUpdate();
             
             PreparedStatement pstUsuarioRol = con.getConnection().prepareStatement(
@@ -59,17 +58,16 @@ public class UsuarioDAO implements Serializable {
     public void editUsuario(Usuario us) throws SQLException {
         Conexion con = new Conexion();
         PreparedStatement pst;
-        String query = "update usuario set nombres=?,apellidos=?,email=?,nickname=?,clave=?,prioridad=?"
+        String query = "update usuario set nombres=?,apellidos=?,email=?,clave=?,prioridad=?"
                 + " where cedula=? ";
         pst = con.getConnection().prepareStatement(query);
         try {
             pst.setString(1, us.getNombres());
             pst.setString(2, us.getApellidos());
             pst.setString(3, us.getEmail());
-            pst.setString(4, us.getNickname());
-            pst.setString(5, us.getPassword());
-            pst.setString(6, us.getPrioridad());
-            pst.setString(7, us.getCedula());
+            pst.setString(4, us.getPassword());
+            pst.setString(5, us.getPrioridad());
+            pst.setString(6, us.getCedula());
             pst.executeUpdate();
         } catch (Exception e) {
             System.out.println("DAO USUARIO: " + e.getMessage());
@@ -109,8 +107,7 @@ public class UsuarioDAO implements Serializable {
                 us.setNombres(rs.getString(2));
                 us.setApellidos(rs.getString(3));
                 us.setEmail(rs.getString(4));
-                us.setNickname(rs.getString(5));
-                us.setPrioridad(rs.getString(7));
+                us.setPrioridad(rs.getString(6));
             }
         } catch (Exception e) {
             System.out.println("DAO USUARIO: " + e.getMessage());
@@ -165,8 +162,7 @@ public class UsuarioDAO implements Serializable {
                 us.setNombres(rs.getString(2));
                 us.setApellidos(rs.getString(3));
                 us.setEmail(rs.getString(4));
-                us.setNickname(rs.getString(5));
-                us.setPrioridad(rs.getString(7));
+                us.setPrioridad(rs.getString(5));
                 return us;
             }
         } catch (Exception e) {
