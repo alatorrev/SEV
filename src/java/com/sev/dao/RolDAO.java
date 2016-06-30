@@ -6,6 +6,7 @@
 package com.sev.dao;
 
 import com.sev.entity.Rol;
+import com.sev.entity.Usuario;
 import java.io.Serializable;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -41,6 +42,56 @@ public class RolDAO implements Serializable {
             con.desconectar();
         }
         return listadoRoles;
+    }
+    
+    public void editRol(Rol rol) throws SQLException {
+        Conexion con = new Conexion();
+        PreparedStatement pst;
+        String query = "update rol set descripcion=?"
+                + " where idrol=? ";
+        pst = con.getConnection().prepareStatement(query);
+        try {
+            pst.setString(1, rol.getDescripcion());
+            pst.setInt(2, rol.getIdRol());
+            pst.executeUpdate();
+        } catch (Exception e) {
+            System.out.println("DAO ROL: " + e.getMessage());
+        } finally {
+            con.desconectar();
+        }
+    }
+    
+    public void deleteRol(Rol rol) throws SQLException {
+        Conexion con = new Conexion();
+        PreparedStatement pst;
+        String query = "delete from rol where idrol=?";
+        pst = con.getConnection().prepareStatement(query);
+        try {
+            pst.setInt(1, rol.getIdRol());
+            pst.executeUpdate();
+        } catch (Exception e) {
+            System.out.println("DAO ROL: " + e.getMessage());
+        } finally {
+            con.desconectar();
+        }
+    }
+    
+    public void createRol(Rol rol) throws SQLException {
+        Conexion con = new Conexion();
+        con.getConnection().setAutoCommit(false);
+        PreparedStatement pst;
+        String query = "insert into rol values(?)";
+        pst = con.getConnection().prepareStatement(query);
+        try {
+            pst.setString(1, rol.getDescripcion());
+            pst.executeUpdate();
+            con.getConnection().commit();
+        } catch (Exception e) {
+            System.out.println("DAO ROL: " + e.getMessage());
+            con.getConnection().rollback();
+        } finally {
+            con.desconectar();
+        }
     }
 
 }

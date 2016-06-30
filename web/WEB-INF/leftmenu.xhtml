@@ -19,7 +19,7 @@
             </div>-->
             
             <ps:menu id="sm_leftmenu" >
-                <p:menuitem id="sm_dashboard" value="Dashboard" icon="icon-home-outline" containerStyleClass="layout-menubar-active" url="#{initParam['Url']}/faces/administrador.xhtml"/>
+                <p:menuitem id="sm_dashboard" value="Dashboard" icon="icon-home-outline" action="admin"/>
                 <p:submenu id="sm_adminitracion" label="Administración" icon="icon-gauge" >
                     <p:menuitem id="sm_prospectos" value="Prospectos" icon="icon-columns" />
                     <p:menuitem id="sm_canalcap" value="Canal de Captación" icon="icon-columns" />
@@ -32,9 +32,9 @@
                     <p:menuitem id="sm_asig3" value="Asignación 3" icon="icon-columns" />
                 </p:submenu>
                 <p:submenu id="sm_seguridad" label="Seguridad" icon="icon-gauge" >
-                    <p:menuitem id="sm_usuarios" value="Usuarios" icon="icon-columns" outcome ="userM"/>
-                    <p:menuitem id="sm_roles" value="Roles del Sistema" icon="icon-columns" />
-                    <p:menuitem id="sm_permisos" value="Permisos por Rol" icon="icon-columns" />
+                    <p:menuitem id="sm_usuarios" value="Usuarios" icon="icon-columns" action ="crudUsuario"/>
+                    <p:menuitem id="sm_roles" value="Roles del Sistema" icon="icon-columns" action ="crudRoles"/>
+                    
                     <p:menuitem id="sm_reespass" value="Reestablecer constraseña" icon="icon-columns" />
                 </p:submenu>
             </ps:menu>

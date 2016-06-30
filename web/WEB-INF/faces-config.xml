@@ -15,21 +15,57 @@
             <to-view-id>/index.xhtml</to-view-id>
         </navigation-case>
         <!--<navigation-case>
-            <from-outcome>administrador</from-outcome>
+            <from-outcome>admin</from-outcome>
             <to-view-id>/administrador.xhtml</to-view-id>
         </navigation-case>-->
     </navigation-rule>
     
-  <!--  <navigation-rule>
-        <from-view-id>/WEB-INF/leftmenu.xhtml</from-view-id>
+    <navigation-rule>
+        <from-view-id>/administrador.xhtml</from-view-id>
         <navigation-case>
             <from-outcome>admin</from-outcome>
             <to-view-id>/administrador.xhtml</to-view-id>
         </navigation-case>
         <navigation-case>
-            <from-outcome>mantenimientoUsuario</from-outcome>
-            <to-view-id>/Paginas/usuarioCRUD.xhtml</to-view-id>
+            <from-outcome>crudUsuario</from-outcome>
+            <to-view-id>/usuarioCRUD.xhtml</to-view-id>
         </navigation-case>
-    </navigation-rule>-->
+        <navigation-case>
+            <from-outcome>crudRoles</from-outcome>
+            <to-view-id>/rolesCRUD.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+    
+    <navigation-rule>
+        <from-view-id>/usuarioCRUD.xhtml</from-view-id>
+        <navigation-case>
+            <from-outcome>admin</from-outcome>
+            <to-view-id>/administrador.xhtml</to-view-id>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>crudUsuario</from-outcome>
+            <to-view-id>/usuarioCRUD.xhtml</to-view-id>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>crudRoles</from-outcome>
+            <to-view-id>/rolesCRUD.xhtml</to-view-id>
+        </navigation-case>    
+    </navigation-rule>
+    
+    <navigation-rule>
+        <from-view-id>/rolesCRUD.xhtml</from-view-id>
+        <navigation-case>
+            <from-outcome>admin</from-outcome>
+            <to-view-id>/administrador.xhtml</to-view-id>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>crudUsuario</from-outcome>
+            <to-view-id>/usuarioCRUD.xhtml</to-view-id>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>crudRoles</from-outcome>
+            <to-view-id>/rolesCRUD.xhtml</to-view-id>
+        </navigation-case>    
+    </navigation-rule>
     
 </faces-config>
