@@ -11,13 +11,14 @@ import java.io.Serializable;
  *
  * @author alatorre
  */
-public class Usuario implements Serializable{
+public class Usuario implements Serializable {
+
     String cedula;
     String nombres;
     String apellidos;
     String email;
     String password;
-    int rol;
+    int idRol;
     String descripcionRol;
     String prioridad;
 
@@ -61,12 +62,12 @@ public class Usuario implements Serializable{
         this.password = password;
     }
 
-    public int getRol() {
-        return rol;
+    public int getIdRol() {
+        return idRol;
     }
 
-    public void setRol(int rol) {
-        this.rol = rol;
+    public void setIdRol(int idRol) {
+        this.idRol = idRol;
     }
 
     public String getPrioridad() {
@@ -80,10 +81,9 @@ public class Usuario implements Serializable{
     public void setDescripcionRol(String descripcionRol) {
         this.descripcionRol = descripcionRol;
     }
-    
+
     public void setPrioridad(String prioridad) {
         this.prioridad = prioridad;
     }
-    
-    
+
 }

@@ -38,7 +38,7 @@ public class UsuarioDAO implements Serializable {
             PreparedStatement pstUsuarioRol = con.getConnection().prepareStatement(
             "insert into usuariorol values(?,?)");
             pstUsuarioRol.setString(1, us.getCedula());
-            pstUsuarioRol.setInt(2, us.getRol());
+            pstUsuarioRol.setInt(2, us.getIdRol());
             pstUsuarioRol.executeUpdate();
 //            ResultSet rs = pst.getGeneratedKeys();
 //
@@ -134,7 +134,7 @@ public class UsuarioDAO implements Serializable {
                 us.setApellidos(rs.getString(3));
                 us.setEmail(rs.getString(4));
                 us.setPrioridad(rs.getString(5));
-                us.setRol(rs.getInt(6));
+                us.setIdRol(rs.getInt(6));
                 us.setDescripcionRol(rs.getString(7));
                 listadoUsuarios.add(us);
             }
@@ -151,7 +151,9 @@ public class UsuarioDAO implements Serializable {
         Usuario us = new Usuario();
         PreparedStatement pst;
         ResultSet rs = null;
-        String query = "select * from usuario where email=? and clave=?";
+        String query = "select u.CEDULA,u.NOMBRES,u.APELLIDOS,u.EMAIL,u.PRIORIDAD,r.IDROL,r.DESCRIPCION from usuario u "
+                + "inner join USUARIOROL ur on ur.IDUSUARIO=u.CEDULA "
+                + "inner join ROL r on r.IDROL=ur.IDROL where u.EMAIL=? and u.CLAVE=?";
         pst = con.getConnection().prepareStatement(query);
         try {
             pst.setString(1, email);
@@ -163,6 +165,9 @@ public class UsuarioDAO implements Serializable {
                 us.setApellidos(rs.getString(3));
                 us.setEmail(rs.getString(4));
                 us.setPrioridad(rs.getString(5));
+                us.setPrioridad(rs.getString(5));
+                us.setIdRol(rs.getInt(6));
+                us.setDescripcionRol(rs.getString(7));
                 return us;
             }
         } catch (Exception e) {

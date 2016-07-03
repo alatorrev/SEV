@@ -5,15 +5,23 @@
  */
 package com.sev.bean;
 
+import com.sev.dao.RecursoDAO;
 import com.sev.dao.UsuarioDAO;
+import com.sev.entity.Recurso;
 import com.sev.entity.Usuario;
 import java.io.Serializable;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import org.primefaces.context.RequestContext;
+import org.primefaces.model.menu.DefaultMenuItem;
+import org.primefaces.model.menu.DefaultMenuModel;
+import org.primefaces.model.menu.DefaultSubMenu;
+import org.primefaces.model.menu.MenuModel;
 
 /**
  *
@@ -25,22 +33,71 @@ public class LoginBean implements Serializable {
 
     private Usuario sessionUsuario = new Usuario();
     private String email;
+    private MenuModel modelMenu ;
+    private List<String> subMenuList = new ArrayList<>();
     private String contrasena;
 
     public LoginBean() {
     }
-    
+
     public String authenticate() throws SQLException {
         UsuarioDAO usuarioDAO = new UsuarioDAO();
         setSessionUsuario(usuarioDAO.loginAction(email, contrasena));
         if (sessionUsuario != null) {
+            initMenu(getSessionUsuario());
             FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("Usuario", sessionUsuario);
-              return "correcto";
+            return "correcto";
         } else {
             RequestContext.getCurrentInstance().update("growl");
             FacesContext context = FacesContext.getCurrentInstance();
             context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Atención", "Usuario o Contraseña incorrecto"));
-            return "incorrecto";           
+            return "incorrecto";
+        }
+    }
+
+    public void initMenu(Usuario u) throws SQLException {
+        modelMenu= new DefaultMenuModel();
+        String urlBase = FacesContext.getCurrentInstance().getExternalContext().getInitParameter("Url");
+        RecursoDAO daoRecurso = new RecursoDAO();
+        List<Recurso> listaRecursos = daoRecurso.findAllRecursoByRol(u);
+        DefaultSubMenu subItemObj = null;
+        DefaultMenuItem itemObj;
+        DefaultSubMenu temp = new DefaultSubMenu(), aux = new DefaultSubMenu("init");
+        for (Recurso objRecurso : listaRecursos) {
+            boolean flagExist = subMenuExists(objRecurso.getSubItemLabel());
+            if (objRecurso.getSubItemLabel().toUpperCase().equals("NULO")) {
+                itemObj = new DefaultMenuItem(objRecurso.getItemLabel());
+                itemObj.setUrl(urlBase + objRecurso.getRuta());
+                itemObj.setIcon(objRecurso.getItemIcon());
+                modelMenu.addElement(itemObj);
+            } else {
+                if (!flagExist) {
+                    subItemObj = new DefaultSubMenu(objRecurso.getSubItemLabel());
+                    itemObj = new DefaultMenuItem(objRecurso.getItemLabel());
+                    itemObj.setUrl(urlBase + objRecurso.getRuta());
+                    itemObj.setIcon(objRecurso.getItemIcon());
+                    subItemObj.addElement(itemObj);
+                    temp = subItemObj;
+                    if (!aux.getLabel().equals(subItemObj.getLabel())) {
+                        modelMenu.addElement(temp);
+                    }
+                } else {
+                    itemObj = new DefaultMenuItem(objRecurso.getItemLabel());
+                    itemObj.setUrl(urlBase + objRecurso.getRuta());
+                    itemObj.setIcon(objRecurso.getItemIcon());
+                    temp.addElement(itemObj);
+                    aux = temp;
+                }
+            }
+        }
+    }
+
+    public boolean subMenuExists(String subItem) {
+        if (subMenuList.contains(subItem)) {
+            return true;
+        } else {
+            subMenuList.add(subItem);
+            return false;
         }
     }
 
@@ -68,4 +125,12 @@ public class LoginBean implements Serializable {
         this.sessionUsuario = sessionUsuario;
     }
 
+    public MenuModel getModelMenu() {
+        return modelMenu;
+    }
+
+    public void setModelMenu(MenuModel modelMenu) {
+        this.modelMenu = modelMenu;
+    }
+    
 }
