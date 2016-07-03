@@ -24,8 +24,13 @@
                                      rowsPerPageTemplate="5,10,15"  lazy="false">
                             <f:facet name="header">
                                 <p:outputPanel style="text-align: right;">
-                                    <h:outputText value="Buscar: " />
-                                    <p:inputText id="globalFilter" onkeyup="PF('userTable').filter()" style="width:150px" placeholder="Enter keyword"/>
+                                    <table>
+                                    <tr>
+                                        <td class="FontBold Fs18 hardwhite" style="border: none; text-align: left"><h:outputText value="Administrador de Usuarios" style="color: #ffffff" /></td>
+                                        <td style="border: none; text-align: right"><h:outputText value="Buscar: " style="text-align: right; color: #ffffff"/>
+                                    <p:inputText id="globalFilter" onkeyup="PF('userTable').filter()" style="width:150px" placeholder="Enter keyword"/></td>
+                                    </tr>
+                                </table>
                                 </p:outputPanel>
                             </f:facet>
                             <p:column headerText="Cédula" filterBy="#{us.cedula}" filterStyle="display:none" filterMatchMode="contains">
@@ -61,7 +66,7 @@
                         </p:dataTable>
                     </h:form>
 
-                    <p:dialog id="dlgDatos" header="Editar Usuario" widgetVar="wdlgDatos" modal="true" height="300" width="300" responsive="true">
+                    <p:dialog id="dlgDatos" header="Editar Usuario" widgetVar="wdlgDatos" modal="true" responsive="true">
                         <h:form>
                             <h:panelGrid columns="2">
                                 <p:outputLabel value="Nombres"/>
@@ -82,7 +87,7 @@
                             </h:panelGrid>
                         </h:form>
                     </p:dialog>
-                    <p:dialog id="dlgCrearUsuario" header="Crear Usuario" widgetVar="wdlgCrearUsuario" modal="true" height="300" width="300" responsive="true">
+                    <p:dialog id="dlgCrearUsuario" header="Crear Usuario" widgetVar="wdlgCrearUsuario" modal="true" responsive="true">
                         <h:form>
                             <h:panelGrid columns="2">
                                 <p:outputLabel value="Cédula"/>

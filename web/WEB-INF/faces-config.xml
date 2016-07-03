@@ -34,6 +34,22 @@
             <from-outcome>crudRoles</from-outcome>
             <to-view-id>/rolesCRUD.xhtml</to-view-id>
         </navigation-case>
+        <navigation-case>
+            <from-outcome>crudReest</from-outcome>
+            <to-view-id>/ReestContra.xhtml</to-view-id>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>crudCanal</from-outcome>
+            <to-view-id>/canalCRUD.xhtml</to-view-id>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>crudVia</from-outcome>
+            <to-view-id>/viaCRUD.xhtml</to-view-id>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>crudInteres</from-outcome>
+            <to-view-id>/InteresCRUD.xhtml</to-view-id>
+        </navigation-case>
     </navigation-rule>
     
     <navigation-rule>
@@ -50,6 +66,22 @@
             <from-outcome>crudRoles</from-outcome>
             <to-view-id>/rolesCRUD.xhtml</to-view-id>
         </navigation-case>    
+        <navigation-case>
+            <from-outcome>crudReest</from-outcome>
+            <to-view-id>/ReestContra.xhtml</to-view-id>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>crudCanal</from-outcome>
+            <to-view-id>/canalCRUD.xhtml</to-view-id>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>crudVia</from-outcome>
+            <to-view-id>/viaCRUD.xhtml</to-view-id>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>crudInteres</from-outcome>
+            <to-view-id>/InteresCRUD.xhtml</to-view-id>
+        </navigation-case>
     </navigation-rule>
     
     <navigation-rule>
@@ -65,7 +97,150 @@
         <navigation-case>
             <from-outcome>crudRoles</from-outcome>
             <to-view-id>/rolesCRUD.xhtml</to-view-id>
-        </navigation-case>    
+        </navigation-case> 
+        <navigation-case>
+            <from-outcome>crudReest</from-outcome>
+            <to-view-id>/ReestContra.xhtml</to-view-id>
+        </navigation-case>  
+        <navigation-case>
+            <from-outcome>crudCanal</from-outcome>
+            <to-view-id>/canalCRUD.xhtml</to-view-id>
+        </navigation-case> 
+        <navigation-case>
+            <from-outcome>crudVia</from-outcome>
+            <to-view-id>/viaCRUD.xhtml</to-view-id>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>crudInteres</from-outcome>
+            <to-view-id>/InteresCRUD.xhtml</to-view-id>
+        </navigation-case>
     </navigation-rule>
     
+    <navigation-rule>
+        <from-view-id>/ReestContra.xhtml</from-view-id>
+        <navigation-case>
+            <from-outcome>admin</from-outcome>
+            <to-view-id>/administrador.xhtml</to-view-id>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>crudUsuario</from-outcome>
+            <to-view-id>/usuarioCRUD.xhtml</to-view-id>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>crudRoles</from-outcome>
+            <to-view-id>/rolesCRUD.xhtml</to-view-id>
+        </navigation-case> 
+        <navigation-case>
+            <from-outcome>crudReest</from-outcome>
+            <to-view-id>/ReestContra.xhtml</to-view-id>
+        </navigation-case> 
+        <navigation-case>
+            <from-outcome>crudCanal</from-outcome>
+            <to-view-id>/canalCRUD.xhtml</to-view-id>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>crudVia</from-outcome>
+            <to-view-id>/viaCRUD.xhtml</to-view-id>
+        </navigation-case> 
+        <navigation-case>
+            <from-outcome>crudInteres</from-outcome>
+            <to-view-id>/InteresCRUD.xhtml</to-view-id>
+        </navigation-case> 
+    </navigation-rule>
+    
+    <navigation-rule>
+        <from-view-id>/canalCRUD.xhtml</from-view-id>
+        <navigation-case>
+            <from-outcome>admin</from-outcome>
+            <to-view-id>/administrador.xhtml</to-view-id>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>crudUsuario</from-outcome>
+            <to-view-id>/usuarioCRUD.xhtml</to-view-id>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>crudRoles</from-outcome>
+            <to-view-id>/rolesCRUD.xhtml</to-view-id>
+        </navigation-case> 
+        <navigation-case>
+            <from-outcome>crudReest</from-outcome>
+            <to-view-id>/ReestContra.xhtml</to-view-id>
+        </navigation-case> 
+        <navigation-case>
+            <from-outcome>crudCanal</from-outcome>
+            <to-view-id>/canalCRUD.xhtml</to-view-id>
+        </navigation-case>  
+        <navigation-case>
+            <from-outcome>crudVia</from-outcome>
+            <to-view-id>/viaCRUD.xhtml</to-view-id>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>crudInteres</from-outcome>
+            <to-view-id>/InteresCRUD.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+    
+    <navigation-rule>
+        <from-view-id>/viaCRUD.xhtml</from-view-id>
+        <navigation-case>
+            <from-outcome>admin</from-outcome>
+            <to-view-id>/administrador.xhtml</to-view-id>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>crudUsuario</from-outcome>
+            <to-view-id>/usuarioCRUD.xhtml</to-view-id>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>crudRoles</from-outcome>
+            <to-view-id>/rolesCRUD.xhtml</to-view-id>
+        </navigation-case> 
+        <navigation-case>
+            <from-outcome>crudReest</from-outcome>
+            <to-view-id>/ReestContra.xhtml</to-view-id>
+        </navigation-case> 
+        <navigation-case>
+            <from-outcome>crudCanal</from-outcome>
+            <to-view-id>/canalCRUD.xhtml</to-view-id>
+        </navigation-case>  
+        <navigation-case>
+            <from-outcome>crudVia</from-outcome>
+            <to-view-id>/viaCRUD.xhtml</to-view-id>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>crudInteres</from-outcome>
+            <to-view-id>/InteresCRUD.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+    
+    <navigation-rule>
+        <from-view-id>/InteresCRUD.xhtml</from-view-id>
+        <navigation-case>
+            <from-outcome>admin</from-outcome>
+            <to-view-id>/administrador.xhtml</to-view-id>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>crudUsuario</from-outcome>
+            <to-view-id>/usuarioCRUD.xhtml</to-view-id>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>crudRoles</from-outcome>
+            <to-view-id>/rolesCRUD.xhtml</to-view-id>
+        </navigation-case> 
+        <navigation-case>
+            <from-outcome>crudReest</from-outcome>
+            <to-view-id>/ReestContra.xhtml</to-view-id>
+        </navigation-case> 
+        <navigation-case>
+            <from-outcome>crudCanal</from-outcome>
+            <to-view-id>/canalCRUD.xhtml</to-view-id>
+        </navigation-case>  
+        <navigation-case>
+            <from-outcome>crudVia</from-outcome>
+            <to-view-id>/viaCRUD.xhtml</to-view-id>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>crudInteres</from-outcome>
+            <to-view-id>/InteresCRUD.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>
 </faces-config>

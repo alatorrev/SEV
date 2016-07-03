@@ -6,50 +6,51 @@
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:p="http://primefaces.org/ui"
                 template="/WEB-INF/template.xhtml">
+
     <ui:define name="content">
         <h:outputScript name="jquery/jquery.js" library="primefaces" target="head"/>
         <h:outputStylesheet name="style.css" />
-     <div class="Container100 ui-fluid">
+        <div class="Container100 ui-fluid">
             <div class="ContainerIndent">
                 <p:panel>
                     <h:form id="frm">
                        <!-- <div class="FontBold Fs18 hardblue" style="margin: 15px 10px">Listado Usuarios</div>-->
                         <div class="Separator">
-                            <p:commandLink  value="Agregar Rol" oncomplete="PF('wdlgCrearRol').show();" style="font-size: 20px; "  styleClass="icon-plus-circled"/>
+                            <p:commandLink  value="Agregar Interés Prospecto" oncomplete="PF('wdlgCrearInteres').show();" style="font-size: 20px; "  styleClass="icon-plus-circled"/>
                         </div>
                        <p:spacer height="10"/>
-                        <p:dataTable id="uTable" value="#{rolBean.listadoRoles}" var="rol" widgetVar="userTable" paginator="true" rows="10"
+                       <p:dataTable id="uTable" value="#{interesBean.listadoIntereses}" var="inte" widgetVar="userTable" paginator="true" rows="10"
                                      paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
-                                     paginatorPosition="bottom" filteredValue="#{rolBean.filteredRols}"
+                                     paginatorPosition="bottom" filteredValue="#{interesBean.filteredIntereses}"
                                      rowsPerPageTemplate="5,10,15"  lazy="false">
                             <f:facet name="header">
                                 <p:outputPanel style="text-align: right;">
                                     <table>
                                     <tr>
-                                        <td class="FontBold Fs18 hardwhite" style="border: none; text-align: left"><h:outputText value="Administrador de Roles" style="color: #ffffff" /></td>
+                                        <td class="FontBold Fs18 hardwhite" style="border: none; text-align: left"><h:outputText value="Administrador Interes de Prospectos" style="color: #ffffff" /></td>
                                         <td style="border: none; text-align: right"><h:outputText value="Buscar: " style="text-align: right; color: #ffffff"/>
                                     <p:inputText id="globalFilter" onkeyup="PF('userTable').filter()" style="width:150px" placeholder="Enter keyword"/></td>
                                     </tr>
                                 </table>
                                 </p:outputPanel>
                             </f:facet>
-                            <p:column headerText="Id" filterBy="#{rol.idRol}" filterStyle="display:none" filterMatchMode="contains" style="text-align: center">
-                                <h:outputText value="#{rol.idRol}"/>
+                           <p:column headerText="Id" filterBy="#{inte.idInteresProspecto}" filterStyle="display:none" filterMatchMode="contains" style="text-align: center">
+                               <h:outputText value="#{inte.idInteresProspecto}"/>
                             </p:column>
                             
-                            <p:column headerText="Rol" style="text-align: center">
-                                <h:outputText value="#{rol.descripcion}"/>
+                            <p:column headerText="Interés" style="text-align: center">
+                                <h:outputText value="#{inte.descripcion}"/>
                             </p:column>
                            
                             <!--############################################################################################ -->
                             <!--############################################################################################ -->
                             <p:column  style="text-align: center">
                                 <i class="icon-edit">
-                                    <p:commandLink value="editar" actionListener="#{rolBean.showEditDialog(rol)}" oncomplete="PF('wdlgDatos').show();" update="dlgDatos"/>
+                                    <p:commandLink value="editar" actionListener="#{interesBean.showEditDialog(inte)}" oncomplete="PF('wdlgDatos').show();" update="dlgDatos"/>
                                     <!-- <p:graphicImage name="images/ui-icon-trash.png" library="sentinel-layout"/>-->
                                 </i>   
                                 <i class="icon-trash-2">
-                                    <p:commandLink value="eliminar" actionListener="#{rolBean.eliminar(rol)}"  update=":frm:uTable" >
+                                    <p:commandLink value="eliminar" actionListener="#{interesBean.eliminar(inte)}"  update=":frm:uTable" >
                                         <p:confirm header="Confirmación" message="Está seguro de eliminar el registro" icon="ui-icon-alert" />
                                     </p:commandLink>
                                     <!-- <p:graphicImage name="images/ui-icon-trash.png" library="sentinel-layout"/>-->
@@ -60,30 +61,30 @@
                     
                     <!--############################################################################################ -->
                     <!--############################################################################################ -->
-                    <p:dialog id="dlgDatos" header="Editar Rol" widgetVar="wdlgDatos" modal="true" responsive="true">
+                    <p:dialog id="dlgDatos" header="Editar Interes de Prospecto" widgetVar="wdlgDatos" modal="true" responsive="true">
                         <h:form>
                             <h:panelGrid columns="2">
-                                <p:outputLabel value="Rol"/>
-                                <p:inputText value="#{rolBean.rol.descripcion}"/>
-                                <p:commandButton ajax="true" value="Editar" actionListener="#{rolBean.commitEdit()}"  oncomplete="PF('wdlgDatos').hide();" update=":frm:uTable">
+                                <p:outputLabel value="Canal"/>
+                                <p:inputText value="#{interesBean.interes.descripcion}"/>
+                                <p:commandButton ajax="true" value="Editar" actionListener="#{interesBean.commitEdit()}"  oncomplete="PF('wdlgDatos').hide();" update=":frm:uTable">
                                     <p:confirm header="Confirmación" message="Está seguro de realizar esta acción" icon="ui-icon-alert" />
                                 </p:commandButton>
-                                <p:commandButton value="Cancelar" actionListener="#{rolBean.onCancelDialog()}" immediate="true" oncomplete="PF('wdlgDatos').hide();"/>
+                                <p:commandButton value="Cancelar" actionListener="#{interesBean.onCancelDialog()}" immediate="true" oncomplete="PF('wdlgDatos').hide();"/>
                             </h:panelGrid>
                         </h:form>
                     </p:dialog>
                     
                     <!--############################################################################################ -->
                     <!--############################################################################################ -->
-                    <p:dialog id="dlgCrearRol" header="Crear Rol" resizable="false"  widgetVar="wdlgCrearRol" modal="true" responsive="true">
+                    <p:dialog id="dlgCrearRol" header="Crear Interes de Prospecto" resizable="false"  widgetVar="wdlgCrearInteres" modal="true" responsive="true">
                         <h:form>
                             <h:panelGrid columns="2">
-                                <p:outputLabel value="Rol"/>
-                                <p:inputText value="#{rolBean.rol.descripcion}"/>
-                                <p:commandButton ajax="true" actionListener="#{rolBean.commitCreate()}" value="Crear" oncomplete="PF('wdlgCrearRol').hide();" update=":frm:uTable" >
+                                <p:outputLabel value="Nuevo Interés de Prospecto"/>
+                                <p:inputText value="#{interesBean.interes.descripcion}"/>
+                                <p:commandButton ajax="true" actionListener="#{interesBean.commitCreate()}" value="Crear" oncomplete="PF('wdlgCrearInteres').hide();" update=":frm:uTable" >
                                     <p:confirm header="Confirmación" message="Está seguro de realizar esta acción" icon="ui-icon-alert" />
                                 </p:commandButton>
-                                <p:commandButton value="Cancelar" actionListener="#{rolBean.onCancelDialog()}" immediate="true" oncomplete="PF('wdlgCrearRol').hide();"/>
+                                <p:commandButton value="Cancelar" actionListener="#{interesBean.onCancelDialog()}" immediate="true" oncomplete="PF('wdlgCrearRol').hide();"/>
                             </h:panelGrid>
                         </h:form>
                     </p:dialog>
@@ -97,7 +98,7 @@
 
                 </p:panel>
             </div>
-        </div>   
+        </div>
     </ui:define>
 
 </ui:composition>

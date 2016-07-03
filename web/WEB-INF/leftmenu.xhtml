@@ -22,9 +22,9 @@
                 <p:menuitem id="sm_dashboard" value="Dashboard" icon="icon-home-outline" action="admin"/>
                 <p:submenu id="sm_adminitracion" label="Administración" icon="icon-gauge" >
                     <p:menuitem id="sm_prospectos" value="Prospectos" icon="icon-columns" />
-                    <p:menuitem id="sm_canalcap" value="Canal de Captación" icon="icon-columns" />
-                    <p:menuitem id="sm_viacom" value="Via de comunicación" icon="icon-columns" />
-                    <p:menuitem id="sm_interes" value="Interés del prospecto" icon="icon-columns" />
+                    <p:menuitem id="sm_canalcap" value="Canal de Captación" icon="icon-columns" action="crudCanal"/>
+                    <p:menuitem id="sm_viacom" value="Via de comunicación" icon="icon-columns" action="crudVia"/>
+                    <p:menuitem id="sm_interes" value="Interés del prospecto" icon="icon-columns" action="crudInteres" />
                 </p:submenu>
                 <p:submenu id="sm_asignaciones" label="Asignaciones" icon="icon-gauge" >
                     <p:menuitem id="sm_asig1" value="Asignacion 1" icon="icon-columns" />
@@ -34,8 +34,7 @@
                 <p:submenu id="sm_seguridad" label="Seguridad" icon="icon-gauge" >
                     <p:menuitem id="sm_usuarios" value="Usuarios" icon="icon-columns" action ="crudUsuario"/>
                     <p:menuitem id="sm_roles" value="Roles del Sistema" icon="icon-columns" action ="crudRoles"/>
-                    
-                    <p:menuitem id="sm_reespass" value="Reestablecer constraseña" icon="icon-columns" />
+                    <p:menuitem id="sm_reespass" value="Reestablecer constraseña" icon="icon-columns" action="crudReest" />
                 </p:submenu>
             </ps:menu>
 
