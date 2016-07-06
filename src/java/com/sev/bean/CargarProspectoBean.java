@@ -5,13 +5,16 @@
  */
 package com.sev.bean;
 
+import com.sev.entity.Prospecto;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Iterator;
+import java.util.List;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
@@ -36,6 +39,8 @@ import org.primefaces.model.UploadedFile;
 public class CargarProspectoBean implements Serializable {
 
     private UploadedFile file;
+    private List<Prospecto> listadoProspecto = new ArrayList<>();
+    private List<Prospecto> filteredProspecto;
 
     public void handleFileUpload(FileUploadEvent event) throws IOException {
         FacesContext facesContext = FacesContext.getCurrentInstance();
@@ -58,14 +63,76 @@ public class CargarProspectoBean implements Serializable {
         } catch (IOException e) {
             facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error reading file" + e, null));
         }
+        setListadoProspecto(importData(workbook, 0));
+    }
 
-        String datos[][] = importData(workbook, 0);
-        for (int i = 0; i < datos.length; i++) {
-            for (int j = 0; j < datos[i].length; j++) {
-                System.out.print(datos[i][j] + " ");
+    public List<Prospecto> importData(Workbook workbook, int tabNumber) throws IOException {
+        List<Prospecto> lista = new ArrayList<>();
+        String[][] data;
+        Sheet sheet = workbook.getSheetAt(tabNumber);
+        data = new String[sheet.getLastRowNum() + 1][];
+        Row[] row = new Row[sheet.getLastRowNum() + 1];
+        Cell[][] cell = new Cell[row.length][];
+
+        for (int i = 1; i < row.length; i++) {
+            row[i] = sheet.getRow(i);
+            cell[i] = new Cell[row[i].getLastCellNum()];
+            data[i] = new String[row[i].getLastCellNum()];
+            Prospecto prospecto = new Prospecto();
+            for (int j = 0; j < cell[i].length; j++) {
+                cell[i][j] = row[i].getCell(j);
+                if (cell[i][j] != null) {
+                    switch (j) {
+                        case 0:
+                            prospecto.setCanal(getDataFromCell(cell, i, j));
+                        case 1:
+                            prospecto.setNombres(getDataFromCell(cell, i, j));
+                        case 2:
+                            prospecto.setApellidos(getDataFromCell(cell, i, j));
+                        case 3:
+                            prospecto.setEmail(getDataFromCell(cell, i, j));
+                        case 4:
+                            prospecto.setEstablecimientoProveniente(getDataFromCell(cell, i, j));
+                        case 6:
+                            prospecto.setCaptador(getDataFromCell(cell, i, j));
+                    }
+                } else {
+                    switch (j) {
+                        case 0:
+                            prospecto.setCanal("");
+                        case 1:
+                            prospecto.setNombres("");
+                        case 2:
+                            prospecto.setApellidos("");
+                        case 3:
+                            prospecto.setEmail("");
+                        case 4:
+                            prospecto.setEstablecimientoProveniente("");
+                        case 6:
+                            prospecto.setCaptador("");
+                    }
+                }
             }
-            System.out.println("");
+            lista.add(prospecto);
         }
+
+        return lista;
+    }
+
+    public String getDataFromCell(Cell[][] cell, int i, int j) {
+        switch (cell[i][j].getCellType()) {
+            case Cell.CELL_TYPE_NUMERIC:
+                if (HSSFDateUtil.isCellDateFormatted(cell[i][j]) || HSSFDateUtil.isCellInternalDateFormatted(cell[i][j])) {
+                    SimpleDateFormat objFormat = new SimpleDateFormat("dd/MM/yyyy");
+                    return objFormat.format(cell[i][j].getDateCellValue());
+                } else {
+                    Double value = cell[i][j].getNumericCellValue();
+                    return value.intValue() + "";
+                }
+            case Cell.CELL_TYPE_STRING:
+                return cell[i][j].getStringCellValue();
+        }
+        return "";
     }
 
     public String getExtension(String fileName) {
@@ -78,58 +145,28 @@ public class CargarProspectoBean implements Serializable {
         return extension;
     }
 
-    public String[][] importData(Workbook workbook, int tabNumber) throws IOException {
-
-        String[][] data;
-
-        //Create Workbook from Existing File
-        Sheet sheet = workbook.getSheetAt(tabNumber);
-
-        //Define Data & Row Array and adjust from Zero Base Numer
-        data = new String[sheet.getLastRowNum() + 1][];
-        Row[] row = new Row[sheet.getLastRowNum() + 1];
-        Cell[][] cell = new Cell[row.length][];
-
-        //Transfer Cell Data to Local Variable
-        for (int i = 0; i < row.length; i++) {
-            row[i] = sheet.getRow(i);
-
-            //Note that cell number is not Zero Based
-            cell[i] = new Cell[row[i].getLastCellNum()];
-            data[i] = new String[row[i].getLastCellNum()];
-
-            for (int j = 0; j < cell[i].length; j++) {
-                cell[i][j] = row[i].getCell(j);
-                if (cell[i][j] != null) {
-                    switch (cell[i][j].getCellType()) {
-                        case Cell.CELL_TYPE_NUMERIC:
-
-                            if (HSSFDateUtil.isCellDateFormatted(cell[i][j]) || HSSFDateUtil.isCellInternalDateFormatted(cell[i][j])) {
-                                SimpleDateFormat objFormat = new SimpleDateFormat("dd/MM/yyyy");
-                                objFormat.format(cell[i][j].getDateCellValue());
-                            } else {
-                                Double value = cell[i][j].getNumericCellValue();
-                                data[i][j] = value.intValue() + "";
-                            }
-                            break;
-                        case Cell.CELL_TYPE_STRING:
-                            data[i][j] = cell[i][j].getStringCellValue();
-                            break;
-                    }
-                }
-            }
-
-        }
-
-        return data;
-    }
-
     public UploadedFile getFile() {
         return file;
     }
 
     public void setFile(UploadedFile file) {
         this.file = file;
+    }
+
+    public List<Prospecto> getListadoProspecto() {
+        return listadoProspecto;
+    }
+
+    public void setListadoProspecto(List<Prospecto> listadoProspecto) {
+        this.listadoProspecto = listadoProspecto;
+    }
+
+    public List<Prospecto> getFilteredProspecto() {
+        return filteredProspecto;
+    }
+
+    public void setFilteredProspecto(List<Prospecto> filteredProspecto) {
+        this.filteredProspecto = filteredProspecto;
     }
 
 }
