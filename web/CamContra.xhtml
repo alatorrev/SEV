@@ -1,0 +1,50 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template.xhtml">
+
+    <ui:define name="content">
+        <h:outputScript name="jquery/jquery.js" library="primefaces" target="head"/>
+        <h:outputStylesheet name="style.css" />
+       <div class="Container100 ui-fluid">
+            <div class="ContainerIndent">
+                <div class="ui-panel ui-widget ui-widget-content ui-corner-all">
+                <div class="ui-panel-titlebar ui-widget-header ui-helper-clearfix ui-corner-all">
+                    <span class="ui-panel-title">Cambiar Contraseña</span>
+                    </div>
+        <p:panel>
+        <h:form id="frm">
+            <p:spacer height="10"/>
+             <f:facet name="header" >
+                <p:outputPanel>
+                    <table>
+                        <tr>
+                            <td class="FontBold Fs18 hardwhite" style="border: none; text-align: left"><h:outputText value="Reestablecer Contraseña" style="color: #ffffff" /></td>
+                            <td style="border: none; text-align: right"><h:outputText value="Buscar: " style="text-align: right; color: #ffffff"/>
+                             <p:inputText id="globalFilter" onkeyup="PF('userTable').filter()" style="width:150px" placeholder="Enter keyword"/></td>
+                        </tr>
+                    </table>
+                </p:outputPanel>
+             </f:facet>
+                            <h:panelGrid columns="2">
+                                <p:outputLabel value="Nueva Contraseña"/>
+                                <p:inputText value=""/>
+                                
+                                <p:commandButton ajax="true" value="Editar" actionListener="#{cambiarBean.commitEdit()}"  >
+                                    <p:confirm header="Confirmación" message="Está seguro de realizar esta acción" icon="ui-icon-alert" />
+                                </p:commandButton>
+                                <p:commandButton value="Cancelar" actionListener="#{reestablecerBean.onCancelDialog()}" immediate="true" oncomplete="PF('wdlgDatos').hide();"/>
+                            </h:panelGrid>
+        </h:form>
+        </p:panel>
+            </div>
+       </div>
+       </div>
+       
+    </ui:define>
+
+</ui:composition>

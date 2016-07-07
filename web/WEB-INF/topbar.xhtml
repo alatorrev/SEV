@@ -13,14 +13,14 @@
                 <span class="Fs19 FontTitilliumSemiBoldItalic Fleft"><span class="softblue">S</span><span class="hardblue">E</span><span class="softblue">V</span></span>
             </a>
             <ul id="sm-topmenu" class="layout-header-widgets white Fs14">
-                <li class="Fleft BordRadHalf TexAlCenter"><i class="icon-user-male"></i>
-                    <ul class="layout-header-widgets-submenu BordRad5 shadows white Animated05">
-                        <li class="Animated05"><a class="white Unselectable"><i class="icon-user-male Fs26 OvHidden"></i><span class="Fs18">Walter White<br/><span class="Fs10">Last Login - 18.08.2014</span></span></a></li>
-                        <li class="Animated05"><a href="#" class="white Unselectable"><i class="icon-stopwatch-1"></i>User Tasks</a></li>
-                        <li class="Animated05"><a href="#" class="white Unselectable"><i class="icon-users-2"></i>Create New User</a></li>
-                        <li class="Animated05"><a href="#" class="white Unselectable"><i class="icon-sliders"></i>User Preferences</a></li>
+                <!-- <li class="Fleft BordRadHalf TexAlCenter"><i class="icon-user-male"></i>-->
+                    <!-- <ul class="layout-header-widgets-submenu BordRad5 shadows white Animated05"> -->
+                        <!-- <li class="Animated05"><a class="white Unselectable"><i class="icon-user-male Fs26 OvHidden"></i><span class="Fs18">Walter White<br/><span class="Fs10">Last Login - 18.08.2014</span></span></a></li> -->
+                        <!--<li class="Animated05"><a href="#" class="white Unselectable"><i class="icon-stopwatch-1"></i>User Tasks</a></li>-->
+                        <!--<li class="Animated05"><a href="#" class="white Unselectable"><i class="icon-users-2"></i>Create New User</a></li>-->
+                        <!--<li class="Animated05"><a href="#" class="white Unselectable"><i class="icon-sliders"></i>User Preferences</a></li> 
                     </ul>
-                </li>
+                </li>-->
                 <!--<li class="Fleft BordRadHalf TexAlCenter"><i class="icon-mail"></i><span class="alertBubble BordRad10 Fs9">166</span>
                     <ul class="layout-header-widgets-submenu BordRad5 shadows white Animated05">
                         <li class="Animated05"><a href="#" class="white Unselectable TexAlRight"><i class="icon-chat-empty yellow"></i>Gustavo Fring<br/><span class="Fs10">What does a man do Walter?</span></a></li>
@@ -47,7 +47,8 @@
                 </li>-->
                 <li class="Fleft BordRadHalf TexAlCenter"><i class="icon-power"></i>
                     <ul class="layout-header-widgets-submenu BordRad5 shadows white Animated05">
-                        <li class="Animated05"><a href="login.xhtml" class="white Unselectable"><i class="icon-ccw-1"></i>Restart</a></li>
+                        <li class="Animated05"><a class="white Unselectable"><i class="icon-user-male Fs26 OvHidden"></i><span class="Fs18">#{loginBean.email}<br/><span class="Fs10">Last Login - 18.08.2014</span></span></a></li>
+                        
                         <li class="Animated05">
                             <p:commandLink styleClass="logout" action="#{cerrarSesionBean.logout()}" >
                                 <i class="icon-logout"></i>Log Out

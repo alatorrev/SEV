@@ -36,6 +36,7 @@ public class LoginBean implements Serializable {
     private MenuModel modelMenu ;
     private List<String> subMenuList = new ArrayList<>();
     private String contrasena;
+    
 
     public LoginBean() {
     }
@@ -132,5 +133,5 @@ public class LoginBean implements Serializable {
     public void setModelMenu(MenuModel modelMenu) {
         this.modelMenu = modelMenu;
     }
-    
+
 }
