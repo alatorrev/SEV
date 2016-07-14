@@ -10,7 +10,9 @@ import java.io.Serializable;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import sqlserver.Conexion;
 
@@ -21,10 +23,11 @@ import sqlserver.Conexion;
 public class UsuarioDAO implements Serializable {
 
     public void createUsuario(Usuario us) throws SQLException {
+        SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd");
         Conexion con = new Conexion();
         con.getConnection().setAutoCommit(false);
         PreparedStatement pst;
-        String query = "insert into usuario values(?,?,?,?,?)";
+        String query = "insert into usuario values(?,?,?,?,?,? ,?,?)";
         pst = con.getConnection().prepareStatement(query);
         try {
             pst.setString(1, us.getCedula());
@@ -32,7 +35,16 @@ public class UsuarioDAO implements Serializable {
             pst.setString(3, us.getApellidos());
             pst.setString(4, us.getEmail());
             pst.setString(5, us.getPassword());
-            pst.setString(6, us.getPrioridad());
+            
+//            String date = fmt.format(us.getFecha_crea());
+//            java.sql.Date dt = java.sql.Date.valueOf(new String(date));
+            pst.setString(6, fmt.format(new Date()));
+            
+//            String date2 = fmt.format(us.getFecha_modif());
+//            java.sql.Date dt2 = java.sql.Date.valueOf(new String(date2));
+            pst.setString(7, null/*for now lolz*/);
+            
+            pst.setString(8, us.getPrioridad());
             pst.executeUpdate();
             
             PreparedStatement pstUsuarioRol = con.getConnection().prepareStatement(
@@ -56,9 +68,10 @@ public class UsuarioDAO implements Serializable {
     }
 
     public void editUsuario(Usuario us) throws SQLException {
+        SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd");
         Conexion con = new Conexion();
         PreparedStatement pst;
-        String query = "update usuario set nombres=?,apellidos=?,email=?,clave=?,prioridad=?"
+        String query = "update usuario set nombres=?,apellidos=?,email=?,clave=?,fecha_modif=?,prioridad=?"
                 + " where cedula=? ";
         pst = con.getConnection().prepareStatement(query);
         try {
@@ -66,8 +79,9 @@ public class UsuarioDAO implements Serializable {
             pst.setString(2, us.getApellidos());
             pst.setString(3, us.getEmail());
             pst.setString(4, us.getPassword());
-            pst.setString(5, us.getPrioridad());
-            pst.setString(6, us.getCedula());
+            pst.setString(5, fmt.format(new Date()));
+            pst.setString(6, us.getPrioridad());
+            pst.setString(7, us.getCedula());
             pst.executeUpdate();
         } catch (Exception e) {
             System.out.println("DAO USUARIO: " + e.getMessage());

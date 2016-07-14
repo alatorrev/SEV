@@ -6,6 +6,7 @@
 package com.sev.entity;
 
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  *
@@ -18,6 +19,8 @@ public class Usuario implements Serializable {
     String apellidos;
     String email;
     String password;
+    Date fecha_crea;
+    Date fecha_modif;
     int idRol;
     String descripcionRol;
     String prioridad;
@@ -60,6 +63,22 @@ public class Usuario implements Serializable {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public Date getFecha_crea() {
+        return fecha_crea;
+    }
+
+    public void setFecha_crea(Date fecha_crea) {
+        this.fecha_crea = fecha_crea;
+    }
+
+    public Date getFecha_modif() {
+        return fecha_modif;
+    }
+
+    public void setFecha_modif(Date fecha_modif) {
+        this.fecha_modif = fecha_modif;
     }
 
     public int getIdRol() {

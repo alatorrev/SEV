@@ -12,12 +12,26 @@ import java.io.Serializable;
  * @author a_latorre
  */
 public class Prospecto implements Serializable {
+    private int idprospecto;
     private String canal;
+    private String cedula;
     private String nombres;
     private String apellidos;
+    private String celular;
+    private String casa;
     private String email;
     private String establecimientoProveniente;
     private String captador;
+    private int idcanal;
+    private String DescripcionCanal;
+
+    public int getIdprospecto() {
+        return idprospecto;
+    }
+
+    public void setIdprospecto(int idprospecto) {
+        this.idprospecto = idprospecto;
+    }
 
     public String getCanal() {
         return canal;
@@ -27,6 +41,14 @@ public class Prospecto implements Serializable {
         this.canal = canal;
     }
 
+    public String getCedula() {
+        return cedula;
+    }
+
+    public void setCedula(String cedula) {
+        this.cedula = cedula;
+    }
+    
     public String getNombres() {
         return nombres;
     }
@@ -41,6 +63,22 @@ public class Prospecto implements Serializable {
 
     public void setApellidos(String apellidos) {
         this.apellidos = apellidos;
+    }
+
+    public String getCelular() {
+        return celular;
+    }
+
+    public void setCelular(String celular) {
+        this.celular = celular;
+    }
+
+    public String getCasa() {
+        return casa;
+    }
+
+    public void setCasa(String casa) {
+        this.casa = casa;
     }
 
     public String getEmail() {
@@ -66,6 +104,23 @@ public class Prospecto implements Serializable {
     public void setCaptador(String captador) {
         this.captador = captador;
     }
+
+    public int getIdcanal() {
+        return idcanal;
+    }
+
+    public void setIdcanal(int idcanal) {
+        this.idcanal = idcanal;
+    }
+
+    public String getDescripcionCanal() {
+        return DescripcionCanal;
+    }
+
+    public void setDescripcionCanal(String DescripcionCanal) {
+        this.DescripcionCanal = DescripcionCanal;
+    }
+    
     
     
 }

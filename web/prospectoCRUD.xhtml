@@ -1,0 +1,156 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template.xhtml">
+
+    <ui:define name="content">
+       <h:outputScript name="jquery/jquery.js" library="primefaces" target="head"/>
+        <h:outputStylesheet name="style.css" />
+        <div class="Container100 ui-fluid">
+            <div class="ContainerIndent">
+                <p:panel>
+                    <h:form id="frm">
+                       <!-- <div class="FontBold Fs18 hardblue" style="margin: 15px 10px">Listado Usuarios</div>-->
+                        <div class="Separator">
+                            <p:commandLink  value="Agregar Prospecto" oncomplete="PF('wdlgCrearProspecto').show();" style="font-size: 20px; "  styleClass="icon-plus-circled"/>
+                        </div>
+                       <p:spacer height="10"/>
+                       <p:dataTable id="uTable" value="#{cargarProspectoBean.listadoProspecto}" var="p" widgetVar="userTable" paginator="true" rows="10"
+                                     paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
+                                     paginatorPosition="bottom" filteredValue="#{cargarProspectoBean.filteredProspecto}"
+                                     rowsPerPageTemplate="5,10,15"  lazy="false">
+                            <f:facet name="header">
+                                <p:outputPanel style="text-align: right;">
+                                    <table>
+                                    <tr>
+                                        <td class="FontBold Fs18 hardwhite" style="border: none; text-align: left"><h:outputText value="Administrador de Prospectos" style="color: #ffffff" /></td>
+                                        <td style="border: none; text-align: right"><h:outputText value="Buscar: " style="text-align: right; color: #ffffff"/>
+                                    <p:inputText id="globalFilter" onkeyup="PF('userTable').filter()" style="width:150px" placeholder="Enter keyword"/></td>
+                                    </tr>
+                                </table>
+                                </p:outputPanel>
+                            </f:facet>
+                           <p:column headerText="Canal Captación" filterBy="#{p.descripcionCanal}" filterStyle="display:none" filterMatchMode="contains">
+                               <h:outputText value="#{p.descripcionCanal}"/>
+                            </p:column>
+                            <p:column headerText="Cédula" filterBy="#{p.cedula}" filterStyle="display:none" filterMatchMode="contains">
+                                <h:outputText value="#{p.cedula}"/>
+                            </p:column>
+                            <p:column headerText="Nombres" filterBy="#{p.nombres}" filterStyle="display:none" filterMatchMode="contains">
+                                <h:outputText value="#{p.nombres}"/>
+                            </p:column>
+                            <p:column headerText="Apellidos" filterBy="#{p.apellidos}" filterStyle="display:none" filterMatchMode="contains">
+                                <h:outputText value="#{p.apellidos}"/>
+                            </p:column>
+                           <p:column headerText="Celular" filterBy="#{p.celular}" filterStyle="display:none" filterMatchMode="contains">
+                               <h:outputText value="#{p.celular}"/>
+                            </p:column>
+                           <p:column headerText="Casa" filterBy="#{p.casa}" filterStyle="display:none" filterMatchMode="contains">
+                                <h:outputText value="#{p.casa}"/>
+                            </p:column>
+                            <p:column headerText="Email" filterBy="#{p.email}" filterStyle="display:none" filterMatchMode="contains">
+                                <h:outputText value="#{p.email}"/>
+                            </p:column>
+                           <p:column headerText="Establecimiento" filterBy="#{p.establecimientoProveniente}" filterStyle="display:none" filterMatchMode="contains">
+                               <h:outputText value="#{p.establecimientoProveniente}"/>
+                            </p:column>
+                           <p:column headerText="Responsable" filterBy="#{p.captador}" filterStyle="display:none" filterMatchMode="contains">
+                               <h:outputText value="#{p.captador}"/>
+                            </p:column>
+                           <!-- <p:column headerText="Rol">
+                                <p:inputSwitch />
+                            </p:column>-->
+                            <p:column  style="text-align: center">
+                                <i class="icon-edit">
+                                    <p:commandLink value="editar" actionListener="#{cargarProspectoBean.showEditDialog(p)}" oncomplete="PF('wdlgDatos').show();" update="dlgDatos"/>
+                                    <!-- <p:graphicImage name="images/ui-icon-trash.png" library="sentinel-layout"/>-->
+                                </i>   
+                                <i class="icon-trash-2">
+                                    <p:commandLink value="eliminar" actionListener="#{cargarProspectoBean.eliminar(p)}"  update=":frm:uTable" >
+                                        <p:confirm header="Confirmación" message="Está seguro de eliminar el registro" icon="ui-icon-alert" />
+                                    </p:commandLink>
+                                    <!-- <p:graphicImage name="images/ui-icon-trash.png" library="sentinel-layout"/>-->
+                                </i>
+                            </p:column>
+                        </p:dataTable>
+                    </h:form>
+
+                    <p:dialog id="dlgDatos" header="Editar Prospecto" widgetVar="wdlgDatos" modal="true" responsive="true">
+                        <h:form>
+                            <h:panelGrid columns="2">
+                                <p:outputLabel value="Canal Captación"/>
+                                <p:selectOneMenu id="canales" value="#{cargarProspectoBean.idCanalSelected}">
+                                    <f:selectItem itemLabel="Seleccionar.." itemValue="" />
+                                    <f:selectItems value="#{cargarProspectoBean.selectorCanal}" var="can" itemLabel="#{can.descripcion}" itemValue="#{can.idCanalCaptacion}" />
+                                </p:selectOneMenu>
+                                <p:outputLabel value="Cedula"/>
+                                <p:inputText value="#{cargarProspectoBean.prospecto.cedula}"/>
+                                <p:outputLabel value="Nombres"/>
+                                <p:inputText value="#{cargarProspectoBean.prospecto.nombres}"/>
+                                <p:outputLabel value="Apellidos"/>
+                                <p:inputText value="#{cargarProspectoBean.prospecto.apellidos}"/>
+                                <p:outputLabel value="Celular"/>
+                                <p:inputText value="#{cargarProspectoBean.prospecto.celular}"/>
+                                <p:outputLabel value="Casa"/>
+                                <p:inputText value="#{cargarProspectoBean.prospecto.casa}"/>
+                                <p:outputLabel value="Email"/>
+                                <p:inputText value="#{cargarProspectoBean.prospecto.email}"/>
+                                <p:outputLabel value="Establecimiento"/>
+                                <p:inputText value="#{cargarProspectoBean.prospecto.establecimientoProveniente}"/>
+                                <p:outputLabel value="Responsable"/>
+                                <p:inputText value="#{cargarProspectoBean.prospecto.captador}"/>
+                                
+                                <p:commandButton ajax="true" value="Editar" actionListener="#{cargarProspectoBean.commitEdit()}"  oncomplete="PF('wdlgDatos').hide();" update=":frm:uTable">
+                                    <p:confirm header="Confirmación" message="Está seguro de realizar esta acción" icon="ui-icon-alert" />
+                                </p:commandButton>
+                                <p:commandButton value="Cancelar" actionListener="#{cargarProspectoBean.onCancelDialog()}" immediate="true" oncomplete="PF('wdlgDatos').hide();"/>
+                            </h:panelGrid>
+                        </h:form>
+                    </p:dialog>
+                    <p:dialog id="dlgCrearUsuario" header="Crear Usuario" widgetVar="wdlgCrearProspecto" modal="true" responsive="true">
+                        <h:form>
+                            <h:panelGrid columns="2">
+                                <p:outputLabel value="Canal Captación"/>
+                                <p:selectOneMenu id="canal" value="#{cargarProspectoBean.idCanalSelected}">
+                                    <f:selectItem itemLabel="Seleccionar.." itemValue="" />
+                                    <f:selectItems value="#{cargarProspectoBean.selectorCanal}" var="can" itemLabel="#{can.descripcion}" itemValue="#{can.idCanalCaptacion}" />
+                                </p:selectOneMenu>
+                                <p:outputLabel value="Cédula"/>
+                                <p:inputText value="#{cargarProspectoBean.prospecto.cedula}"/>
+                                <p:outputLabel value="Nombres"/>
+                                <p:inputText value="#{cargarProspectoBean.prospecto.nombres}"/>
+                                <p:outputLabel value="Apellidos"/>
+                                <p:inputText value="#{cargarProspectoBean.prospecto.apellidos}"/>
+                                <p:outputLabel value="Celular"/>
+                                <p:inputText value="#{cargarProspectoBean.prospecto.celular}"/>
+                                <p:outputLabel value="Casa"/>
+                                <p:inputText value="#{cargarProspectoBean.prospecto.casa}"/>
+                                <p:outputLabel value="Email"/>
+                                <p:inputText value="#{cargarProspectoBean.prospecto.email}"/>
+                                <p:outputLabel value="Establecimiento"/>
+                                <p:inputText value="#{cargarProspectoBean.prospecto.establecimientoProveniente}"/>
+                                <p:outputLabel value="Responsable"/>
+                                <p:inputText value="#{cargarProspectoBean.prospecto.captador}"/>
+                                
+                                <p:commandButton ajax="true" actionListener="#{cargarProspectoBean.commitCreate()}" value="Crear" oncomplete="PF('wdlgCrearProspecto').hide();" update=":frm:uTable" >
+                                    <p:confirm header="Confirmación" message="Está seguro de realizar esta acción" icon="ui-icon-alert" />
+                                </p:commandButton>
+                                <p:commandButton value="Cancelar" actionListener="#{cargarProspectoBean.onCancelDialog()}" immediate="true" oncomplete="PF('wdlgCrearProspecto').hide();"/>
+                            </h:panelGrid>
+                        </h:form>
+                    </p:dialog>
+                    <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" >
+                        <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check fa fa-check Fs14 white" />
+                        <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close fa fa-close Fs14 white" />
+                    </p:confirmDialog>
+
+                </p:panel>
+            </div>
+        </div>
+    </ui:define>
+
+</ui:composition>

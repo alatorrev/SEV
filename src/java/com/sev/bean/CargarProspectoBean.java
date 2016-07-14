@@ -5,10 +5,14 @@
  */
 package com.sev.bean;
 
+import com.sev.dao.CanalDAO;
+import com.sev.dao.ProspectoDAO;
+import com.sev.entity.CanalCaptacion;
 import com.sev.entity.Prospecto;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -41,6 +45,10 @@ public class CargarProspectoBean implements Serializable {
     private UploadedFile file;
     private List<Prospecto> listadoProspecto = new ArrayList<>();
     private List<Prospecto> filteredProspecto;
+    private Prospecto prospecto = new Prospecto();
+    private ProspectoDAO daoProspecto = new ProspectoDAO();
+    private int idCanalSelected;
+    private List<CanalCaptacion> selectorCanal = new ArrayList<>();
 
     public void handleFileUpload(FileUploadEvent event) throws IOException {
         FacesContext facesContext = FacesContext.getCurrentInstance();
@@ -65,7 +73,15 @@ public class CargarProspectoBean implements Serializable {
         }
         setListadoProspecto(importData(workbook, 0));
     }
-
+    
+//    public void guardarListadoProspecto(){
+//        ProspectoDAO dao = new ProspectoDao();
+//        for (Prospecto prospecto : getListadoProspecto()) {
+//            dao.guardar(prospecto);
+//            
+//        }
+//    }
+    
     public List<Prospecto> importData(Workbook workbook, int tabNumber) throws IOException {
         List<Prospecto> lista = new ArrayList<>();
         String[][] data;
@@ -86,14 +102,20 @@ public class CargarProspectoBean implements Serializable {
                         case 0:
                             prospecto.setCanal(getDataFromCell(cell, i, j));
                         case 1:
-                            prospecto.setNombres(getDataFromCell(cell, i, j));
+                            prospecto.setCedula(getDataFromCell(cell, i, j));
                         case 2:
-                            prospecto.setApellidos(getDataFromCell(cell, i, j));
+                            prospecto.setNombres(getDataFromCell(cell, i, j));
                         case 3:
-                            prospecto.setEmail(getDataFromCell(cell, i, j));
+                            prospecto.setApellidos(getDataFromCell(cell, i, j));
                         case 4:
-                            prospecto.setEstablecimientoProveniente(getDataFromCell(cell, i, j));
+                            prospecto.setCelular(getDataFromCell(cell, i, j));
                         case 6:
+                            prospecto.setCasa(getDataFromCell(cell, i, j));
+                        case 7:
+                            prospecto.setEmail(getDataFromCell(cell, i, j));
+                        case 8:
+                            prospecto.setEstablecimientoProveniente(getDataFromCell(cell, i, j));
+                        case 9:
                             prospecto.setCaptador(getDataFromCell(cell, i, j));
                     }
                 } else {
@@ -101,14 +123,20 @@ public class CargarProspectoBean implements Serializable {
                         case 0:
                             prospecto.setCanal("");
                         case 1:
-                            prospecto.setNombres("");
+                            prospecto.setCedula("");
                         case 2:
-                            prospecto.setApellidos("");
+                            prospecto.setNombres("");
                         case 3:
-                            prospecto.setEmail("");
+                            prospecto.setApellidos("");
                         case 4:
-                            prospecto.setEstablecimientoProveniente("");
+                            prospecto.setCelular("");
                         case 6:
+                            prospecto.setCasa("");
+                        case 7:
+                            prospecto.setEmail("");
+                        case 8:
+                            prospecto.setEstablecimientoProveniente("");
+                        case 9:
                             prospecto.setCaptador("");
                     }
                 }
@@ -168,5 +196,69 @@ public class CargarProspectoBean implements Serializable {
     public void setFilteredProspecto(List<Prospecto> filteredProspecto) {
         this.filteredProspecto = filteredProspecto;
     }
+    
+     public CargarProspectoBean() throws SQLException {
+         CanalDAO daoCanal = new CanalDAO();
+        selectorCanal=daoCanal.findAll();
+        listadoProspecto = daoProspecto.findAll();
+    }
+     
+     public void showEditDialog(Prospecto p) {
+        prospecto = p;
+    }
 
+    public void onCancelDialog() {
+        setProspecto(new Prospecto());
+        setIdCanalSelected(0);
+    }
+
+    public void commitEdit() throws SQLException {
+        daoProspecto.editProspecto(prospecto);
+        listadoProspecto=daoProspecto.findAll();
+    }
+
+    public void commitCreate() throws SQLException {
+        prospecto.setIdcanal(idCanalSelected);
+        daoProspecto.createProspecto(prospecto);
+        listadoProspecto=daoProspecto.findAll();
+    }
+
+    public void eliminar(Prospecto p)throws SQLException {
+        daoProspecto.deleteProspecto(p);
+        listadoProspecto=daoProspecto.findAll();
+    }
+
+    public Prospecto getProspecto() {
+        return prospecto;
+    }
+
+    public void setProspecto(Prospecto prospecto) {
+        this.prospecto = prospecto;
+    }
+
+    public ProspectoDAO getDaoProspecto() {
+        return daoProspecto;
+    }
+
+    public void setDaoProspecto(ProspectoDAO daoProspecto) {
+        this.daoProspecto = daoProspecto;
+    }
+
+    public int getIdCanalSelected() {
+        return idCanalSelected;
+    }
+
+    public void setIdCanalSelected(int idCanalSelected) {
+        this.idCanalSelected = idCanalSelected;
+    }
+
+    public List<CanalCaptacion> getSelectorCanal() {
+        return selectorCanal;
+    }
+
+    public void setSelectorCanal(List<CanalCaptacion> selectorCanal) {
+        this.selectorCanal = selectorCanal;
+    }
+     
+    
 }
