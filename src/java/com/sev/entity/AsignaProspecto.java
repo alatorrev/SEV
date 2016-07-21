@@ -10,9 +10,9 @@ import java.util.Date;
 
 /**
  *
- * @author a_latorre
+ * @author usuario1
  */
-public class Prospecto implements Serializable {
+public class AsignaProspecto implements Serializable{
     private String canal;
     private String cedula;
     private String nombres;
@@ -25,8 +25,9 @@ public class Prospecto implements Serializable {
     Date fecha_creac;
     Date fecha_modif;
     private int idcanal;
+    
+    
     private String DescripcionCanal;
-    private boolean repeated=false;
 
     public String getCanal() {
         return canal;
@@ -43,7 +44,7 @@ public class Prospecto implements Serializable {
     public void setCedula(String cedula) {
         this.cedula = cedula;
     }
-    
+
     public String getNombres() {
         return nombres;
     }
@@ -100,22 +101,6 @@ public class Prospecto implements Serializable {
         this.captador = captador;
     }
 
-    public int getIdcanal() {
-        return idcanal;
-    }
-
-    public void setIdcanal(int idcanal) {
-        this.idcanal = idcanal;
-    }
-
-    public String getDescripcionCanal() {
-        return DescripcionCanal;
-    }
-
-    public void setDescripcionCanal(String DescripcionCanal) {
-        this.DescripcionCanal = DescripcionCanal;
-    }
-
     public Date getFecha_creac() {
         return fecha_creac;
     }
@@ -132,14 +117,21 @@ public class Prospecto implements Serializable {
         this.fecha_modif = fecha_modif;
     }
 
-    public boolean isRepeated() {
-        return repeated;
+    public int getIdcanal() {
+        return idcanal;
     }
 
-    public void setRepeated(boolean repeated) {
-        this.repeated = repeated;
+    public void setIdcanal(int idcanal) {
+        this.idcanal = idcanal;
     }
-    
+
+    public String getDescripcionCanal() {
+        return DescripcionCanal;
+    }
+
+    public void setDescripcionCanal(String DescripcionCanal) {
+        this.DescripcionCanal = DescripcionCanal;
+    }
     
     
 }

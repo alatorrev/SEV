@@ -35,15 +35,8 @@ public class UsuarioDAO implements Serializable {
             pst.setString(3, us.getApellidos());
             pst.setString(4, us.getEmail());
             pst.setString(5, us.getPassword());
-            
-//            String date = fmt.format(us.getFecha_crea());
-//            java.sql.Date dt = java.sql.Date.valueOf(new String(date));
             pst.setString(6, fmt.format(new Date()));
-            
-//            String date2 = fmt.format(us.getFecha_modif());
-//            java.sql.Date dt2 = java.sql.Date.valueOf(new String(date2));
             pst.setString(7, null/*for now lolz*/);
-            
             pst.setString(8, us.getPrioridad());
             pst.executeUpdate();
             

@@ -14,15 +14,19 @@ and open the template in the editor.
     margin-right: 5px;
 }
 
+.customfielddownload .ui-fluid .ui-button{
+    width: 20%;
+}
+
 .customFileUpload .ui-fileupload-buttonbar .ui-fileupload-choose input{
     position: absolute;
     top: 0;
-    right: 234px;
-    margin: 0;
+    right: 0px;
+    margin: 15;
     opacity: 0;
     filter: alpha(opacity=0);
     font-size: 23px;
     direction: ltr;
     cursor: pointer;
-    
+    width: 20%;
 }

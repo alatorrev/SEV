@@ -5,7 +5,6 @@
  */
 package com.sev.bean;
 
-import com.sev.dao.CanalDAO;
 import com.sev.dao.ProspectoDAO;
 import com.sev.entity.CanalCaptacion;
 import com.sev.entity.Prospecto;
@@ -15,16 +14,15 @@ import java.io.Serializable;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import org.apache.poi.hssf.usermodel.HSSFDateUtil;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
@@ -44,11 +42,16 @@ public class CargarProspectoBean implements Serializable {
 
     private UploadedFile file;
     private List<Prospecto> listadoProspecto = new ArrayList<>();
+    private List<Prospecto> listadoProspectoDB;
     private List<Prospecto> filteredProspecto;
     private Prospecto prospecto = new Prospecto();
     private ProspectoDAO daoProspecto = new ProspectoDAO();
     private int idCanalSelected;
     private List<CanalCaptacion> selectorCanal = new ArrayList<>();
+
+    public CargarProspectoBean() throws SQLException {
+        listadoProspectoDB = daoProspecto.findAll();
+    }
 
     public void handleFileUpload(FileUploadEvent event) throws IOException {
         FacesContext facesContext = FacesContext.getCurrentInstance();
@@ -71,17 +74,33 @@ public class CargarProspectoBean implements Serializable {
         } catch (IOException e) {
             facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error reading file" + e, null));
         }
-        setListadoProspecto(importData(workbook, 0));
+        //setListadoProspecto(verificarListadoExcelvsDB(importData(workbook, 0)));
+        verificarListadoExcel(verificarListadoExcel(importData(workbook, 0)));
     }
-    
-//    public void guardarListadoProspecto(){
-//        ProspectoDAO dao = new ProspectoDao();
-//        for (Prospecto prospecto : getListadoProspecto()) {
-//            dao.guardar(prospecto);
-//            
-//        }
-//    }
-    
+
+    public List<Prospecto> verificarListadoExcelvsDB(List<Prospecto> listadoXLS) {
+        List<Prospecto> lista = new ArrayList<>();
+        for (Prospecto p : listadoXLS) {
+            for (Prospecto db : listadoProspectoDB) {
+                if (p.getCedula().equals(db.getCedula())) {
+                    p.setRepeated(true);
+                    break;
+                }
+
+            }
+            lista.add(p);
+        }
+        return lista;
+    }
+
+    public List<Prospecto> verificarListadoExcel(List<Prospecto> listadoXLS) {
+        List<Prospecto> lista=new ArrayList();
+        if (new HashSet<>(listadoXLS).size()!= listadoXLS.size()) {
+            System.out.println("REPETIDO");
+        }
+        return  lista;
+    }
+
     public List<Prospecto> importData(Workbook workbook, int tabNumber) throws IOException {
         List<Prospecto> lista = new ArrayList<>();
         String[][] data;
@@ -100,44 +119,62 @@ public class CargarProspectoBean implements Serializable {
                 if (cell[i][j] != null) {
                     switch (j) {
                         case 0:
-                            prospecto.setCanal(getDataFromCell(cell, i, j));
-                        case 1:
                             prospecto.setCedula(getDataFromCell(cell, i, j));
+                            break;
+                        case 1:
+                            prospecto.setDescripcionCanal(getDataFromCell(cell, i, j));
+                            break;
                         case 2:
                             prospecto.setNombres(getDataFromCell(cell, i, j));
+                            break;
                         case 3:
                             prospecto.setApellidos(getDataFromCell(cell, i, j));
+                            break;
                         case 4:
                             prospecto.setCelular(getDataFromCell(cell, i, j));
-                        case 6:
+                            break;
+                        case 5:
                             prospecto.setCasa(getDataFromCell(cell, i, j));
-                        case 7:
+                            break;
+                        case 6:
                             prospecto.setEmail(getDataFromCell(cell, i, j));
-                        case 8:
+                            break;
+                        case 7:
                             prospecto.setEstablecimientoProveniente(getDataFromCell(cell, i, j));
-                        case 9:
+                            break;
+                        case 8:
                             prospecto.setCaptador(getDataFromCell(cell, i, j));
+                            break;
                     }
                 } else {
                     switch (j) {
                         case 0:
-                            prospecto.setCanal("");
-                        case 1:
                             prospecto.setCedula("");
+                            break;
+                        case 1:
+                            prospecto.setDescripcionCanal("");
+                            break;
                         case 2:
                             prospecto.setNombres("");
+                            break;
                         case 3:
                             prospecto.setApellidos("");
+                            break;
                         case 4:
                             prospecto.setCelular("");
+                            break;
                         case 6:
                             prospecto.setCasa("");
+                            break;
                         case 7:
                             prospecto.setEmail("");
+                            break;
                         case 8:
                             prospecto.setEstablecimientoProveniente("");
+                            break;
                         case 9:
                             prospecto.setCaptador("");
+                            break;
                     }
                 }
             }
@@ -145,6 +182,13 @@ public class CargarProspectoBean implements Serializable {
         }
 
         return lista;
+    }
+
+    public void guardarListadoProspecto() throws SQLException {
+        ProspectoDAO dao = new ProspectoDAO();
+        for (Prospecto prospecto : getListadoProspecto()) {
+            dao.guardarProspecto(prospecto);
+        }
     }
 
     public String getDataFromCell(Cell[][] cell, int i, int j) {
@@ -196,37 +240,6 @@ public class CargarProspectoBean implements Serializable {
     public void setFilteredProspecto(List<Prospecto> filteredProspecto) {
         this.filteredProspecto = filteredProspecto;
     }
-    
-     public CargarProspectoBean() throws SQLException {
-         CanalDAO daoCanal = new CanalDAO();
-        selectorCanal=daoCanal.findAll();
-        listadoProspecto = daoProspecto.findAll();
-    }
-     
-     public void showEditDialog(Prospecto p) {
-        prospecto = p;
-    }
-
-    public void onCancelDialog() {
-        setProspecto(new Prospecto());
-        setIdCanalSelected(0);
-    }
-
-    public void commitEdit() throws SQLException {
-        daoProspecto.editProspecto(prospecto);
-        listadoProspecto=daoProspecto.findAll();
-    }
-
-    public void commitCreate() throws SQLException {
-        prospecto.setIdcanal(idCanalSelected);
-        daoProspecto.createProspecto(prospecto);
-        listadoProspecto=daoProspecto.findAll();
-    }
-
-    public void eliminar(Prospecto p)throws SQLException {
-        daoProspecto.deleteProspecto(p);
-        listadoProspecto=daoProspecto.findAll();
-    }
 
     public Prospecto getProspecto() {
         return prospecto;
@@ -234,14 +247,6 @@ public class CargarProspectoBean implements Serializable {
 
     public void setProspecto(Prospecto prospecto) {
         this.prospecto = prospecto;
-    }
-
-    public ProspectoDAO getDaoProspecto() {
-        return daoProspecto;
-    }
-
-    public void setDaoProspecto(ProspectoDAO daoProspecto) {
-        this.daoProspecto = daoProspecto;
     }
 
     public int getIdCanalSelected() {
@@ -259,6 +264,5 @@ public class CargarProspectoBean implements Serializable {
     public void setSelectorCanal(List<CanalCaptacion> selectorCanal) {
         this.selectorCanal = selectorCanal;
     }
-     
-    
+
 }

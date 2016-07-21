@@ -16,18 +16,18 @@
                     <h:form id="frm">
                        <!-- <div class="FontBold Fs18 hardblue" style="margin: 15px 10px">Listado Usuarios</div>-->
                         <div class="Separator">
-                            <p:commandLink  value="Agregar Prospecto" oncomplete="PF('wdlgCrearProspecto').show();" style="font-size: 20px; "  styleClass="icon-plus-circled"/>
+                            <p:commandLink  value="Asigna Prospecto a Ejecutivo" oncomplete="PF('wdlgCrearProspecto').show();" style="font-size: 20px; "  styleClass="icon-plus-circled"/>
                         </div>
                        <p:spacer height="10"/>
-                       <p:dataTable id="uTable" value="#{prospectoBean.listadoProspecto}" var="p" widgetVar="userTable" paginator="true" rows="10"
+                       <p:dataTable id="uTable" value="#{asignaProspectoBean.listadoProspecto}" var="p" widgetVar="userTable" paginator="true" rows="10"
                                      paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
-                                     paginatorPosition="bottom" filteredValue="#{prospectoBean.filteredProspecto}"
+                                     paginatorPosition="bottom" filteredValue="#{asignaProspectoBean.filteredProspecto}"
                                      rowsPerPageTemplate="5,10,15"  lazy="false">
                             <f:facet name="header">
                                 <p:outputPanel style="text-align: right;">
                                     <table>
                                     <tr>
-                                        <td class="FontBold Fs18 hardwhite" style="border: none; text-align: left"><h:outputText value="Administrador de Prospectos" style="color: #ffffff" /></td>
+                                        <td class="FontBold Fs18 hardwhite" style="border: none; text-align: left"><h:outputText value="Administrador de Asignaciones" style="color: #ffffff" /></td>
                                         <td style="border: none; text-align: right"><h:outputText value="Buscar: " style="text-align: right; color: #ffffff"/>
                                     <p:inputText id="globalFilter" onkeyup="PF('userTable').filter()" style="width:150px" placeholder="Enter keyword"/></td>
                                     </tr>
@@ -46,27 +46,22 @@
                             <p:column headerText="Apellidos" filterBy="#{p.apellidos}" filterStyle="display:none" filterMatchMode="contains">
                                 <h:outputText value="#{p.apellidos}"/>
                             </p:column>
-                           <p:column headerText="Celular" filterBy="#{p.celular}" filterStyle="display:none" filterMatchMode="contains">
-                               <h:outputText value="#{p.celular}"/>
-                            </p:column>
-                           <p:column headerText="Casa" filterBy="#{p.casa}" filterStyle="display:none" filterMatchMode="contains">
-                                <h:outputText value="#{p.casa}"/>
-                            </p:column>
-                            <p:column headerText="Email" filterBy="#{p.email}" filterStyle="display:none" filterMatchMode="contains">
-                                <h:outputText value="#{p.email}"/>
-                            </p:column>
+                           
                            <p:column headerText="Establecimiento" filterBy="#{p.establecimientoProveniente}" filterStyle="display:none" filterMatchMode="contains">
                                <h:outputText value="#{p.establecimientoProveniente}"/>
                             </p:column>
                            <p:column headerText="Responsable" filterBy="#{p.captador}" filterStyle="display:none" filterMatchMode="contains">
                                <h:outputText value="#{p.captador}"/>
                             </p:column>
+                           <p:column headerText="Fecha Creación" filterBy="#{p.fecha_creac}" filterStyle="display:none" filterMatchMode="contains">
+                               <h:outputText value="#{p.fecha_creac}"/>
+                            </p:column>
                             <p:column  style="text-align: center">
                                 <i class="icon-edit">
-                                    <p:commandLink value="editar" actionListener="#{prospectoBean.showEditDialog(p)}" oncomplete="PF('wdlgDatos').show();" update="dlgDatos"/>
+                                    <p:commandLink value="editar" actionListener="#{asignaProspectoBean.showEditDialog(p)}" oncomplete="PF('wdlgDatos').show();" update="dlgDatos"/>
                                 </i>   
                                 <i class="icon-trash-2">
-                                    <p:commandLink value="eliminar" actionListener="#{prospectoBean.eliminar(p)}"  update=":frm:uTable" >
+                                    <p:commandLink value="eliminar" actionListener="#{asignaProspectoBean.eliminar(p)}"  update=":frm:uTable" >
                                         <p:confirm header="Confirmación" message="Está seguro de eliminar el registro" icon="ui-icon-alert" />
                                     </p:commandLink>
                                 </i>
@@ -78,60 +73,50 @@
                         <h:form>
                             <h:panelGrid columns="2">
                                 <p:outputLabel value="Canal Captación"/>
-                                <p:selectOneMenu id="canales" value="#{prospectoBean.prospecto.idcanal}">
-                                    <f:selectItems value="#{prospectoBean.selectorCanal}" var="can" itemLabel="#{can.descripcion}" itemValue="#{can.idCanalCaptacion}" />
+                                <p:selectOneMenu id="canales" value="#{asignaProspectoBean.aprospecto.idcanal}">
+                                    <f:selectItems value="#{asignaProspectoBean.selectorCanal}" var="can" itemLabel="#{can.descripcion}" itemValue="#{can.idCanalCaptacion}" />
                                 </p:selectOneMenu>
                                 <p:outputLabel value="Nombres"/>
-                                <p:inputText value="#{prospectoBean.prospecto.nombres}"/>
+                                <p:inputText value="#{asignaProspectoBean.aprospecto.nombres}"/>
                                 <p:outputLabel value="Apellidos"/>
-                                <p:inputText value="#{prospectoBean.prospecto.apellidos}"/>
+                                <p:inputText value="#{asignaProspectoBean.aprospecto.apellidos}"/>
                                 <p:outputLabel value="Celular"/>
-                                <p:inputText value="#{prospectoBean.prospecto.celular}"/>
+                                <p:inputText value="#{asignaProspectoBean.aprospecto.celular}"/>
                                 <p:outputLabel value="Casa"/>
-                                <p:inputText value="#{prospectoBean.prospecto.casa}"/>
+                                <p:inputText value="#{asignaProspectoBean.aprospecto.casa}"/>
                                 <p:outputLabel value="Email"/>
-                                <p:inputText value="#{prospectoBean.prospecto.email}"/>
+                                <p:inputText value="#{asignaProspectoBean.aprospecto.email}"/>
                                 <p:outputLabel value="Establecimiento"/>
-                                <p:inputText value="#{prospectoBean.prospecto.establecimientoProveniente}"/>
+                                <p:inputText value="#{asignaProspectoBean.aprospecto.establecimientoProveniente}"/>
                                 <p:outputLabel value="Responsable"/>
-                                <p:inputText value="#{prospectoBean.prospecto.captador}"/>
+                                <p:inputText value="#{asignaProspectoBean.aprospecto.captador}"/>
                                 
-                                <p:commandButton ajax="true" value="Editar" actionListener="#{prospectoBean.commitEdit()}"  oncomplete="PF('wdlgDatos').hide();" update=":frm:uTable">
+                                <p:commandButton ajax="true" value="Editar" actionListener="#{asignaProspectoBean.commitEdit()}"  oncomplete="PF('wdlgDatos').hide();" update=":frm:uTable">
                                     <p:confirm header="Confirmación" message="Está seguro de realizar esta acción" icon="ui-icon-alert" />
                                 </p:commandButton>
-                                <p:commandButton value="Cancelar" actionListener="#{prospectoBean.onCancelDialog()}" immediate="true" oncomplete="PF('wdlgDatos').hide();"/>
+                                <p:commandButton value="Cancelar" actionListener="#{asignaProspectoBean.onCancelDialog()}" immediate="true" oncomplete="PF('wdlgDatos').hide();"/>
                             </h:panelGrid>
                         </h:form>
                     </p:dialog>
-                    <p:dialog id="dlgCrearUsuario" header="Crear Usuario" widgetVar="wdlgCrearProspecto" modal="true" responsive="true">
+                    <p:dialog id="dlgCrearUsuario" header="Crear Usuario" widgetVar="wdlgCrearProspecto" modal="true" responsive="true" >
                         <h:form>
                             <h:panelGrid columns="2">
-                                <p:outputLabel value="Canal Captación"/>
-                                <p:selectOneMenu id="canal" value="#{prospectoBean.idCanalSelected}">
+                                <p:outputLabel value="Prospecto"/>
+                                <p:selectOneMenu id="prospecto" value="#{asignaProspectoBean.cedulaSelectedPros}" filter="true" style="width: 200%">
                                     <f:selectItem itemLabel="Seleccionar.." itemValue="" />
-                                    <f:selectItems value="#{prospectoBean.selectorCanal}" var="can" itemLabel="#{can.descripcion}" itemValue="#{can.idCanalCaptacion}" />
+                                    <f:selectItems value="#{asignaProspectoBean.listadoProspecto}" var="can" itemLabel="#{can.nombres} #{can.apellidos} " itemValue="#{can.cedula}"  />
                                 </p:selectOneMenu>
-                                <p:outputLabel value="Cédula"/>
-                                <p:inputText value="#{prospectoBean.prospecto.cedula}"/>
-                                <p:outputLabel value="Nombres"/>
-                                <p:inputText value="#{prospectoBean.prospecto.nombres}"/>
-                                <p:outputLabel value="Apellidos"/>
-                                <p:inputText value="#{prospectoBean.prospecto.apellidos}"/>
-                                <p:outputLabel value="Celular"/>
-                                <p:inputText value="#{prospectoBean.prospecto.celular}"/>
-                                <p:outputLabel value="Casa"/>
-                                <p:inputText value="#{prospectoBean.prospecto.casa}"/>
-                                <p:outputLabel value="Email"/>
-                                <p:inputText value="#{prospectoBean.prospecto.email}"/>
-                                <p:outputLabel value="Establecimiento"/>
-                                <p:inputText value="#{prospectoBean.prospecto.establecimientoProveniente}"/>
-                                <p:outputLabel value="Responsable"/>
-                                <p:inputText value="#{prospectoBean.prospecto.captador}"/>
                                 
-                                <p:commandButton ajax="true" actionListener="#{prospectoBean.commitCreate()}" value="Crear" oncomplete="PF('wdlgCrearProspecto').hide();" update=":frm:uTable" >
+                                <p:outputLabel value="Ejecutivo"/>
+                                <p:selectOneMenu id="ejecutivo" value="#{asignaProspectoBean.cedulaSelectedUsua}" filter="true" style="width: 200%">
+                                    <f:selectItem itemLabel="Seleccionar.." itemValue="" />
+                                    <f:selectItems value="#{asignaProspectoBean.listadoUsuarios}" var="usu" itemLabel="#{usu.nombres} #{usu.apellidos} " itemValue="#{usu.cedula}"  />
+                                </p:selectOneMenu>
+                                
+                                <p:commandButton ajax="true" actionListener="#{asignaProspectoBean.commitCreate()}" value="Asignar" oncomplete="PF('wdlgCrearProspecto').hide();" update=":frm:uTable" >
                                     <p:confirm header="Confirmación" message="Está seguro de realizar esta acción" icon="ui-icon-alert" />
                                 </p:commandButton>
-                                <p:commandButton value="Cancelar" actionListener="#{prospectoBean.onCancelDialog()}" immediate="true" oncomplete="PF('wdlgCrearProspecto').hide();"/>
+                                <p:commandButton value="Cancelar" actionListener="#{asignaProspectoBean.onCancelDialog()}" immediate="true" oncomplete="PF('wdlgCrearProspecto').hide();"/>
                             </h:panelGrid>
                         </h:form>
                     </p:dialog>
@@ -144,5 +129,4 @@
             </div>
         </div>
     </ui:define>
-
 </ui:composition>

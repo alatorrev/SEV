@@ -56,14 +56,15 @@ public class ProspectoDAO implements Serializable{
     }
     
     public void createProspecto(Prospecto pro) throws SQLException {
+        SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd");
         Conexion con = new Conexion();
         con.getConnection().setAutoCommit(false);
         PreparedStatement pst;
-        String query = "insert into prospecto values(?,?,?,?,?,?,?,?,?)";
+        String query = "insert into prospecto values(?,?,?,?,?,?,?,?,?,?,?)";
         pst = con.getConnection().prepareStatement(query);
         try {
-            pst.setInt(1, pro.getIdcanal());
-            pst.setString(2, pro.getCedula());
+            pst.setString(1, pro.getCedula());
+            pst.setInt(2, pro.getIdcanal());
             pst.setString(3, pro.getNombres());
             pst.setString(4, pro.getApellidos());
             pst.setString(5, pro.getCelular());
@@ -71,6 +72,9 @@ public class ProspectoDAO implements Serializable{
             pst.setString(7, pro.getEmail());
             pst.setString(8, pro.getEstablecimientoProveniente());
             pst.setString(9, pro.getCaptador());
+            pst.setString(10, fmt.format(new Date()));
+            pst.setString(11, null/*for now lolz*/);
+            
             pst.executeUpdate(); 
 //            ResultSet rs = pst.getGeneratedKeys();
 //
@@ -87,22 +91,23 @@ public class ProspectoDAO implements Serializable{
     }
     
     public void editProspecto(Prospecto p) throws SQLException {
+        SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd");
         Conexion con = new Conexion();
         PreparedStatement pst;
-        String query = "update prospecto set idcancap=?,cedula=?,nombres=?,apellidos=?,celular=?,casa=?,correo=?, establecimiento=?, responsable=? "
-                + " where idprospecto=?";
+        String query = "update prospecto set idcancap=?,nombres=?,apellidos=?,celular=?,casa=?,correo=?, establecimiento=?, responsable=?, fecha_modif=?"
+                + " where cedula=?";
         pst = con.getConnection().prepareStatement(query);
         try {
             pst.setInt(1, p.getIdcanal());
-            pst.setString(2, p.getCedula());
-            pst.setString(3, p.getNombres());
-            pst.setString(4, p.getApellidos());
-            pst.setString(5, p.getCelular());
-            pst.setString(6, p.getCasa());
-            pst.setString(7, p.getEmail());
-            pst.setString(8, p.getEstablecimientoProveniente());
-            pst.setString(9, p.getCaptador());
-            pst.setInt(10, p.getIdprospecto());
+            pst.setString(2, p.getNombres());
+            pst.setString(3, p.getApellidos());
+            pst.setString(4, p.getCelular());
+            pst.setString(5, p.getCasa());
+            pst.setString(6, p.getEmail());
+            pst.setString(7, p.getEstablecimientoProveniente());
+            pst.setString(8, p.getCaptador());
+            pst.setString(9, fmt.format(new Date()));
+            pst.setString(10, p.getCedula());
             pst.executeUpdate();
         } catch (Exception e) {
             System.out.println("DAO PROSPECTO: " + e.getMessage());
@@ -121,6 +126,38 @@ public class ProspectoDAO implements Serializable{
             pst.executeUpdate();
         } catch (Exception e) {
             System.out.println("DAO PROSPECTO: " + e.getMessage());
+        } finally {
+            con.desconectar();
+        }
+    }
+    
+     public void guardarProspecto(Prospecto pros) throws SQLException {
+        SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd");
+        Conexion con = new Conexion();
+        con.getConnection().setAutoCommit(false);
+        PreparedStatement pst;
+        String query = "insert into PROSPECTO" +
+                       "(cedula,idcancap,nombres,apellidos,celular,casa,correo,establecimiento,responsable, fecha_creac, fecha_modif)" +
+                       "values (?,(select IDCANAL from CANALCAPTACION where DESCRIPCION =?), ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        //String query = "insert into prospecto values(?,?,?,?,?,?,?,?,?)";
+        pst = con.getConnection().prepareStatement(query);
+        try {
+            pst.setString(1, pros.getCedula());
+            pst.setString(2, pros.getDescripcionCanal());
+            pst.setString(3, pros.getNombres());
+            pst.setString(4, pros.getApellidos());
+            pst.setString(5, pros.getCelular());
+            pst.setString(6, pros.getCasa());
+            pst.setString(7, pros.getEmail());
+            pst.setString(8, pros.getEstablecimientoProveniente());
+            pst.setString(9, pros.getCaptador());
+            pst.setString(10, fmt.format(new Date()));
+            pst.setString(11, null/*for now lolz*/);
+            pst.executeUpdate(); 
+            con.getConnection().commit();
+        } catch (Exception e) {
+            System.out.println("DAO PROSPECTOCARGA: " + e.getMessage());
+            con.getConnection().rollback();
         } finally {
             con.desconectar();
         }
