@@ -13,6 +13,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import sqlserver.Conexion;
 
 /**
@@ -21,14 +23,14 @@ import sqlserver.Conexion;
  */
 public class RolDAO implements Serializable {
 
-    public List<Rol> findAll() throws SQLException {
+    public List<Rol> findAll() {
         Conexion con = new Conexion();
         List<Rol> listadoRoles = new ArrayList<>();
         PreparedStatement pst;
         ResultSet rs = null;
         String query = "select * from rol";
-        pst = con.getConnection().prepareStatement(query);
         try {
+            pst = con.getConnection().prepareStatement(query);
             rs = pst.executeQuery();
             while (rs.next()) {
                 Rol rol = new Rol();
@@ -39,7 +41,11 @@ public class RolDAO implements Serializable {
         } catch (Exception e) {
             System.out.println("DAO ROL: " + e.getMessage());
         } finally {
-            con.desconectar();
+            try {
+                con.desconectar();
+            } catch (SQLException ex) {
+                Logger.getLogger(RolDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
         return listadoRoles;
     }

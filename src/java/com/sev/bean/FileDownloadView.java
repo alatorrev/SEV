@@ -7,11 +7,13 @@ package com.sev.bean;
  
 import java.io.InputStream;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
  
 @ManagedBean
+@ViewScoped
 public class FileDownloadView {
      
     private StreamedContent file;

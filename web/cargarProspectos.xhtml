@@ -16,12 +16,12 @@
                         <p:growl id="tt" showDetail="true"/>
                         <p:fileUpload update="prospectoTable"
                                       sizeLimit="1000000" 
-                                      styleClass="customFileUpload"
-                                      
+                                      styleClass="customFileUpload customUploadGrid"
+
                                       fileUploadListener="#{cargarProspectoBean.handleFileUpload}" mode="advanced"
                                       allowTypes="/(\.|\/)(xls|xlsx)$/" />
                         <!-- FIN BOTON SUBIDA-->
-                        
+
                         <!-- BOTON DESCARGA -->
                         <p:dialog modal="true" 
                                   widgetVar="statusDialog" 
@@ -33,25 +33,24 @@
                                   >
                             <p:graphicImage name="/demo/images/ajaxloadingbar.gif" />
                         </p:dialog>
-                        <p:commandButton value="Descargar Matriz" 
-                                         ajax="false" 
-                                         onclick="PrimeFaces.monitorDownload(start, stop);" 
-                                         icon="ui-icon-arrowthick-1-s"
-                                         styleClass="customButton"
-                                         style="width: 20%">
-                            <p:fileDownload value="#{fileDownloadView.file}" />
-                        </p:commandButton>
-                        
+                            <p:commandButton value="Descargar Matriz" 
+                                             ajax="false" 
+                                             onclick="PrimeFaces.monitorDownload(start, stop);" 
+                                             icon="fa fa-download white Fs16"
+                                             styleClass="customButton"
+                                             style="width: 20%">
+                                <p:fileDownload value="#{fileDownloadView.file}" />
+                            </p:commandButton>
                         <script type="text/javascript">
                             function start() {
-                            PF('statusDialog').show();
+                                PF('statusDialog').show();
                             }
                             function stop() {
                                 PF('statusDialog').hide();
                             }
                         </script>
                         <!-- FIN BOTON DESCARGA-->
-                        
+
                         <p:dataTable id="prospectoTable" value="#{cargarProspectoBean.listadoProspecto}" var="prospecto" widgetVar="prospTable" paginator="true" rows="10"
                                      paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
                                      paginatorPosition="bottom" filteredValue="#{cargarProspectoBean.filteredProspecto}"
@@ -108,7 +107,7 @@
                                 </i>
                             </p:column>-->
                         </p:dataTable>
-                        
+
                         <p:commandButton styleClass="" style="position: relative; left: 450px; top: 5px; width: 20%" value="Guardar" actionListener="#{cargarProspectoBean.guardarListadoProspecto()}"/>
                     </h:form>
                 </p:panel>

@@ -34,7 +34,7 @@ import org.primefaces.model.UploadedFile;
 
 /**
  *
- * @author HOEM
+ * @author Axel Latorre, Jorge Castañeda
  */
 @ManagedBean
 @ViewScoped
