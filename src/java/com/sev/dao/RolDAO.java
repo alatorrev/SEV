@@ -6,7 +6,6 @@
 package com.sev.dao;
 
 import com.sev.entity.Rol;
-import com.sev.entity.Usuario;
 import java.io.Serializable;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -15,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import sqlserver.Conexion;
+import com.sev.conexion.Conexion;
 
 /**
  *

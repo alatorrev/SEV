@@ -13,7 +13,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import sqlserver.Conexion;
+import com.sev.conexion.Conexion;
 
 /**
  *

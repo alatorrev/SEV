@@ -12,7 +12,7 @@
             <div class="ContainerIndent">
                 <p:panel>
                     <h:form id="frm">
-                        <p:outputPanel id="customPanel">
+                        <p:outputPanel id="customPanel" >
                             <p:selectOneRadio id="tipoEntidad" layout="custom" value="#{asignarRecursoBean.entityValue}">
                                 <f:selectItem  itemLabel="usuario" itemValue="usuario" />
                                 <f:selectItem  itemLabel="roles" itemValue="roles"/>
@@ -46,36 +46,41 @@
                                 <f:selectItem itemLabel="Seleccionar..." itemValue="0"/>
                                 <f:selectItems value="#{asignarRecursoBean.listaRol}" var="rol" 
                                                itemLabel="#{rol.descripcion}" itemValue="#{rol.idRol}"/>
+                                <p:ajax event="itemSelect"  listener="#{asignarRecursoBean.obtenerPermisosRol()}" update="@form" oncomplete="PF('recursoTable').clearFilters();"/>
                             </p:selectOneMenu>
                         </h:panelGrid>
-                        <p:dataTable id="prospectoTable" value="#{cargarProspectoBean.listadoProspecto}" var="resource" widgetVar="resource" paginator="true" rows="10"
+                        <p:dataTable id="resourceTable" value="#{asignarRecursoBean.listadoPermisos}" var="recurso" widgetVar="recursoTable" rows="10"
                                      paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
-                                     paginatorPosition="bottom">
+                                     paginatorPosition="bottom" filteredValue="#{asignarRecursoBean.filteredAccess}" lazy="false">
                             <f:facet name="header">
                                 <p:outputPanel style="text-align: right;">
                                     <table>
                                         <tr>
                                             <td class="FontBold Fs18 hardwhite" style="border: none; text-align: left"><h:outputText value="Asignar Recursos" style="color: #ffffff" /></td>
                                             <td style="border: none; text-align: right"><h:outputText value="Buscar: " style="text-align: right; color: #ffffff"/>
-                                                <p:inputText id="globalFilter" onkeyup="PF('resource').filter()" style="width:150px" placeholder="Enter keyword"/></td>
+                                                <p:inputText id="globalFilter" onkeyup="PF('recursoTable').filter()" style="width:150px" placeholder="Enter keyword"/></td>
                                         </tr>
                                     </table>
                                 </p:outputPanel>
                             </f:facet>
-                            <p:column headerText="Cedula" filterBy="#{resource.cedula}" filterStyle="display:none" filterMatchMode="contains" rendered="#{asignarRecursoBean.hidefilter}">
-                                <h:outputText value="#{resource.cedula}"/>
-                            </p:column>
-                            <p:column headerText="Rol">
-
-                            </p:column>
-                            <p:column headerText="Recurso">
-
+                            <p:column headerText="Recurso" filterBy="#{recurso.descripcionRecurso}" filterStyle="display:none" filterMatchMode="contains">
+                                <p:outputLabel value="#{recurso.descripcionRecurso}"/>
                             </p:column>
                             <p:column headerText="Asignado">
-                                <p:inputSwitch/>
+                                <p:selectBooleanCheckbox value="#{recurso.estado}"/>
                             </p:column>
                         </p:dataTable>
+                        <p:commandButton ajax="true" update="@form" 
+                                         style="position: relative; left: 450px; top: 5px; width: 20%" 
+                                         value="Guardar" actionListener="#{asignarRecursoBean.guardarPermisos()}"
+                                         oncomplete="PF('recursoTable').clearFilters();">
+                            <p:confirm header="Confirmación" message="Está seguro de realizar esta acción" icon="ui-icon-alert" />
+                        </p:commandButton>
                     </h:form>
+                    <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" >
+                        <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check fa fa-check Fs14 white" />
+                        <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close fa fa-close Fs14 white" />
+                    </p:confirmDialog>
                 </p:panel>
             </div>
         </div>

@@ -4,17 +4,12 @@
  * and open the template in the editor.
  */
 package com.sev.dao;
-import com.sev.entity.ReestablecerContra;
 import com.sev.entity.Usuario;
 import com.sev.entity.CambiarContrasena;
-import com.sev.bean.CambiarBean;
 import java.io.Serializable;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import sqlserver.Conexion;
+import com.sev.conexion.Conexion;
 /**
  */
 /**

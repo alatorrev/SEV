@@ -4,17 +4,14 @@
  * and open the template in the editor.
  */
 package com.sev.dao;
-import com.sev.entity.CanalCaptacion;
 import com.sev.entity.InteresProspecto;
-import com.sev.entity.Rol;
-import com.sev.entity.Usuario;
 import java.io.Serializable;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import sqlserver.Conexion;
+import com.sev.conexion.Conexion;
 
 /**
  *

@@ -13,7 +13,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import sqlserver.Conexion;
+import com.sev.conexion.Conexion;
 
 /**
  *
@@ -26,7 +26,10 @@ public class RecursoDAO implements Serializable {
         List<Recurso> lista = new ArrayList<>();
         PreparedStatement pst;
         ResultSet rs = null;
-        String query = "select * from recurso where IDROL=?";
+        String query = "SELECT RE.IDRECURSO,R.IDROL,RE.ITEM_LABEL,RE.SUBITEM_LABEL,RE.RUTA,RE.ITEM_ICON,RE.SUBITEM_ICON "
+                + "FROM ROL R INNER JOIN RECURSOROL RR ON R.IDROL=RR.IDROL "
+                + "INNER JOIN RECURSO RE ON RR.IDRECURSO=RE.IDRECURSO "
+                + "WHERE R.IDROL=? AND RR.ESTADO=1";
         pst = con.getConnection().prepareStatement(query);
         try {
             pst.setInt(1, u.getIdRol());
