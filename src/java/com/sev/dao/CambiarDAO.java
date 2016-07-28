@@ -7,6 +7,7 @@ package com.sev.dao;
 import com.sev.entity.ReestablecerContra;
 import com.sev.entity.Usuario;
 import com.sev.entity.CambiarContrasena;
+import com.sev.bean.CambiarBean;
 import java.io.Serializable;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -22,14 +23,16 @@ import sqlserver.Conexion;
  */
 public class CambiarDAO implements Serializable{
     
-    public void editCambiar(CambiarContrasena ca) throws SQLException {
+    public void editCambiar(CambiarContrasena ca, Usuario u) throws SQLException {
         Conexion con = new Conexion();
+        
         PreparedStatement pst;
         String query = "update usuario set clave=?"
                 + " where cedula=? ";
         pst = con.getConnection().prepareStatement(query);
         try {
             pst.setString(1, ca.getPassword());
+            pst.setString(2, u.getCedula());
             
             pst.executeUpdate();
         } catch (Exception e) {

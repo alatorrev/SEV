@@ -25,6 +25,7 @@ public class AsignaProspecto implements Serializable{
     Date fecha_creac;
     Date fecha_modif;
     private int idcanal;
+    private String ejecutivo;
     
     
     private String DescripcionCanal;
@@ -132,6 +133,15 @@ public class AsignaProspecto implements Serializable{
     public void setDescripcionCanal(String DescripcionCanal) {
         this.DescripcionCanal = DescripcionCanal;
     }
+
+    public String getEjecutivo() {
+        return ejecutivo;
+    }
+
+    public void setEjecutivo(String ejecutivo) {
+        this.ejecutivo = ejecutivo;
+    }
+    
     
     
 }

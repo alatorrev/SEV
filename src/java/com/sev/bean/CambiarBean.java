@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
 /**
  *
  * @author usuario1
@@ -28,9 +29,17 @@ import javax.faces.bean.ViewScoped;
 public class CambiarBean implements Serializable{
     private CambiarContrasena cambiar = new CambiarContrasena();
     private CambiarDAO daoCambiar = new CambiarDAO();
+    private Usuario u = new Usuario();
+    
+
+    public CambiarBean() {
+        u = (Usuario) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("Usuario");
+    }
+    
+    
     
     public void commitEdit() throws SQLException {
-        daoCambiar.editCambiar(cambiar);
+        daoCambiar.editCambiar(cambiar,u);
     }
 
     public CambiarContrasena getCambiar() {

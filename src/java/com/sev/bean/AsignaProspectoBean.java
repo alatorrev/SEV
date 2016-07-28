@@ -27,6 +27,10 @@ import javax.faces.bean.ViewScoped;
 public class AsignaProspectoBean implements Serializable{
     private List<AsignaProspecto> listadoProspecto = new ArrayList<>();
     private List<AsignaProspecto> filteredProspecto;
+    
+    private List<AsignaProspecto> listadoProspectosSin = new ArrayList<>();
+    private List<AsignaProspecto> filteredProspectoSin;
+    
     private AsignaProspecto Aprospecto = new AsignaProspecto();
     private AsignaProspectoDAO daoAsignaProspecto = new AsignaProspectoDAO();
     
@@ -45,6 +49,7 @@ public class AsignaProspectoBean implements Serializable{
         selectorCanal=daoCanal.findAll();
         listadoProspecto = daoAsignaProspecto.findAll();
         listadoUsuarios = daoUsuario.findAll();
+        listadoProspectosSin = daoAsignaProspecto.findAllSin();
     }
     
      public void commitCreate() throws SQLException {
@@ -52,8 +57,20 @@ public class AsignaProspectoBean implements Serializable{
         usuario.setCedula(CedulaSelectedUsua);
         daoAsignaProspecto.asignarProspecto(Aprospecto, usuario);
         listadoProspecto=daoAsignaProspecto.findAll();
+        listadoProspectosSin=daoAsignaProspecto.findAllSin();
     }
 
+    public void showEditDialog(AsignaProspecto p) {
+        Aprospecto = p;
+    }
+
+    public void commitEdit() throws SQLException {
+        Aprospecto.setCedula(CedulaSelectedPros);
+        usuario.setCedula(CedulaSelectedUsua);
+        daoAsignaProspecto.editAsignacion(Aprospecto, usuario);
+        listadoProspecto=daoAsignaProspecto.findAll();
+    }
+     
     public List<AsignaProspecto> getListadoProspecto() {
         return listadoProspecto;
     }
@@ -148,6 +165,22 @@ public class AsignaProspectoBean implements Serializable{
 
     public void setCedulaSelectedUsua(String CedulaSelectedUsua) {
         this.CedulaSelectedUsua = CedulaSelectedUsua;
+    }
+
+    public List<AsignaProspecto> getListadoProspectosSin() {
+        return listadoProspectosSin;
+    }
+
+    public void setListadoProspectosSin(List<AsignaProspecto> listadoProspectosSin) {
+        this.listadoProspectosSin = listadoProspectosSin;
+    }
+
+    public List<AsignaProspecto> getFilteredProspectoSin() {
+        return filteredProspectoSin;
+    }
+
+    public void setFilteredProspectoSin(List<AsignaProspecto> filteredProspectoSin) {
+        this.filteredProspectoSin = filteredProspectoSin;
     }
 
     

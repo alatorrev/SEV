@@ -13,11 +13,11 @@
             <div class="ContainerIndent">
                 <p:panel>
                     <h:form id="frm">
-                       <!-- <div class="FontBold Fs18 hardblue" style="margin: 15px 10px">Listado Usuarios</div>-->
+                        <!-- <div class="FontBold Fs18 hardblue" style="margin: 15px 10px">Listado Usuarios</div>-->
                         <div class="Separator">
                             <p:commandLink  value="Agregar usuario" oncomplete="PF('wdlgCrearUsuario').show();" style="font-size: 20px; "  styleClass="icon-plus-circled"/>
                         </div>
-                       <p:spacer height="10"/>
+                        <p:spacer height="10"/>
                         <p:dataTable id="uTable" value="#{usuarioBean.listadoUsuarios}" var="us" widgetVar="userTable" paginator="true" rows="10"
                                      paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
                                      paginatorPosition="bottom" filteredValue="#{usuarioBean.filteredUsers}"
@@ -25,12 +25,12 @@
                             <f:facet name="header">
                                 <p:outputPanel style="text-align: right;">
                                     <table>
-                                    <tr>
-                                        <td class="FontBold Fs18 hardwhite" style="border: none; text-align: left"><h:outputText value="Administrador de Usuarios" style="color: #ffffff" /></td>
-                                        <td style="border: none; text-align: right"><h:outputText value="Buscar: " style="text-align: right; color: #ffffff"/>
-                                    <p:inputText id="globalFilter" onkeyup="PF('userTable').filter()" style="width:150px" placeholder="Enter keyword"/></td>
-                                    </tr>
-                                </table>
+                                        <tr>
+                                            <td class="FontBold Fs18 hardwhite" style="border: none; text-align: left"><h:outputText value="Administrador de Usuarios" style="color: #ffffff" /></td>
+                                            <td style="border: none; text-align: right"><h:outputText value="Buscar: " style="text-align: right; color: #ffffff"/>
+                                                <p:inputText id="globalFilter" onkeyup="PF('userTable').filter()" style="width:150px" placeholder="Enter keyword"/></td>
+                                        </tr>
+                                    </table>
                                 </p:outputPanel>
                             </f:facet>
                             <p:column headerText="Cédula" filterBy="#{us.cedula}" filterStyle="display:none" filterMatchMode="contains">
@@ -48,9 +48,9 @@
                             <p:column headerText="Rol">
                                 <h:outputText value="#{us.descripcionRol}"/>
                             </p:column>
-                           <!-- <p:column headerText="Rol">
-                                <p:inputSwitch />
-                            </p:column>-->
+                            <!-- <p:column headerText="Rol">
+                                 <p:inputSwitch />
+                             </p:column>-->
                             <p:column  style="text-align: center">
                                 <i class="icon-edit">
                                     <p:commandLink value="editar" actionListener="#{usuarioBean.showEditDialog(us)}" oncomplete="PF('wdlgDatos').show();" update="dlgDatos"/>
