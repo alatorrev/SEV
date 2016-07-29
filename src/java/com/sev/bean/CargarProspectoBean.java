@@ -30,6 +30,8 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.primefaces.event.FileUploadEvent;
+import org.primefaces.model.DefaultStreamedContent;
+import org.primefaces.model.StreamedContent;
 import org.primefaces.model.UploadedFile;
 
 /**
@@ -40,6 +42,7 @@ import org.primefaces.model.UploadedFile;
 @ViewScoped
 public class CargarProspectoBean implements Serializable {
 
+    private StreamedContent downloadableFile;
     private UploadedFile file;
     private List<Prospecto> listadoProspecto = new ArrayList<>();
     private List<Prospecto> listadoProspectoDB;
@@ -51,6 +54,8 @@ public class CargarProspectoBean implements Serializable {
 
     public CargarProspectoBean() throws SQLException {
         listadoProspectoDB = daoProspecto.findAll();
+        InputStream stream = FacesContext.getCurrentInstance().getExternalContext().getResourceAsStream("/resources/matriz/prospectos.xlsx");
+        downloadableFile = new DefaultStreamedContent(stream, "application/xlsx", "matriz_prospectos.xlsx");
     }
 
     public void handleFileUpload(FileUploadEvent event) throws IOException {
@@ -75,7 +80,8 @@ public class CargarProspectoBean implements Serializable {
             facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error reading file" + e, null));
         }
         //setListadoProspecto(verificarListadoExcelvsDB(importData(workbook, 0)));
-        verificarListadoExcel(verificarListadoExcel(importData(workbook, 0)));
+        //setListadoProspecto(importData(workbook, 0));
+        setListadoProspecto(verificarListadoExcel(importData(workbook, 0)));
     }
 
     public List<Prospecto> verificarListadoExcelvsDB(List<Prospecto> listadoXLS) {
@@ -83,10 +89,9 @@ public class CargarProspectoBean implements Serializable {
         for (Prospecto p : listadoXLS) {
             for (Prospecto db : listadoProspectoDB) {
                 if (p.getCedula().equals(db.getCedula())) {
-                    p.setRepeated(true);
+                    p.setRepeated("repetido");
                     break;
                 }
-
             }
             lista.add(p);
         }
@@ -94,11 +99,16 @@ public class CargarProspectoBean implements Serializable {
     }
 
     public List<Prospecto> verificarListadoExcel(List<Prospecto> listadoXLS) {
-        List<Prospecto> lista=new ArrayList();
-        if (new HashSet<>(listadoXLS).size()!= listadoXLS.size()) {
-            System.out.println("REPETIDO");
+        List<Prospecto> lista = new ArrayList();
+        for (Prospecto p : listadoXLS) {
+            if (lista.contains(p)) {
+                p.setRepeated("repetido");
+                lista.add(p);
+            } else {
+                lista.add(p);
+            }
         }
-        return  lista;
+        return lista;
     }
 
     public List<Prospecto> importData(Workbook workbook, int tabNumber) throws IOException {
@@ -191,6 +201,11 @@ public class CargarProspectoBean implements Serializable {
         }
     }
 
+    public void downloadMatriz() {
+        InputStream stream = FacesContext.getCurrentInstance().getExternalContext().getResourceAsStream("/resources/matriz/prospectos.xlsx");
+        downloadableFile = new DefaultStreamedContent(stream, "application/xlsx", "matriz_prospectos.xlsx");
+    }
+
     public String getDataFromCell(Cell[][] cell, int i, int j) {
         switch (cell[i][j].getCellType()) {
             case Cell.CELL_TYPE_NUMERIC:
@@ -263,6 +278,14 @@ public class CargarProspectoBean implements Serializable {
 
     public void setSelectorCanal(List<CanalCaptacion> selectorCanal) {
         this.selectorCanal = selectorCanal;
+    }
+
+    public StreamedContent getDownloadableFile() {
+        return downloadableFile;
+    }
+
+    public void setDownloadableFile(StreamedContent downloadableFile) {
+        this.downloadableFile = downloadableFile;
     }
 
 }

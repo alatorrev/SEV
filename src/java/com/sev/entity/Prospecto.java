@@ -13,6 +13,7 @@ import java.util.Date;
  * @author a_latorre
  */
 public class Prospecto implements Serializable {
+
     private String canal;
     private String cedula;
     private String nombres;
@@ -26,7 +27,19 @@ public class Prospecto implements Serializable {
     Date fecha_modif;
     private int idcanal;
     private String DescripcionCanal;
-    private boolean repeated=false;
+    private String repeated="único";
+
+    @Override
+    public boolean equals(Object object) {
+        if (this == null) {
+            return true;
+        }
+        if (!(object instanceof Prospecto)) {
+            return false;
+        }
+        Prospecto p = (Prospecto) object;
+        return this.cedula.equals(p.cedula);
+    }
 
     public String getCanal() {
         return canal;
@@ -43,7 +56,7 @@ public class Prospecto implements Serializable {
     public void setCedula(String cedula) {
         this.cedula = cedula;
     }
-    
+
     public String getNombres() {
         return nombres;
     }
@@ -132,14 +145,12 @@ public class Prospecto implements Serializable {
         this.fecha_modif = fecha_modif;
     }
 
-    public boolean isRepeated() {
+    public String getRepeated() {
         return repeated;
     }
 
-    public void setRepeated(boolean repeated) {
+    public void setRepeated(String repeated) {
         this.repeated = repeated;
     }
-    
-    
-    
+
 }
