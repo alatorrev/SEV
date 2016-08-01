@@ -7,6 +7,7 @@ package com.sev.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Objects;
 
 /**
  *
@@ -23,6 +24,7 @@ public class Prospecto implements Serializable {
     private String email;
     private String establecimientoProveniente;
     private String captador;
+    private int secuencial;
     Date fecha_creac;
     Date fecha_modif;
     private int idcanal;
@@ -151,6 +153,14 @@ public class Prospecto implements Serializable {
 
     public void setRepeated(String repeated) {
         this.repeated = repeated;
+    }
+
+    public int getSecuencial() {
+        return secuencial;
+    }
+
+    public void setSecuencial(int secuencial) {
+        this.secuencial = secuencial;
     }
 
 }

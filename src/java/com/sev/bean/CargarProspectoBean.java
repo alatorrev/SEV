@@ -14,10 +14,8 @@ import java.io.Serializable;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
@@ -29,6 +27,7 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.primefaces.component.datatable.DataTable;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
@@ -45,11 +44,12 @@ public class CargarProspectoBean implements Serializable {
     private StreamedContent downloadableFile;
     private UploadedFile file;
     private List<Prospecto> listadoProspecto = new ArrayList<>();
+    private List<Prospecto> selectedProspectos;
     private List<Prospecto> listadoProspectoDB;
     private List<Prospecto> filteredProspecto;
     private Prospecto prospecto = new Prospecto();
     private ProspectoDAO daoProspecto = new ProspectoDAO();
-    private int idCanalSelected;
+    private int idCanalSelected, cantidadProspectosRepetidos = 0;
     private List<CanalCaptacion> selectorCanal = new ArrayList<>();
 
     public CargarProspectoBean() throws SQLException {
@@ -81,10 +81,10 @@ public class CargarProspectoBean implements Serializable {
         }
         //setListadoProspecto(verificarListadoExcelvsDB(importData(workbook, 0)));
         //setListadoProspecto(importData(workbook, 0));
-        setListadoProspecto(verificarListadoExcel(importData(workbook, 0)));
+        setListadoProspecto(verifyFromExcel(importData(workbook, 0)));
     }
 
-    public List<Prospecto> verificarListadoExcelvsDB(List<Prospecto> listadoXLS) {
+    public List<Prospecto> verifyFromDatabase(List<Prospecto> listadoXLS) {
         List<Prospecto> lista = new ArrayList<>();
         for (Prospecto p : listadoXLS) {
             for (Prospecto db : listadoProspectoDB) {
@@ -98,11 +98,15 @@ public class CargarProspectoBean implements Serializable {
         return lista;
     }
 
-    public List<Prospecto> verificarListadoExcel(List<Prospecto> listadoXLS) {
-        List<Prospecto> lista = new ArrayList();
+    public List<Prospecto> verifyFromExcel(List<Prospecto> listadoXLS) {
+        int secuencialProspecto = 0;
+        List<Prospecto> lista = getListadoProspecto();
         for (Prospecto p : listadoXLS) {
+            secuencialProspecto++;
+            p.setSecuencial(secuencialProspecto);
             if (lista.contains(p)) {
                 p.setRepeated("repetido");
+                cantidadProspectosRepetidos++;
                 lista.add(p);
             } else {
                 lista.add(p);
@@ -188,7 +192,9 @@ public class CargarProspectoBean implements Serializable {
                     }
                 }
             }
-            lista.add(prospecto);
+            if (!"".equals(prospecto.getCedula())) {
+                lista.add(prospecto);
+            }
         }
 
         return lista;
@@ -198,6 +204,21 @@ public class CargarProspectoBean implements Serializable {
         ProspectoDAO dao = new ProspectoDAO();
         for (Prospecto prospecto : getListadoProspecto()) {
             dao.guardarProspecto(prospecto);
+        }
+    }
+
+    public void deleteRows() {
+        Iterator iterador = listadoProspecto.iterator();
+        System.out.println(selectedProspectos.size());
+        if (!selectedProspectos.isEmpty()) {
+            for (Prospecto p : selectedProspectos) {
+                while (iterador.hasNext()) {
+                    Prospecto lsp = (Prospecto) iterador.next();
+                    if (lsp.getCedula().equals(p.getCedula()) && lsp.getSecuencial() == p.getSecuencial()) {
+                        iterador.remove();
+                    }
+                }
+            }
         }
     }
 
@@ -230,6 +251,14 @@ public class CargarProspectoBean implements Serializable {
             extension = fileName.substring(i + 1);
         }
         return extension;
+    }
+
+    public void repeatedMessage() {
+        if (cantidadProspectosRepetidos != 0) {
+            FacesContext context = FacesContext.getCurrentInstance();
+            String texto = "El listado cargado contiene " + cantidadProspectosRepetidos + " elementos repetidos. Po favor verifica.";
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Atención", texto));
+        }
     }
 
     public UploadedFile getFile() {
@@ -286,6 +315,14 @@ public class CargarProspectoBean implements Serializable {
 
     public void setDownloadableFile(StreamedContent downloadableFile) {
         this.downloadableFile = downloadableFile;
+    }
+
+    public List<Prospecto> getSelectedProspectos() {
+        return selectedProspectos;
+    }
+
+    public void setSelectedProspectos(List<Prospecto> selectedProspectos) {
+        this.selectedProspectos = selectedProspectos;
     }
 
 }
