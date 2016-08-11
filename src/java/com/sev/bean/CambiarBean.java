@@ -39,6 +39,7 @@ public class CambiarBean implements Serializable{
     
     
     public void commitEdit() throws SQLException {
+        
         daoCambiar.editCambiar(cambiar,u);
     }
 

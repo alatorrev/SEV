@@ -15,6 +15,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import com.sev.conexion.Conexion;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -64,17 +66,23 @@ public class UsuarioDAO implements Serializable {
         SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd");
         Conexion con = new Conexion();
         PreparedStatement pst;
-        String query = "update usuario set nombres=?,apellidos=?,email=?,clave=?,fecha_modif=?,prioridad=?"
+        String query = "update usuario set nombres=?,apellidos=?,email=?,fecha_modif=?,prioridad=?"
                 + " where cedula=? ";
         pst = con.getConnection().prepareStatement(query);
         try {
             pst.setString(1, us.getNombres());
             pst.setString(2, us.getApellidos());
             pst.setString(3, us.getEmail());
-            pst.setString(4, us.getPassword());
-            pst.setString(5, fmt.format(new Date()));
-            pst.setString(6, us.getPrioridad());
-            pst.setString(7, us.getCedula());
+            pst.setString(4, fmt.format(new Date()));
+            pst.setString(5, us.getPrioridad());
+            pst.setString(6, us.getCedula());
+            
+            PreparedStatement pstUsuarioRol = con.getConnection().prepareStatement(
+            "update usuariorol set idrol=? where idusuario=?");
+            pstUsuarioRol.setInt(1, us.getIdRol());
+            pstUsuarioRol.setString(2, us.getCedula());
+            pstUsuarioRol.executeUpdate();
+            
             pst.executeUpdate();
         } catch (Exception e) {
             System.out.println("DAO USUARIO: " + e.getMessage());
@@ -124,15 +132,16 @@ public class UsuarioDAO implements Serializable {
         return us;
     }
 
-    public List<Usuario> findAll() throws SQLException {
+    public List<Usuario> findAll(){
         Conexion con = new Conexion();
         List<Usuario> listadoUsuarios = new ArrayList<>();
         PreparedStatement pst;
         ResultSet rs = null;
         String query = "select u.cedula,u.nombres,u.apellidos,u.email,u.prioridad,r.IDROL,r.DESCRIPCION from USUARIO u "
                 + "inner join USUARIOROL ru on u.CEDULA=ru.IDUSUARIO inner join ROL r on ru.IDROL=r.IDROL";
-        pst = con.getConnection().prepareStatement(query);
+        
         try {
+            pst = con.getConnection().prepareStatement(query);
             rs = pst.executeQuery();
             while (rs.next()) {
                 Usuario us = new Usuario();
@@ -148,7 +157,11 @@ public class UsuarioDAO implements Serializable {
         } catch (Exception e) {
             System.out.println("DAO USUARIO: " + e.getMessage());
         } finally {
-            con.desconectar();
+            try {
+                con.desconectar();
+            } catch (SQLException ex) {
+                Logger.getLogger(UsuarioDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
         return listadoUsuarios;
     }

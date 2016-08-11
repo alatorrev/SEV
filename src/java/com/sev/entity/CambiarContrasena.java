@@ -13,6 +13,7 @@ import java.io.Serializable;
  */
 public class CambiarContrasena implements Serializable{
     String password;
+    String confirmpassword;
 
     public String getPassword() {
         return password;
@@ -21,6 +22,15 @@ public class CambiarContrasena implements Serializable{
     public void setPassword(String password) {
         this.password = password;
     }
+
+    public String getConfirmpassword() {
+        return confirmpassword;
+    }
+
+    public void setConfirmpassword(String confirmpassword) {
+        this.confirmpassword = confirmpassword;
+    }
+    
     
     
 }

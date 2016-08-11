@@ -30,17 +30,22 @@
                                     </table>
                                 </p:outputPanel>
                             </f:facet>
-
-                            <h:panelGrid columns="2">
+                            
+                            
+                            <h:panelGrid id="matchpassword" columns="2">
+                            
                                 <p:outputLabel value="Nueva Contraseña" />
-                                <p:inputText value="#{cambiarBean.cambiar.password}"/>
+                                <p:password id="pwd1" match="pwd2" label="contraseña nueva" required="true" value="#{cambiarBean.cambiar.password}"/>
 
-                                <p:commandButton ajax="true" value="Editar" actionListener="#{cambiarBean.commitEdit()}" >
+                                <p:outputLabel value="Vuelva a escribir la contraseña" />
+                                <p:password id="pwd2" label="No concuerdan los campos" required="true" value="#{cambiarBean.cambiar.password}"/>
+
+                                <p:commandButton ajax="true" value="Editar" update="matchpassword" actionListener="#{cambiarBean.commitEdit()}" >
                                     <p:confirm header="Confirmación" message="Está seguro de eliminar el registro" />
                                 </p:commandButton>
                                 <p:commandButton value="Cancelar" actionListener="#{reestablecerBean.onCancelDialog()}" immediate="true" oncomplete="PF('wdlgDatos').hide();"/>
                             </h:panelGrid>
-
+                            
                         </h:form>
                         <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" >
                             <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check fa fa-check Fs14 white" />

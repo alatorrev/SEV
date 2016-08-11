@@ -48,6 +48,7 @@ public class UsuarioBean implements Serializable {
     }
 
     public void commitEdit() throws SQLException {
+        usuario.setIdRol(idRolSeleted);
         daoUsuario.editUsuario(usuario);
         listadoUsuarios=daoUsuario.findAll();
     }

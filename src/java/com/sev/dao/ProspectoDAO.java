@@ -16,6 +16,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import com.sev.conexion.Conexion;
+import com.sev.entity.AsignaProspecto;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -157,6 +160,68 @@ public class ProspectoDAO implements Serializable{
             con.getConnection().commit();
         } catch (Exception e) {
             System.out.println("DAO PROSPECTOCARGA: " + e.getMessage());
+            con.getConnection().rollback();
+        } finally {
+            con.desconectar();
+        }
+    }
+     
+     public List<AsignaProspecto> prospectoAsignadosbyUsuario(String cedulaU) {
+        List<AsignaProspecto> lista = new ArrayList<>();
+        Conexion con = new Conexion();
+        PreparedStatement pst = null;
+        ResultSet rs = null;
+        String query = "SELECT p.CEDULA, p.NOMBRES, p.APELLIDOS, e.ESTADO from prospecto p "
+                + "left join (select pu.IDPROSPECTO, pu.ESTADO FROM PROSPECTOUSUARIO pu "
+                + "inner join usuario u on pu.IDUSUARIO = u.CEDULA where u.CEDULA = ?) E on E.IDPROSPECTO = p.CEDULA "
+                + "where e.ESTADO != 1 or e.Estado is null";
+        try {
+            pst = con.getConnection().prepareStatement(query);
+            pst.setString(1, cedulaU);
+            rs = pst.executeQuery();
+            while (rs.next()) {
+                AsignaProspecto ap = new AsignaProspecto();
+                ap.setCedula(rs.getString(1));
+                ap.setNombres(rs.getString(2));
+                ap.setApellidos(rs.getString(3));
+                ap.setEstado((rs.getInt(4) != 0));
+                lista.add(ap);
+            }
+        } catch (Exception e) {
+            System.out.println("DAO ASIGNAPROSPECTO: " + e.getMessage());
+        } finally {
+            try {
+                con.desconectar();
+            } catch (SQLException ex) {
+                Logger.getLogger(ProspectoDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return lista;
+    }
+     
+     public void saveResourcesbyProfile(List<AsignaProspecto> listadoPR, String cedulaU) throws SQLException {
+        Conexion con = new Conexion();
+        PreparedStatement pst;
+        con.getConnection().setAutoCommit(false);
+        String query = "MERGE PROSPECTOUSUARIO AS PU "
+                + "USING (SELECT ? AS IDPROSPECTO,? AS IDUSUARIO, ? AS ESTADO) AS T "
+                + "ON (PU.IDPROSPECTO=T.IDPROSPECTO AND PU.IDUSUARIO=T.IDUSUARIO) "
+                + "WHEN MATCHED THEN UPDATE SET PU.ESTADO=T.ESTADO "
+                + "WHEN NOT MATCHED THEN INSERT (IDPROSPECTO,IDUSUARIO,ESTADO)VALUES(?,?,?);";
+        try {
+            pst = con.getConnection().prepareStatement(query);
+            for (AsignaProspecto ap : listadoPR) {
+                pst.setString(1, ap.getCedula());
+                pst.setString(2, cedulaU);
+                pst.setInt(3, ap.getEstado()== true ? 1 : 0);
+                pst.setString(4, ap.getCedula());
+                pst.setString(5, cedulaU);
+                pst.setInt(6, ap.getEstado() == true ? 1 : 0);
+                pst.executeUpdate();
+            }
+            con.getConnection().commit();
+        } catch (Exception e) {
+            System.out.println("DAO ASIGNAPROSPECTO: " + e.getMessage());
             con.getConnection().rollback();
         } finally {
             con.desconectar();

@@ -1,5 +1,3 @@
-<?xml version='1.0' encoding='UTF-8' ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:f="http://java.sun.com/jsf/core"
@@ -8,111 +6,68 @@
                 template="/WEB-INF/template.xhtml">
 
     <ui:define name="content">
-       <h:outputScript name="jquery/jquery.js" library="primefaces" target="head"/>
+        <h:outputScript name="jquery/jquery.js" library="primefaces" target="head"/>
         <h:outputStylesheet name="style.css" />
-        <div class="Container100 ui-fluid">
+       <div class="Container100 ui-fluid">
             <div class="ContainerIndent">
                 <p:panel>
                     <h:form id="frm">
-                       <!-- <div class="FontBold Fs18 hardblue" style="margin: 15px 10px">Listado Usuarios</div>-->
-                        <div class="Separator">
-                            <p:commandLink  value="Asigna Prospecto a Ejecutivo" oncomplete="PF('wdlgCrearAsignacion').show();" style="font-size: 20px; "  styleClass="icon-plus-circled"/>
-                        </div>
-                       <p:spacer height="10"/>
-                       <p:dataTable id="uTable" value="#{asignaProspectoBean.listadoProspecto}" var="p" widgetVar="userTable" paginator="true" rows="10"
+                        
+                        <h:panelGrid columns="2" >
+                            <p:outputLabel value="Usuarios"/>
+                            <p:selectOneMenu id="usuarioMenu" value="#{asignarProspectoBean.usuarioIdSelected}">
+                                <f:selectItem itemLabel="Seleccionar..." itemValue="0"/>
+                                <f:selectItems value="#{asignarProspectoBean.listaUsuario}" var="usu" 
+                                               itemLabel="#{usu.nombres} #{usu.apellidos}" itemValue="#{usu.cedula}"/>
+                                <p:ajax event="itemSelect"  listener="#{asignarProspectoBean.obtenerProspectoUsuario()}" update="@form" oncomplete="PF('asignacionTable').clearFilters();"/>
+                            </p:selectOneMenu>
+                        </h:panelGrid>
+                        <p:dataTable id="asignacionTable" value="#{asignarProspectoBean.listadoProspecto}" var="asignacion" widgetVar="asignacionTable" rows="10"
                                      paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
-                                     paginatorPosition="bottom" filteredValue="#{asignaProspectoBean.filteredProspecto}"
-                                     rowsPerPageTemplate="5,10,15"  lazy="false">
+                                     paginatorPosition="bottom" filteredValue="#{asignarProspectoBean.filteredAccess}" lazy="false">
                             <f:facet name="header">
                                 <p:outputPanel style="text-align: right;">
                                     <table>
-                                    <tr>
-                                        <td class="FontBold Fs18 hardwhite" style="border: none; text-align: left"><h:outputText value="Administrador de Asignaciones" style="color: #ffffff" /></td>
-                                        
-                                    </tr>
-                                </table>
+                                        <tr>
+                                            <td class="FontBold Fs18 hardwhite" style="border: none; text-align: left"><h:outputText value="Asignar Prospectos" style="color: #ffffff" /></td>
+                                            <td style="border: none; text-align: right"><h:outputText value="Buscar: " style="text-align: right; color: #ffffff"/>
+                                                <p:inputText id="globalFilter" onkeyup="PF('asignacionTable').filter()" style="width:150px" placeholder="Enter keyword"/></td>
+                                        </tr>
+                                    </table>
                                 </p:outputPanel>
                             </f:facet>
-                           <p:column headerText="Cédula" filterBy="#{p.cedula}" filterMatchMode="contains">
-                                <h:outputText value="#{p.cedula}"/>
-                            </p:column>
-                           <p:column headerText="Canal Captación" filterBy="#{p.descripcionCanal}" filterMatchMode="contains">
-                               <h:outputText value="#{p.descripcionCanal}"/>
-                            </p:column>
-                            <p:column headerText="Nombres" filterBy="#{p.nombres}" filterMatchMode="contains">
-                                <h:outputText value="#{p.nombres}"/>
-                            </p:column>
-                            <p:column headerText="Apellidos" filterBy="#{p.apellidos}" filterMatchMode="contains">
-                                <h:outputText value="#{p.apellidos}"/>
-                            </p:column>
-                           
-                           <p:column headerText="Establecimiento" filterBy="#{p.establecimientoProveniente}" filterMatchMode="contains">
-                               <h:outputText value="#{p.establecimientoProveniente}"/>
-                            </p:column>
-                           <p:column headerText="Ejectuivo Asignado" filterBy="#{p.ejecutivo}" filterable="true" filterMatchMode="contains">
-                               
-                               <h:outputText value="#{p.ejecutivo}"/>
-                            </p:column>
-                           
-                           <p:column  headerText="Modificación" style="text-align: center">
-                                <i class="icon-edit">
-                                    <p:commandLink value="editar" actionListener="#{asignaProspectoBean.showEditDialog(p)}" oncomplete="PF('wdlgDatos').show();" update="dlgDatos"/>
-                                    <!-- <p:graphicImage name="images/ui-icon-trash.png" library="sentinel-layout"/>-->
-                                </i>   
+                            <p:column headerText="Cedula" filterBy="#{asignacion.cedula}" filterStyle="display:none" filterMatchMode="contains">
+                                <p:outputLabel value="#{asignacion.cedula}"/>
                             </p:column>
                             
+                            <p:column headerText="Nombres" filterBy="#{asignacion.nombres}" filterStyle="display:none" filterMatchMode="contains">
+                                <p:outputLabel value="#{asignacion.nombres}"/>
+                            </p:column>
+                            
+                            <p:column headerText="Apellidos" filterBy="#{asignacion.apellidos}" filterStyle="display:none" filterMatchMode="contains">
+                                <p:outputLabel value="#{asignacion.apellidos}"/>
+                            </p:column>
+                            
+                            <p:column headerText="Asignado">
+                                <p:selectBooleanCheckbox value="#{asignacion.estado}"/>
+                            </p:column>
+                        
+                        
                         </p:dataTable>
+                        <p:commandButton ajax="true" update="@form" 
+                                         style="position: relative; left: 450px; top: 5px; width: 20%" 
+                                         value="Guardar" actionListener="#{asignarProspectoBean.guardarPermisos()}"
+                                         oncomplete="PF('asignacionTable').clearFilters();">
+                            <p:confirm header="Confirmación" message="Está seguro de realizar esta acción" icon="ui-icon-alert" />
+                        </p:commandButton>
                     </h:form>
-
-                    <p:dialog id="dlgDatos" header="Editar" widgetVar="wdlgDatos" modal="true" responsive="true" width="400">
-                        <h:form>
-                            <h:panelGrid columns="2">
-                                
-                                <p:outputLabel value="Nombres"/>
-                                <p:inputText value="#{asignaProspectoBean.aprospecto.nombres}"/>
-                                
-                                <p:outputLabel value="Ejecutivo"/>
-                                <p:selectOneMenu id="ejecutivo" value="#{asignaProspectoBean.cedulaSelectedUsua}" filter="true" >
-                                    <f:selectItem itemLabel="Seleccionar.." itemValue="" />
-                                    <f:selectItems value="#{asignaProspectoBean.listadoUsuarios}" var="usu" itemLabel="#{usu.nombres} #{usu.apellidos} " itemValue="#{usu.cedula}"  />
-                                </p:selectOneMenu>
-                                
-                                <p:commandButton ajax="true" value="Editar" actionListener="#{asignaProspectoBean.commitEdit()}"  oncomplete="PF('wdlgDatos').hide();" update=":frm:uTable">
-                                    <p:confirm header="Confirmación" message="Está seguro de realizar esta acción" icon="ui-icon-alert" />
-                                </p:commandButton>
-                                <p:commandButton value="Cancelar" actionListener="#{asignaProspectoBean.onCancelDialog()}" immediate="true" oncomplete="PF('wdlgDatos').hide();"/>
-                            </h:panelGrid>
-                        </h:form>
-                    </p:dialog>
-                    <p:dialog id="dlgCrearUsuario" header="Asigna Prospecto" widgetVar="wdlgCrearAsignacion" modal="true" responsive="true" resizable="false" width="380">
-                        <h:form>
-                            <h:panelGrid columns="2">
-                                <p:outputLabel value="Prospecto"/>
-                                <p:selectOneMenu id="prospecto" value="#{asignaProspectoBean.cedulaSelectedPros}" filter="true" style="width: 200%">
-                                    <f:selectItem itemLabel="Seleccionar.." itemValue="" />
-                                    <f:selectItems value="#{asignaProspectoBean.listadoProspectosSin}" var="can" itemLabel="#{can.nombres} #{can.apellidos} " itemValue="#{can.cedula}"  />
-                                </p:selectOneMenu>
-                                
-                                <p:outputLabel value="Ejecutivo"/>
-                                <p:selectOneMenu id="ejecutivo" value="#{asignaProspectoBean.cedulaSelectedUsua}" filter="true" style="width: 200%">
-                                    <f:selectItem itemLabel="Seleccionar.." itemValue="" />
-                                    <f:selectItems value="#{asignaProspectoBean.listadoUsuarios}" var="usu" itemLabel="#{usu.nombres} #{usu.apellidos} " itemValue="#{usu.cedula}"  />
-                                </p:selectOneMenu>
-                                
-                                <p:commandButton ajax="true" actionListener="#{asignaProspectoBean.commitCreate()}" value="Asignar" oncomplete="PF('wdlgCrearAsignacion').hide();" update=":frm:uTable" >
-                                    <p:confirm header="Confirmación" message="Está seguro de realizar esta acción" icon="ui-icon-alert" />
-                                </p:commandButton>
-                                <p:commandButton value="Cancelar" actionListener="#{asignaProspectoBean.onCancelDialog()}" immediate="true" oncomplete="PF('wdlgCrearAsignacion').hide();"/>
-                            </h:panelGrid>
-                        </h:form>
-                    </p:dialog>
                     <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" >
                         <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check fa fa-check Fs14 white" />
                         <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close fa fa-close Fs14 white" />
                     </p:confirmDialog>
-
                 </p:panel>
             </div>
         </div>
     </ui:define>
+
 </ui:composition>
