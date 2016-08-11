@@ -134,9 +134,10 @@ public class ProspectoDAO implements Serializable{
         }
     }
     
-     public void guardarProspecto(Prospecto pros) throws SQLException {
+     public int guardarProspecto(Prospecto pros) throws SQLException {
         SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd");
         Conexion con = new Conexion();
+        int repitedFlag=0;
         con.getConnection().setAutoCommit(false);
         PreparedStatement pst;
         String query = "insert into PROSPECTO" +
@@ -160,10 +161,12 @@ public class ProspectoDAO implements Serializable{
             con.getConnection().commit();
         } catch (Exception e) {
             System.out.println("DAO PROSPECTOCARGA: " + e.getMessage());
+            repitedFlag=1;
             con.getConnection().rollback();
         } finally {
             con.desconectar();
         }
+        return repitedFlag;
     }
      
      public List<AsignaProspecto> prospectoAsignadosbyUsuario(String cedulaU) {

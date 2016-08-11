@@ -7,6 +7,7 @@ package com.sev.bean;
 
 import com.sev.dao.ProspectoDAO;
 import com.sev.entity.CanalCaptacion;
+import com.sev.entity.FileUploaded;
 import com.sev.entity.Prospecto;
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,6 +15,7 @@ import java.io.Serializable;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import javax.faces.application.FacesMessage;
@@ -27,7 +29,7 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.primefaces.component.datatable.DataTable;
+import org.primefaces.context.RequestContext;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
@@ -42,10 +44,12 @@ import org.primefaces.model.UploadedFile;
 public class CargarProspectoBean implements Serializable {
 
     private StreamedContent downloadableFile;
-    private UploadedFile file;
+    //private UploadedFile file;
+    private final List<FileUploaded> uploadedFilesList = new ArrayList<>();
     private List<Prospecto> listadoProspecto = new ArrayList<>();
+    private List<Prospecto> failedProspectoList = new ArrayList<>();
     private List<Prospecto> selectedProspectos;
-    private List<Prospecto> listadoProspectoDB;
+//    private List<Prospecto> listadoProspectoDB;
     private List<Prospecto> filteredProspecto;
     private Prospecto prospecto = new Prospecto();
     private ProspectoDAO daoProspecto = new ProspectoDAO();
@@ -53,7 +57,7 @@ public class CargarProspectoBean implements Serializable {
     private List<CanalCaptacion> selectorCanal = new ArrayList<>();
 
     public CargarProspectoBean() throws SQLException {
-        listadoProspectoDB = daoProspecto.findAll();
+//        listadoProspectoDB = daoProspecto.findAll();
         InputStream stream = FacesContext.getCurrentInstance().getExternalContext().getResourceAsStream("/resources/matriz/prospectos.xlsx");
         downloadableFile = new DefaultStreamedContent(stream, "application/xlsx", "matriz_prospectos.xlsx");
     }
@@ -63,43 +67,31 @@ public class CargarProspectoBean implements Serializable {
         if (event.getFile().equals(null)) {
             facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "File is null", null));
         }
-        InputStream fileIn = null;
-        Workbook workbook = null;
         try {
-            String extension = getExtension(event.getFile().getFileName());
-            fileIn = event.getFile().getInputstream();
-            switch (extension) {
-                case "xls":
-                    workbook = new HSSFWorkbook(fileIn);
-                    break;
-                case "xlsx":
-                    workbook = new XSSFWorkbook(fileIn);
-                    break;
-            }
+            uploadedFilesList.add(new FileUploaded(
+                    getExtension(event.getFile().getFileName()),
+                    event.getFile().getInputstream()));
         } catch (IOException e) {
             facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error reading file" + e, null));
         }
-        //setListadoProspecto(verificarListadoExcelvsDB(importData(workbook, 0)));
-        //setListadoProspecto(importData(workbook, 0));
-        setListadoProspecto(verifyFromExcel(importData(workbook, 0)));
     }
 
-    public List<Prospecto> verifyFromDatabase(List<Prospecto> listadoXLS) {
-        List<Prospecto> lista = new ArrayList<>();
-        for (Prospecto p : listadoXLS) {
-            for (Prospecto db : listadoProspectoDB) {
-                if (p.getCedula().equals(db.getCedula())) {
-                    p.setRepeated("repetido");
-                    break;
-                }
-            }
-            lista.add(p);
-        }
-        return lista;
-    }
+//    public List<Prospecto> verifyFromDatabase(List<Prospecto> listadoXLS) {
+//        List<Prospecto> lista = new ArrayList<>();
+//        for (Prospecto p : listadoXLS) {
+//            for (Prospecto db : listadoProspectoDB) {
+//                if (p.getCedula().equals(db.getCedula())) {
+//                    p.setRepeated("repetido");
+//                    break;
+//                }
+//            }
+//            lista.add(p);
+//        }
+//        return lista;
+//    }
 
     public List<Prospecto> verifyFromExcel(List<Prospecto> listadoXLS) {
-        int secuencialProspecto = 0;
+        int secuencialProspecto = getListadoProspecto().size();
         List<Prospecto> lista = getListadoProspecto();
         for (Prospecto p : listadoXLS) {
             secuencialProspecto++;
@@ -115,6 +107,107 @@ public class CargarProspectoBean implements Serializable {
         return lista;
     }
 
+    public void clearFailedList(){
+        failedProspectoList.clear();
+        listadoProspecto.clear();
+        cantidadProspectosRepetidos=0;
+    }
+
+    public void guardarListadoProspecto() throws SQLException {
+        ProspectoDAO dao = new ProspectoDAO();
+        for (Prospecto prospecto : getListadoProspecto()) {
+            int flag = dao.guardarProspecto(prospecto);
+            if (flag != 0) {
+                failedProspectoList.add(prospecto);
+            }
+        }
+    }
+
+    public void deleteRows() {
+        Iterator iterador = listadoProspecto.iterator();
+        System.out.println(selectedProspectos.size());
+        if (!selectedProspectos.isEmpty()) {
+            for (Prospecto p : selectedProspectos) {
+                while (iterador.hasNext()) {
+                    Prospecto lsp = (Prospecto) iterador.next();
+                    if (lsp.getCedula().equals(p.getCedula()) && lsp.getSecuencial() == p.getSecuencial()) {
+                        iterador.remove();
+                        if (p.getRepeated().equals("repetido")) {
+                            cantidadProspectosRepetidos--;
+                        }
+                    }
+                }
+                iterador = listadoProspecto.iterator();
+            }
+            Iterator iterador2 = listadoProspecto.iterator();
+            int contador = 0;
+            while (iterador2.hasNext()) {
+                contador++;
+                Prospecto piterado = (Prospecto) iterador2.next();
+                piterado.setSecuencial(contador);
+                int indice = contador - 1;
+                listadoProspecto.set(indice, piterado);
+            }
+            RequestContext.getCurrentInstance().update("frm:prospectoTable");
+        }
+    }
+
+    public void downloadMatriz() {
+        InputStream stream = FacesContext.getCurrentInstance().getExternalContext().getResourceAsStream("/resources/matriz/prospectos.xlsx");
+        downloadableFile = new DefaultStreamedContent(stream, "application/xlsx", "matriz_prospectos.xlsx");
+    }
+
+    public String getDataFromCell(Cell[][] cell, int i, int j) {
+        switch (cell[i][j].getCellType()) {
+            case Cell.CELL_TYPE_NUMERIC:
+                if (HSSFDateUtil.isCellDateFormatted(cell[i][j]) || HSSFDateUtil.isCellInternalDateFormatted(cell[i][j])) {
+                    SimpleDateFormat objFormat = new SimpleDateFormat("dd/MM/yyyy");
+                    return objFormat.format(cell[i][j].getDateCellValue());
+                } else {
+                    Double value = cell[i][j].getNumericCellValue();
+                    return value.intValue() + "";
+                }
+            case Cell.CELL_TYPE_STRING:
+                return cell[i][j].getStringCellValue();
+        }
+        return "";
+    }
+
+    public String getExtension(String fileName) {
+        String extension = "";
+
+        int i = fileName.lastIndexOf('.');
+        if (i > 0) {
+            extension = fileName.substring(i + 1);
+        }
+        return extension;
+    }
+
+    public void uploadFileList() {
+        Workbook workbook = null;
+        for (FileUploaded fu : uploadedFilesList) {
+            try {
+                switch (fu.getExtension()) {
+                    case "xls":
+                        workbook = new HSSFWorkbook(fu.getFileInputStream());
+                        break;
+                    case "xlsx":
+                        workbook = new XSSFWorkbook(fu.getFileInputStream());
+                        break;
+                }
+                setListadoProspecto(verifyFromExcel(importData(workbook, 0)));
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
+        }
+        if (cantidadProspectosRepetidos != 0) {
+            FacesContext context = FacesContext.getCurrentInstance();
+            String texto = "El listado cargado contiene " + cantidadProspectosRepetidos + " elementos repetidos. Po favor verifica.";
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Atención", texto));
+        }
+        uploadedFilesList.clear();
+    }
+    
     public List<Prospecto> importData(Workbook workbook, int tabNumber) throws IOException {
         List<Prospecto> lista = new ArrayList<>();
         String[][] data;
@@ -200,75 +293,6 @@ public class CargarProspectoBean implements Serializable {
         return lista;
     }
 
-    public void guardarListadoProspecto() throws SQLException {
-        ProspectoDAO dao = new ProspectoDAO();
-        for (Prospecto prospecto : getListadoProspecto()) {
-            dao.guardarProspecto(prospecto);
-        }
-    }
-
-    public void deleteRows() {
-        Iterator iterador = listadoProspecto.iterator();
-        System.out.println(selectedProspectos.size());
-        if (!selectedProspectos.isEmpty()) {
-            for (Prospecto p : selectedProspectos) {
-                while (iterador.hasNext()) {
-                    Prospecto lsp = (Prospecto) iterador.next();
-                    if (lsp.getCedula().equals(p.getCedula()) && lsp.getSecuencial() == p.getSecuencial()) {
-                        iterador.remove();
-                    }
-                }
-            }
-        }
-    }
-
-    public void downloadMatriz() {
-        InputStream stream = FacesContext.getCurrentInstance().getExternalContext().getResourceAsStream("/resources/matriz/prospectos.xlsx");
-        downloadableFile = new DefaultStreamedContent(stream, "application/xlsx", "matriz_prospectos.xlsx");
-    }
-
-    public String getDataFromCell(Cell[][] cell, int i, int j) {
-        switch (cell[i][j].getCellType()) {
-            case Cell.CELL_TYPE_NUMERIC:
-                if (HSSFDateUtil.isCellDateFormatted(cell[i][j]) || HSSFDateUtil.isCellInternalDateFormatted(cell[i][j])) {
-                    SimpleDateFormat objFormat = new SimpleDateFormat("dd/MM/yyyy");
-                    return objFormat.format(cell[i][j].getDateCellValue());
-                } else {
-                    Double value = cell[i][j].getNumericCellValue();
-                    return value.intValue() + "";
-                }
-            case Cell.CELL_TYPE_STRING:
-                return cell[i][j].getStringCellValue();
-        }
-        return "";
-    }
-
-    public String getExtension(String fileName) {
-        String extension = "";
-
-        int i = fileName.lastIndexOf('.');
-        if (i > 0) {
-            extension = fileName.substring(i + 1);
-        }
-        return extension;
-    }
-
-    public void repeatedMessage() {
-        if (cantidadProspectosRepetidos != 0) {
-            FacesContext context = FacesContext.getCurrentInstance();
-            String texto = "El listado cargado contiene " + cantidadProspectosRepetidos + " elementos repetidos. Po favor verifica.";
-            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Atención", texto));
-        }
-    }
-
-    public UploadedFile getFile() {
-        return file;
-    }
-
-    public void setFile(UploadedFile file) {
-        this.file = file;
-    }
-
     public List<Prospecto> getListadoProspecto() {
         return listadoProspecto;
     }
@@ -323,6 +347,14 @@ public class CargarProspectoBean implements Serializable {
 
     public void setSelectedProspectos(List<Prospecto> selectedProspectos) {
         this.selectedProspectos = selectedProspectos;
+    }
+
+    public List<Prospecto> getFailedProspectoList() {
+        return failedProspectoList;
+    }
+
+    public void setFailedProspectoList(List<Prospecto> failedProspectoList) {
+        this.failedProspectoList = failedProspectoList;
     }
 
 }

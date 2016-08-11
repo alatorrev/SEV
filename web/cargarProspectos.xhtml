@@ -14,13 +14,38 @@
                     <h:form id="frm" enctype="multipart/form-data">
                         <!-- BOTON SUBIDA-->
                         <p:growl id="growl" showDetail="true"/>
-                        <p:remoteCommand update="growl" name="verify" actionListener="#{cargarProspectoBean.repeatedMessage()}"/>
-                        <p:fileUpload update="prospectoTable"
-                                      sizeLimit="1000000"
-                                      styleClass="customFileUpload customUploadGrid"
-                                      fileUploadListener="#{cargarProspectoBean.handleFileUpload}" mode="advanced"
-                                      oncomplete="verify();"
-                                      allowTypes="/(\.|\/)(xls|xlsx)$/" />
+                        <p:remoteCommand update="@form" name="subir" oncomplete="PF('prospTable').clearFilters();"
+                                         actionListener="#{cargarProspectoBean.uploadFileList()}" onstart="PF('dlg2').show();" />
+                        <p:fileUpload 
+                            sizeLimit="1000000"
+                            styleClass="customFileUpload customUploadGrid"
+                            fileUploadListener="#{cargarProspectoBean.handleFileUpload}" mode="advanced"
+                            oncomplete="subir();"
+                            allowTypes="/(\.|\/)(xls|xlsx)$/" />
+
+                        <script type="text/javascript">
+                            function startProgressBar()
+                            {
+                                window['progress'] = setInterval(function () {
+                                    var pbClient = PF('pbClient'),
+                                            oldValue = pbClient.getValue(),
+                                            newValue = oldValue + 20;
+
+                                    pbClient.setValue(pbClient.getValue() + 20);
+
+                                    if (newValue > 100) {
+                                        clearInterval(window['progress']);
+                                        PF('dlg2').hide();
+                                        PF('pbClient').setValue(0);
+                                    }
+                                }, 1000);
+                            }
+                            function cancel()
+                            {
+                                clearInterval(window['progress']);
+                                PF('pbClient').setValue(0);
+                            }
+                        </script>
                         <!-- FIN BOTON SUBIDA-->
 
                         <!-- BOTON DESCARGA -->
@@ -32,18 +57,18 @@
                                   resizable="false"
                                   styleClass="customFileDownload"
                                   >
-                          <!--  <p:graphicImage name="/demo/images/ajaxloadingbar.gif" />-->
+                            <!--  <p:graphicImage name="/demo/images/ajaxloadingbar.gif" />-->
                         </p:dialog>
                         <p:commandButton value="Descargar Matriz" 
                                          ajax="false" 
-                                         onclick="PrimeFaces.monitorDownload(start, stop);" 
+                                         onclick="PrimeFaces.monitorDownload(begin, stop);" 
                                          icon="fa fa-download white Fs16"
                                          styleClass="customButton"
                                          style="width: 20%">
                             <p:fileDownload value="#{cargarProspectoBean.downloadableFile}" />
                         </p:commandButton>
                         <script type="text/javascript">
-                            function start() {
+                            function begin() {
                                 PF('statusDialog').show();
                             }
                             function stop() {
@@ -70,6 +95,7 @@
                                 </p:outputPanel>
                             </f:facet>
                             <p:column selectionMode="multiple" style="text-align: center"/>
+
                             <p:column headerText="Cedula" filterBy="#{prospecto.cedula}" filterStyle="display:none" filterMatchMode="contains">
                                 <h:outputText value="#{prospecto.cedula}"/>
                             </p:column>
@@ -97,32 +123,53 @@
                             <p:column headerText="Captador" filterBy="#{prospecto.captador}" filterStyle="display:none" filterMatchMode="contains">
                                 <h:outputText value="#{prospecto.captador}"/>
                             </p:column>
-                            <p:column headerText="boolean" filterBy="#{prospecto.repeated}" filterStyle="display:none" filterMatchMode="contains">
+                            <p:column headerText="Indicador" filterBy="#{prospecto.repeated}" filterStyle="display:none" filterMatchMode="contains">
+                                <h:outputText value="#{prospecto.repeated}"/>
                             </p:column>
-                            <!--<p:column  style="text-align: center">
-                                <i class="icon-edit">
-                                    <p:commandLink value="editar" actionListener="# {usuarioBean.showEditDialog(us)}" oncomplete="PF('wdlgDatos').show();" update="dlgDatos"/>
-                                </i>   
-                                <i class="icon-trash-2">
-                                    <p:commandLink value="eliminar" actionListener="# {usuarioBean.eliminar(us)}"  update=":frm:uTable" >
-                                        <p:confirm header="Confirmación" message="Está seguro de eliminar el registro" icon="ui-icon-alert" />
-                                    </p:commandLink>
-                                </i>
-                            </p:column>-->
                             <f:facet name="footer" >
                                 <div style="text-align: left;">
                                     <i class="icon-trash-2">
-                                        <p:commandLink process="frm:prospectoTable" update="@form"  value="Eliminar seleccionados" actionListener="#{cargarProspectoBean.deleteRows()}"  />
+                                        <p:commandLink update="@form" oncomplete="PF('prospTable').clearFilters();"
+                                                       value="Eliminar seleccionados" actionListener="#{cargarProspectoBean.deleteRows()}"  />
                                     </i>
                                 </div>
                             </f:facet>
                         </p:dataTable>
 
-                        <p:commandButton styleClass="" style="position: relative; left: 450px; top: 5px; width: 20%" value="Guardar" actionListener="#{cargarProspectoBean.guardarListadoProspecto()}"/>
+                        <p:commandButton style="position: relative; left: 450px; top: 5px; width: 20%" value="Guardar" 
+                                         actionListener="#{cargarProspectoBean.guardarListadoProspecto()}"
+                                         oncomplete="PF('failBox').show();" update="failsDialog"/>
+
+                        <p:dialog id="basicDialog" resizable="false" header="Por favor espere...." widgetVar="dlg2" modal="true" closable="false" onShow="startProgressBar();">           
+                            <p:progressBar id="progressBarLoad" widgetVar="pbClient" style="width:300px" />   
+                        </p:dialog>
+
+
                     </h:form>
+
+                    <p:dialog id="failsDialog" resizable="false" header="Informe de Registros Fallidos" widgetVar="failBox" modal="true"
+                              closable="true" closeOnEscape="true">   
+                        <h:form>
+                            <p:dataTable id="tblFailProspectos" value="#{cargarProspectoBean.failedProspectoList}" var="failed" widgetVar="prospTable" paginator="true" rows="10"
+                                     paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
+                                     rowsPerPageTemplate="5,10,15" lazy="false" paginatorPosition="bottom" style="width:600px;height: 300px">
+                            <p:column headerText="Cédula">
+                                <h:outputText value="#{failed.cedula}"/>
+                            </p:column>
+                            <p:column headerText="Nombres">
+                                <h:outputText value="#{failed.nombres}"/>
+                            </p:column>
+                            <p:column headerText="Apellidos">
+                                <h:outputText value="#{failed.apellidos}"/>
+                            </p:column>
+                        </p:dataTable>
+                            <p:commandButton ajax="true" style="position: relative; left: 450px; top: 5px; width: 20%" value="Ok!"
+                                             actionListener="#{cargarProspectoBean.clearFailedList()}" 
+                                             oncomplete="PF('failBox').hide();" /> <!--falta actualizar despues de resetear el guardado---->
+                        </h:form>
+                    </p:dialog>
                 </p:panel>
             </div>
         </div>
     </ui:define>
-
 </ui:composition>
