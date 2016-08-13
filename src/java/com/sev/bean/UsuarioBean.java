@@ -55,8 +55,10 @@ public class UsuarioBean implements Serializable {
 
     public void commitCreate() throws SQLException {
         usuario.setIdRol(idRolSeleted);
+        usuario.setPassword(usuario.getCedula());
         daoUsuario.createUsuario(usuario);
         listadoUsuarios=daoUsuario.findAll();
+        setUsuario(new Usuario());
     }
 
     public void eliminar(Usuario u)throws SQLException {

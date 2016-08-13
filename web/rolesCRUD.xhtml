@@ -9,15 +9,15 @@
     <ui:define name="content">
         <h:outputScript name="jquery/jquery.js" library="primefaces" target="head"/>
         <h:outputStylesheet name="style.css" />
-     <div class="Container100 ui-fluid">
+        <div class="Container100 ui-fluid">
             <div class="ContainerIndent">
                 <p:panel>
                     <h:form id="frm">
-                       <!-- <div class="FontBold Fs18 hardblue" style="margin: 15px 10px">Listado Usuarios</div>-->
+                        <!-- <div class="FontBold Fs18 hardblue" style="margin: 15px 10px">Listado Usuarios</div>-->
                         <div class="Separator">
                             <p:commandLink  value="Agregar Rol" oncomplete="PF('wdlgCrearRol').show();" style="font-size: 20px; "  styleClass="icon-plus-circled"/>
                         </div>
-                       <p:spacer height="10"/>
+                        <p:spacer height="10"/>
                         <p:dataTable id="uTable" value="#{rolBean.listadoRoles}" var="rol" widgetVar="userTable" paginator="true" rows="10"
                                      paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
                                      paginatorPosition="bottom" filteredValue="#{rolBean.filteredRols}"
@@ -25,28 +25,28 @@
                             <f:facet name="header">
                                 <p:outputPanel style="text-align: right;">
                                     <table>
-                                    <tr>
-                                        <td class="FontBold Fs18 hardwhite" style="border: none; text-align: left"><h:outputText value="Administrador de Roles" style="color: #ffffff" /></td>
-                                        <td style="border: none; text-align: right"><h:outputText value="Buscar: " style="text-align: right; color: #ffffff"/>
-                                    <p:inputText id="globalFilter" onkeyup="PF('userTable').filter()" style="width:150px" placeholder="Enter keyword"/></td>
-                                    </tr>
-                                </table>
+                                        <tr>
+                                            <td class="FontBold Fs18 hardwhite" style="border: none; text-align: left"><h:outputText value="Administrador de Roles" style="color: #ffffff" /></td>
+                                            <td style="border: none; text-align: right"><h:outputText value="Buscar: " style="text-align: right; color: #ffffff"/>
+                                                <p:inputText id="globalFilter" onkeyup="PF('userTable').filter()" style="width:150px" placeholder="Enter keyword"/></td>
+                                        </tr>
+                                    </table>
                                 </p:outputPanel>
                             </f:facet>
                             <p:column headerText="Id" filterBy="#{rol.idRol}" filterStyle="display:none" filterMatchMode="contains" style="text-align: center">
                                 <h:outputText value="#{rol.idRol}"/>
                             </p:column>
-                            
+
                             <p:column headerText="Rol" style="text-align: center">
                                 <h:outputText value="#{rol.descripcion}"/>
                             </p:column>
-                           
+
                             <!--############################################################################################ -->
                             <!--############################################################################################ -->
                             <p:column  style="text-align: center">
                                 <i class="icon-edit">
-                                    <p:commandLink value="editar" actionListener="#{rolBean.showEditDialog(rol)}" oncomplete="PF('wdlgDatos').show();" update="dlgDatos"/>
-                                    <!-- <p:graphicImage name="images/ui-icon-trash.png" library="sentinel-layout"/>-->
+                                    <p:commandLink value="editar" actionListener="#{rolBean.showEditDialog(rol)}" 
+                                                   oncomplete="PF('wdlgDatos').show();" update="dlgDatos"/>
                                 </i>   
                                 <i class="icon-trash-2">
                                     <p:commandLink value="eliminar" actionListener="#{rolBean.eliminar(rol)}"  update=":frm:uTable" >
@@ -54,10 +54,14 @@
                                     </p:commandLink>
                                     <!-- <p:graphicImage name="images/ui-icon-trash.png" library="sentinel-layout"/>-->
                                 </i>
+                                <i class="icon-wrench">
+                                    <p:commandLink value="permisos" actionListener="#{rolBean.showPermissionDialog(rol)}"  
+                                                   oncomplete="PF('wdlgPermisos').show();" update="dlgPermisos" />
+                                </i>
                             </p:column>
                         </p:dataTable>
                     </h:form>
-                    
+
                     <!--############################################################################################ -->
                     <!--############################################################################################ -->
                     <p:dialog id="dlgDatos" header="Editar Rol" widgetVar="wdlgDatos" modal="true" responsive="true">
@@ -72,7 +76,41 @@
                             </h:panelGrid>
                         </h:form>
                     </p:dialog>
-                    
+                    <!--############################################################################################ -->
+                    <!--############################################################################################ -->
+                    <p:dialog id="dlgPermisos" header="Permisos Rol" widgetVar="wdlgPermisos" modal="true" 
+                               closable="true" closeOnEscape="true" style="width:600px;height: 300px">
+                        <h:form>
+                            <p:dataTable id="resourceTable" value="#{rolBean.listadoPermisos}" var="recurso" widgetVar="recursoTable" rows="10" paginator="true"
+                                             paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
+                                             paginatorPosition="bottom" rowsPerPageTemplate="5,10,15" filteredValue="#{rolBean.filteredAccess}" lazy="false">
+                                   <!-- <f:facet name="header">
+                                        <p:outputPanel style="text-align: right;">
+                                            <table>
+                                                <tr>
+                                                    <td class="FontBold Fs18 hardwhite" style="border: none; text-align: left"><h:outputText value="Asignar Recursos" style="color: #ffffff" /></td>
+                                                    <td style="border: none; text-align: right"><h:outputText value="Buscar: " style="text-align: right; color: #ffffff"/>
+                                                        <p:inputText id="globalFilter" onkeyup="PF('recursoTable').filter()" style="width:150px" placeholder="Enter keyword"/></td>
+                                                </tr>
+                                            </table>
+                                        </p:outputPanel>
+                                    </f:facet> -->
+                                    <p:column headerText="Recurso" filterBy="#{recurso.descripcionRecurso}" filterStyle="display:none" filterMatchMode="contains">
+                                        <p:outputLabel value="#{recurso.descripcionRecurso}"/>
+                                    </p:column>
+                                    <p:column headerText="Asignado">
+                                        <p:selectBooleanCheckbox value="#{recurso.estado}"/>
+                                    </p:column>
+                                </p:dataTable>
+                                <p:commandButton ajax="true" update="@form" 
+                                                 value="Guardar" actionListener="#{rolBean.commitPermission()}"
+                                                 oncomplete="PF('recursoTable').clearFilters();">
+                                    <p:confirm header="Confirmación" message="Está seguro de realizar esta acción" icon="ui-icon-alert" />
+                                </p:commandButton>
+                            <p:commandButton value="Cancelar" oncomplete="PF('wdlgPermisos').hide();"/>
+                        </h:form>
+                    </p:dialog>
+
                     <!--############################################################################################ -->
                     <!--############################################################################################ -->
                     <p:dialog id="dlgCrearRol" header="Crear Rol" resizable="false"  widgetVar="wdlgCrearRol" modal="true" responsive="true">
@@ -87,7 +125,7 @@
                             </h:panelGrid>
                         </h:form>
                     </p:dialog>
-                    
+
                     <!--############################################################################################ -->
                     <!--############################################################################################ -->
                     <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" >

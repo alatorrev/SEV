@@ -5,8 +5,10 @@
  */
 package com.sev.bean;
 
+import com.sev.dao.AsignaRecursoDAO;
 import com.sev.dao.RolDAO;
 import com.sev.dao.UsuarioDAO;
+import com.sev.entity.AsignaRecurso;
 import com.sev.entity.Rol;
 import com.sev.entity.Usuario;
 import java.io.Serializable;
@@ -29,6 +31,9 @@ public class RolBean implements Serializable {
     private List<Rol> filteredRols;
     private Rol rol = new Rol();
     private RolDAO daoRol = new RolDAO();
+    private final AsignaRecursoDAO daoAsigRecurso = new AsignaRecursoDAO();
+    private List<AsignaRecurso> listadoPermisos = new ArrayList<>();
+    private List<AsignaRecurso> filteredAccess;
     
     public RolBean() throws SQLException {
         RolDAO daoRol = new RolDAO();
@@ -38,6 +43,11 @@ public class RolBean implements Serializable {
 
     public void showEditDialog(Rol r) {
         rol = r;
+    }
+    
+    public void showPermissionDialog(Rol r) {
+        rol=r;
+        setListadoPermisos(daoAsigRecurso.recursosAsignadosbyRol(rol.getIdRol()));
     }
 
     public void onCancelDialog() {
@@ -58,7 +68,13 @@ public class RolBean implements Serializable {
         daoRol.deleteRol(r);
         listadoRoles=daoRol.findAll();
     }
-
+    
+    public void commitPermission() throws SQLException{
+        daoAsigRecurso.saveResourcesbyProfile(getListadoPermisos(), rol.getIdRol());
+        setListadoPermisos(daoAsigRecurso.recursosAsignadosbyRol(rol.getIdRol()));
+        setRol(new Rol());
+    }
+    
     public List<Rol> getListadoRoles() {
         return listadoRoles;
     }
@@ -81,6 +97,22 @@ public class RolBean implements Serializable {
 
     public void setRol(Rol rol) {
         this.rol = rol;
+    }
+
+    public List<AsignaRecurso> getListadoPermisos() {
+        return listadoPermisos;
+    }
+
+    public void setListadoPermisos(List<AsignaRecurso> listadoPermisos) {
+        this.listadoPermisos = listadoPermisos;
+    }
+
+    public List<AsignaRecurso> getFilteredAccess() {
+        return filteredAccess;
+    }
+
+    public void setFilteredAccess(List<AsignaRecurso> filteredAccess) {
+        this.filteredAccess = filteredAccess;
     }
     
     

@@ -15,7 +15,7 @@
                     <h:form id="frm">
                         <!-- <div class="FontBold Fs18 hardblue" style="margin: 15px 10px">Listado Usuarios</div>-->
                         <div class="Separator">
-                            <p:commandLink  value="Agregar usuario" oncomplete="PF('wdlgCrearUsuario').show();" style="font-size: 20px; "  styleClass="icon-plus-circled"/>
+                            <p:commandLink  value="Agregar usuario" oncomplete="PF('wdlgCrearUsuario').show();" update="dlgCrearUsuario" style="font-size: 20px; "  styleClass="icon-plus-circled"/>
                         </div>
                         <p:spacer height="10"/>
                         <p:dataTable id="uTable" value="#{usuarioBean.listadoUsuarios}" var="us" widgetVar="userTable" paginator="true" rows="10"

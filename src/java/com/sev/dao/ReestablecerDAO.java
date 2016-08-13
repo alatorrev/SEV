@@ -4,6 +4,7 @@
  * and open the template in the editor.
  */
 package com.sev.dao;
+
 import com.sev.entity.ReestablecerContra;
 import java.io.Serializable;
 import java.sql.PreparedStatement;
@@ -12,21 +13,23 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import com.sev.conexion.Conexion;
+
 /**
  *
  * @author usuario1
  */
 public class ReestablecerDAO implements Serializable {
-    
+
     public void editContra(ReestablecerContra r) throws SQLException {
         Conexion con = new Conexion();
         PreparedStatement pst;
-        String query = "update usuario set clave=?"
+        String query = "update usuario set clave=?,estadoclave=?"
                 + " where cedula=? ";
         pst = con.getConnection().prepareStatement(query);
         try {
             pst.setString(1, r.getPassword());
-            pst.setString(2, r.getCedula());
+            pst.setInt(2, 1);
+            pst.setString(3, r.getCedula());
             pst.executeUpdate();
         } catch (Exception e) {
             System.out.println("DAO REESTABLECER: " + e.getMessage());
@@ -34,13 +37,14 @@ public class ReestablecerDAO implements Serializable {
             con.desconectar();
         }
     }
-    
+
     public List<ReestablecerContra> findAll() throws SQLException {
         Conexion con = new Conexion();
         List<ReestablecerContra> listadoUsuarios = new ArrayList<>();
         PreparedStatement pst;
         ResultSet rs = null;
-        String query = "select u.cedula,u.nombres,u.apellidos,u.email,u.prioridad,r.IDROL,r.DESCRIPCION from USUARIO u "
+        String query = "select u.cedula,u.nombres,u.apellidos,u.email,u.prioridad,r.IDROL,r.DESCRIPCION,"
+                + "u.estadoclave,u.activo from USUARIO u "
                 + "inner join USUARIOROL ru on u.CEDULA=ru.IDUSUARIO inner join ROL r on ru.IDROL=r.IDROL";
         pst = con.getConnection().prepareStatement(query);
         try {
@@ -63,5 +67,5 @@ public class ReestablecerDAO implements Serializable {
         }
         return listadoUsuarios;
     }
-    
+
 }

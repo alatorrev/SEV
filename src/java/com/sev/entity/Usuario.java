@@ -23,6 +23,8 @@ public class Usuario implements Serializable {
     Date fecha_modif;
     int idRol;
     String descripcionRol;
+    int estadoClave;
+    int activo;
     String prioridad;
 
     public String getCedula() {
@@ -103,6 +105,22 @@ public class Usuario implements Serializable {
 
     public void setPrioridad(String prioridad) {
         this.prioridad = prioridad;
+    }
+
+    public int getActivo() {
+        return activo;
+    }
+
+    public void setActivo(int activo) {
+        this.activo = activo;
+    }
+
+    public int getEstadoClave() {
+        return estadoClave;
+    }
+
+    public void setEstadoClave(int estadoClave) {
+        this.estadoClave = estadoClave;
     }
 
 }

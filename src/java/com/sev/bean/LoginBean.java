@@ -33,10 +33,9 @@ public class LoginBean implements Serializable {
 
     private Usuario sessionUsuario = new Usuario();
     private String email;
-    private MenuModel modelMenu ;
+    private MenuModel modelMenu;
     private List<String> subMenuList = new ArrayList<>();
     private String contrasena;
-    
 
     public LoginBean() {
     }
@@ -45,19 +44,28 @@ public class LoginBean implements Serializable {
         UsuarioDAO usuarioDAO = new UsuarioDAO();
         setSessionUsuario(usuarioDAO.loginAction(email, contrasena));
         if (sessionUsuario != null) {
-            initMenu(getSessionUsuario());
-            FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("Usuario", sessionUsuario);
-            return "correcto";
+            if (getSessionUsuario().getEstadoClave() == 1) {
+                initMenu(getSessionUsuario());
+                FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("Usuario", sessionUsuario);
+                return "nuevo";
+
+            }
+            if (getSessionUsuario().getEstadoClave() == 0) {
+                initMenu(getSessionUsuario());
+                FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("Usuario", sessionUsuario);
+                return "correcto";
+            }
         } else {
             RequestContext.getCurrentInstance().update("growl");
             FacesContext context = FacesContext.getCurrentInstance();
             context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Atención", "Usuario o Contraseña incorrecto"));
             return "incorrecto";
         }
+        return null;
     }
 
     public void initMenu(Usuario u) throws SQLException {
-        modelMenu= new DefaultMenuModel();
+        modelMenu = new DefaultMenuModel();
         String urlBase = FacesContext.getCurrentInstance().getExternalContext().getInitParameter("Url");
         RecursoDAO daoRecurso = new RecursoDAO();
         List<Recurso> listaRecursos = daoRecurso.findAllRecursoByRol(u);

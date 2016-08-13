@@ -22,12 +22,13 @@ public class CambiarDAO implements Serializable{
         Conexion con = new Conexion();
         
         PreparedStatement pst;
-        String query = "update usuario set clave=?"
+        String query = "update usuario set clave=?, estadoclave=?"
                 + " where cedula=? ";
         pst = con.getConnection().prepareStatement(query);
         try {
             pst.setString(1, ca.getPassword());
-            pst.setString(2, u.getCedula());
+            pst.setInt(2, 0);
+            pst.setString(3, u.getCedula());
             
             pst.executeUpdate();
         } catch (Exception e) {

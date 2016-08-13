@@ -43,7 +43,7 @@
                                 <p:commandButton ajax="true" value="Editar" update="matchpassword" actionListener="#{cambiarBean.commitEdit()}" >
                                     <p:confirm header="Confirmación" message="Está seguro de eliminar el registro" />
                                 </p:commandButton>
-                                <p:commandButton value="Cancelar" actionListener="#{reestablecerBean.onCancelDialog()}" immediate="true" oncomplete="PF('wdlgDatos').hide();"/>
+                              <!--  <p:commandButton value="Cancelar" actionListener="# {reestablecerBean.onCancelDialog()}" immediate="true" oncomplete="PF('wdlgDatos').hide();"/>-->
                             </h:panelGrid>
                             
                         </h:form>
