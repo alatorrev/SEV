@@ -7,7 +7,6 @@ package com.sev.entity;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.Objects;
 
 /**
  *
@@ -15,7 +14,6 @@ import java.util.Objects;
  */
 public class Prospecto implements Serializable {
 
-    private String canal;
     private String cedula;
     private String nombres;
     private String apellidos;
@@ -41,14 +39,6 @@ public class Prospecto implements Serializable {
         }
         Prospecto p = (Prospecto) object;
         return this.cedula.equals(p.cedula);
-    }
-
-    public String getCanal() {
-        return canal;
-    }
-
-    public void setCanal(String canal) {
-        this.canal = canal;
     }
 
     public String getCedula() {

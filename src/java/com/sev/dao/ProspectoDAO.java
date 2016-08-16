@@ -24,15 +24,16 @@ import java.util.logging.Logger;
  *
  * @author usuario1
  */
-public class ProspectoDAO implements Serializable{
+public class ProspectoDAO implements Serializable {
+
     public List<Prospecto> findAll() throws SQLException {
         Conexion con = new Conexion();
         List<Prospecto> listadoProspecto = new ArrayList<>();
         PreparedStatement pst;
         ResultSet rs = null;
-        String query = "  select p.IDCANCAP, p.CEDULA, p.NOMBRES, p.APELLIDOS, p.CELULAR, p.CASA, p.CORREO, p.ESTABLECIMIENTO, p.RESPONSABLE, c.DESCRIPCION" +
-                       "  from PROSPECTO p" +
-                       "  inner join CANALCAPTACION c on p.IDCANCAP = c.IDCANAL";
+        String query = "  select p.IDCANCAP, p.CEDULA, p.NOMBRES, p.APELLIDOS, p.CELULAR, p.CASA, p.CORREO, p.ESTABLECIMIENTO, p.RESPONSABLE, c.DESCRIPCION"
+                + "  from PROSPECTO p"
+                + "  inner join CANALCAPTACION c on p.IDCANCAP = c.IDCANAL";
         pst = con.getConnection().prepareStatement(query);
         try {
             rs = pst.executeQuery();
@@ -57,7 +58,7 @@ public class ProspectoDAO implements Serializable{
         }
         return listadoProspecto;
     }
-    
+
     public void createProspecto(Prospecto pro) throws SQLException {
         SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd");
         Conexion con = new Conexion();
@@ -77,8 +78,8 @@ public class ProspectoDAO implements Serializable{
             pst.setString(9, pro.getCaptador());
             pst.setString(10, fmt.format(new Date()));
             pst.setString(11, null/*for now lolz*/);
-            
-            pst.executeUpdate(); 
+
+            pst.executeUpdate();
 //            ResultSet rs = pst.getGeneratedKeys();
 //
 //            while (rs.next()) {
@@ -92,7 +93,7 @@ public class ProspectoDAO implements Serializable{
             con.desconectar();
         }
     }
-    
+
     public void editProspecto(Prospecto p) throws SQLException {
         SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd");
         Conexion con = new Conexion();
@@ -118,7 +119,7 @@ public class ProspectoDAO implements Serializable{
             con.desconectar();
         }
     }
-    
+
     public void deleteProspecto(Prospecto p) throws SQLException {
         Conexion con = new Conexion();
         PreparedStatement pst;
@@ -133,16 +134,16 @@ public class ProspectoDAO implements Serializable{
             con.desconectar();
         }
     }
-    
-     public int guardarProspecto(Prospecto pros) throws SQLException {
+
+    public int guardarProspecto(Prospecto pros) throws SQLException {
         SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd");
         Conexion con = new Conexion();
-        int repitedFlag=0;
+        int repitedFlag = 0;
         con.getConnection().setAutoCommit(false);
         PreparedStatement pst;
-        String query = "insert into PROSPECTO" +
-                       "(cedula,idcancap,nombres,apellidos,celular,casa,correo,establecimiento,responsable, fecha_creac, fecha_modif)" +
-                       "values (?,(select IDCANAL from CANALCAPTACION where DESCRIPCION =?), ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String query = "insert into PROSPECTO"
+                + "(cedula,idcancap,nombres,apellidos,celular,casa,correo,establecimiento,responsable, fecha_creac, fecha_modif)"
+                + "values (?,(select IDCANAL from CANALCAPTACION where DESCRIPCION =?), ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         //String query = "insert into prospecto values(?,?,?,?,?,?,?,?,?)";
         pst = con.getConnection().prepareStatement(query);
         try {
@@ -157,19 +158,19 @@ public class ProspectoDAO implements Serializable{
             pst.setString(9, pros.getCaptador());
             pst.setString(10, fmt.format(new Date()));
             pst.setString(11, null/*for now lolz*/);
-            pst.executeUpdate(); 
+            pst.executeUpdate();
             con.getConnection().commit();
         } catch (Exception e) {
             System.out.println("DAO PROSPECTOCARGA: " + e.getMessage());
-            repitedFlag=1;
+            repitedFlag = 1;
             con.getConnection().rollback();
         } finally {
             con.desconectar();
         }
         return repitedFlag;
     }
-     
-     public List<AsignaProspecto> prospectoAsignadosbyUsuario(String cedulaU) {
+
+    public List<AsignaProspecto> prospectoAsignadosbyUsuario(String cedulaU) {
         List<AsignaProspecto> lista = new ArrayList<>();
         Conexion con = new Conexion();
         PreparedStatement pst = null;
@@ -201,8 +202,8 @@ public class ProspectoDAO implements Serializable{
         }
         return lista;
     }
-     
-     public void saveResourcesbyProfile(List<AsignaProspecto> listadoPR, String cedulaU) throws SQLException {
+
+    public void saveResourcesbyProfile(List<AsignaProspecto> listadoPR, String cedulaU) throws SQLException {
         Conexion con = new Conexion();
         PreparedStatement pst;
         con.getConnection().setAutoCommit(false);
@@ -216,7 +217,7 @@ public class ProspectoDAO implements Serializable{
             for (AsignaProspecto ap : listadoPR) {
                 pst.setString(1, ap.getCedula());
                 pst.setString(2, cedulaU);
-                pst.setInt(3, ap.getEstado()== true ? 1 : 0);
+                pst.setInt(3, ap.getEstado() == true ? 1 : 0);
                 pst.setString(4, ap.getCedula());
                 pst.setString(5, cedulaU);
                 pst.setInt(6, ap.getEstado() == true ? 1 : 0);
@@ -229,5 +230,36 @@ public class ProspectoDAO implements Serializable{
         } finally {
             con.desconectar();
         }
+    }
+
+    public List<Prospecto> readProspectobyUsuario(String cedula) {
+        Conexion con = new Conexion();
+        List<Prospecto> lista = new ArrayList<>();
+        PreparedStatement pst;
+        ResultSet rs;
+        try {
+            String query = "select P.CEDULA,P.NOMBRES,P.APELLIDOS,P.CELULAR,P.CASA,P.CORREO,P.ESTABLECIMIENTO, C.IDCANAL,C.DESCRIPCION "
+                    + "from PROSPECTO P inner join CANALCAPTACION C "
+                    + "ON P.IDCANCAP=C.IDCANAL where P.IDUSUARIO=? ";
+            pst = con.getConnection().prepareStatement(query);
+            pst.setString(1, cedula);
+            rs = pst.executeQuery();
+            while (rs.next()) {
+                Prospecto p = new Prospecto();
+                p.setCedula(rs.getString(1));
+                p.setNombres(rs.getString(2));
+                p.setApellidos(rs.getString(3));
+                p.setCelular(rs.getString(4));
+                p.setCasa(rs.getString(5));
+                p.setEmail(rs.getString(6));
+                p.setEstablecimientoProveniente(rs.getString(7));
+                p.setIdcanal(rs.getInt(8));
+                p.setDescripcionCanal(rs.getString(9));
+                lista.add(p);
+            }
+        } catch (Exception e) {
+            System.out.println("DAO PROSPECTO: "+e.getMessage());
+        }
+        return lista;
     }
 }

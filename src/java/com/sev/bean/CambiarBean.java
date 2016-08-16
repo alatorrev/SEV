@@ -4,18 +4,11 @@
  * and open the template in the editor.
  */
 package com.sev.bean;
-import com.sev.dao.ReestablecerDAO;
-import com.sev.dao.RolDAO;
-import com.sev.dao.UsuarioDAO;
 import com.sev.dao.CambiarDAO;
-import com.sev.entity.Rol;
 import com.sev.entity.Usuario;
-import com.sev.entity.ReestablecerContra;
 import com.sev.entity.CambiarContrasena;
 import java.io.Serializable;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;

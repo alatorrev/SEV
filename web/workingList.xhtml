@@ -1,0 +1,95 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template.xhtml">
+
+    <ui:define name="content">
+        <h:outputScript name="jquery/jquery.js" library="primefaces" target="head"/>
+        <h:outputStylesheet name="style.css" />
+        <div class="Container100 ui-fluid">
+            <div class="ContainerIndent">
+                <p:panel>
+                    <h:form id="frm">
+                        <p:dataTable id="uTable" value="#{ejecutivoWorkingListBean.listadoProspecto}" var="p" widgetVar="userTable" paginator="true" rows="10"
+                                     paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
+                                     paginatorPosition="bottom" filteredValue="#{ejecutivoWorkingListBean.filteredProspecto}"
+                                     rowsPerPageTemplate="5,10,15"  lazy="false">
+                            <f:facet name="header">
+                                <p:outputPanel style="text-align: right;">
+                                    <table>
+                                        <tr>
+                                            <td class="FontBold Fs18 hardwhite" style="border: none; text-align: left"><h:outputText value="Lista de Trabajo" style="color: #ffffff" /></td>
+                                            <td style="border: none; text-align: right"><h:outputText value="Buscar: " style="text-align: right; color: #ffffff"/>
+                                                <p:inputText id="globalFilter" onkeyup="PF('userTable').filter()" style="width:150px" placeholder="Enter keyword"/></td>
+                                        </tr>
+                                    </table>
+                                </p:outputPanel>
+                            </f:facet>
+                            <p:column headerText="Cédula" filterBy="#{p.cedula}" filterStyle="display:none" filterMatchMode="contains">
+                                <h:outputText value="#{p.cedula}"/>
+                            </p:column>
+                            <p:column headerText="Canal Captación" filterBy="#{p.descripcionCanal}" filterStyle="display:none" filterMatchMode="contains">
+                                <h:outputText value="#{p.descripcionCanal}"/>
+                            </p:column>
+                            <p:column headerText="Nombres" filterBy="#{p.nombres}" filterStyle="display:none" filterMatchMode="contains">
+                                <h:outputText value="#{p.nombres}"/>
+                            </p:column>
+                            <p:column headerText="Apellidos" filterBy="#{p.apellidos}" filterStyle="display:none" filterMatchMode="contains">
+                                <h:outputText value="#{p.apellidos}"/>
+                            </p:column>
+                            <p:column headerText="Celular" filterBy="#{p.celular}" filterStyle="display:none" filterMatchMode="contains">
+                                <h:outputText value="#{p.celular}"/>
+                            </p:column>
+                            <p:column headerText="Casa" filterBy="#{p.casa}" filterStyle="display:none" filterMatchMode="contains">
+                                <h:outputText value="#{p.casa}"/>
+                            </p:column>
+                            <p:column headerText="Email" filterBy="#{p.email}" filterStyle="display:none" filterMatchMode="contains">
+                                <h:outputText value="#{p.email}"/>
+                            </p:column>
+                            <p:column headerText="Establecimiento" filterBy="#{p.establecimientoProveniente}" filterStyle="display:none" filterMatchMode="contains">
+                                <h:outputText value="#{p.establecimientoProveniente}"/>
+                            </p:column>
+                            <p:column headerText="Responsable" filterBy="#{p.captador}" filterStyle="display:none" filterMatchMode="contains">
+                                <h:outputText value="#{p.captador}"/>
+                            </p:column>
+                            <p:column style="text-align: center;width: 15%;">
+                                <i class="icon-search-2">
+                                    <p:commandLink value="ver" actionListener="#{ejecutivoWorkingListBean.showEditDialog(p)}" oncomplete="PF('wdlgDatos').show();" update="dlgDatos"/>
+                                </i>
+                                <i class="icon-users">
+                                    <p:commandLink value="contactar" action="/contactarProspecto?faces-redirect=true&amp;includeViewParams=true" >
+                                        <f:param name="cedulaProspecto" value="#{p.cedula}"/>
+                                    </p:commandLink>
+                                </i>
+                            </p:column>
+                        </p:dataTable>
+                    </h:form>
+                    <p:dialog id="dlgDatos" header="Editar Prospecto" widgetVar="wdlgDatos" modal="true" responsive="true">
+                        <h:form>
+                            <h:panelGrid columns="2">
+                                <p:outputLabel value="Nombres"/>
+                                <p:inputText value="#{ejecutivoWorkingListBean.prospecto.nombres}"/>
+                                <p:outputLabel value="Apellidos"/>
+                                <p:inputText value="#{ejecutivoWorkingListBean.prospecto.apellidos}"/>
+                                <p:outputLabel value="Celular"/>
+                                <p:inputText value="#{ejecutivoWorkingListBean.prospecto.celular}"/>
+                                <p:outputLabel value="Casa"/>
+                                <p:inputText value="#{ejecutivoWorkingListBean.prospecto.casa}"/>
+                                <p:outputLabel value="Email"/>
+                                <p:inputText value="#{ejecutivoWorkingListBean.prospecto.email}"/>
+                                <p:outputLabel value="Establecimiento"/>
+                                <p:inputText value="#{ejecutivoWorkingListBean.prospecto.establecimientoProveniente}"/>
+                                <p:outputLabel value="Responsable"/>
+                                <p:inputText value="#{ejecutivoWorkingListBean.prospecto.captador}"/>
+                                <p:commandButton value="Cancelar" actionListener="#{ejecutivoWorkingListBean.onCancelDialog()}" immediate="true" oncomplete="PF('wdlgDatos').hide();"/>
+                            </h:panelGrid>
+                        </h:form>
+                    </p:dialog>
+                </p:panel>
+            </div>
+        </div>
+    </ui:define>
+
+</ui:composition>
