@@ -5,12 +5,15 @@
  */
 package com.sev.bean;
 
+import com.sev.dao.InteresDAO;
 import com.sev.dao.ProspectoDAO;
+import com.sev.entity.InteresProspecto;
 import com.sev.entity.Prospecto;
 import com.sev.entity.Usuario;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
@@ -25,20 +28,26 @@ public class EjecutivoWorkingListBean implements Serializable {
 
     private List<Prospecto> listadoProspecto = new ArrayList<>();
     private List<Prospecto> filteredProspecto;
-    private Usuario u = new Usuario();
+    private Usuario sessionUsuario;
+    
     private ProspectoDAO daoProspecto = new ProspectoDAO();
     private Prospecto prospecto = new Prospecto();
 
     public EjecutivoWorkingListBean() {
-        u = (Usuario) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("Usuario");
-        listadoProspecto = daoProspecto.readProspectobyUsuario(u.getCedula());
+        try {
+            sessionUsuario = (Usuario) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("Usuario");
+            if (sessionUsuario == null) {
+                FacesContext.getCurrentInstance().getExternalContext().getSessionMap().remove("Usuario");
+                String url = FacesContext.getCurrentInstance().getExternalContext().getInitParameter("SesionExpirada");
+                FacesContext.getCurrentInstance().getExternalContext().redirect(url);
+            } else {
+                listadoProspecto = daoProspecto.readProspectobyUsuario(sessionUsuario.getCedula());
+            }
+        } catch (Exception e) {
+            System.out.println("Bean Constructor: " + e.getMessage());
+        }
     }
-    
-    public String jumpContactarDetalle(){
-        FacesContext.getCurrentInstance().getExternalContext().getRequestMap().put("Prospecto", prospecto);
-        return "/contactarProspecto?faces-redirect=true&amp;includeViewParams=true";
-    }
-    
+
     public void showEditDialog(Prospecto p) {
         prospecto = p;
     }
@@ -70,5 +79,4 @@ public class EjecutivoWorkingListBean implements Serializable {
     public void setProspecto(Prospecto prospecto) {
         this.prospecto = prospecto;
     }
-
 }

@@ -56,9 +56,9 @@ public class LoginBean implements Serializable {
                 return "correcto";
             }
         } else {
-            RequestContext.getCurrentInstance().update("growl");
             FacesContext context = FacesContext.getCurrentInstance();
             context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Atención", "Usuario o Contraseña incorrecto"));
+            RequestContext.getCurrentInstance().update("growl");
             return "incorrecto";
         }
         return null;

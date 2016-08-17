@@ -9,13 +9,13 @@ import com.sev.dao.ProspectoDAO;
 import com.sev.entity.CanalCaptacion;
 import com.sev.entity.FileUploaded;
 import com.sev.entity.Prospecto;
+import com.sev.entity.Usuario;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import javax.faces.application.FacesMessage;
@@ -33,7 +33,6 @@ import org.primefaces.context.RequestContext;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
-import org.primefaces.model.UploadedFile;
 
 /**
  *
@@ -44,22 +43,34 @@ import org.primefaces.model.UploadedFile;
 public class CargarProspectoBean implements Serializable {
 
     private StreamedContent downloadableFile;
-    //private UploadedFile file;
+    private Usuario sessionUsuario;
     private final List<FileUploaded> uploadedFilesList = new ArrayList<>();
     private List<Prospecto> listadoProspecto = new ArrayList<>();
     private List<Prospecto> failedProspectoList = new ArrayList<>();
     private List<Prospecto> selectedProspectos;
-//    private List<Prospecto> listadoProspectoDB;
     private List<Prospecto> filteredProspecto;
     private Prospecto prospecto = new Prospecto();
     private ProspectoDAO daoProspecto = new ProspectoDAO();
     private int idCanalSelected, cantidadProspectosRepetidos = 0;
     private List<CanalCaptacion> selectorCanal = new ArrayList<>();
 
-    public CargarProspectoBean() throws SQLException {
-//        listadoProspectoDB = daoProspecto.findAll();
-        InputStream stream = FacesContext.getCurrentInstance().getExternalContext().getResourceAsStream("/resources/matriz/prospectos.xlsx");
-        downloadableFile = new DefaultStreamedContent(stream, "application/xlsx", "matriz_prospectos.xlsx");
+    public CargarProspectoBean(){
+        try {
+            sessionUsuario = (Usuario) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("Usuario");
+            if (sessionUsuario == null) {
+                FacesContext.getCurrentInstance().getExternalContext().getSessionMap().remove("Usuario");
+                String url = FacesContext.getCurrentInstance().getExternalContext().getInitParameter("SesionExpirada");
+                FacesContext.getCurrentInstance().getExternalContext().redirect(url);
+            } else {
+                /**
+                 * se ejecutan las lineas del constructor**
+                 */
+                InputStream stream = FacesContext.getCurrentInstance().getExternalContext().getResourceAsStream("/resources/matriz/prospectos.xlsx");
+                downloadableFile = new DefaultStreamedContent(stream, "application/xlsx", "matriz_prospectos.xlsx");
+            }
+        } catch (Exception e) {
+            System.out.println("Bean Constructor: " + e.getMessage());
+        }
     }
 
     public void handleFileUpload(FileUploadEvent event) throws IOException {
@@ -89,7 +100,6 @@ public class CargarProspectoBean implements Serializable {
 //        }
 //        return lista;
 //    }
-
     public List<Prospecto> verifyFromExcel(List<Prospecto> listadoXLS) {
         int secuencialProspecto = getListadoProspecto().size();
         List<Prospecto> lista = getListadoProspecto();
@@ -107,10 +117,10 @@ public class CargarProspectoBean implements Serializable {
         return lista;
     }
 
-    public void clearFailedList(){
+    public void clearFailedList() {
         failedProspectoList.clear();
         listadoProspecto.clear();
-        cantidadProspectosRepetidos=0;
+        cantidadProspectosRepetidos = 0;
     }
 
     public void guardarListadoProspecto() throws SQLException {
@@ -207,7 +217,7 @@ public class CargarProspectoBean implements Serializable {
         }
         uploadedFilesList.clear();
     }
-    
+
     public List<Prospecto> importData(Workbook workbook, int tabNumber) throws IOException {
         List<Prospecto> lista = new ArrayList<>();
         String[][] data;

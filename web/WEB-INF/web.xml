@@ -28,7 +28,10 @@
         <param-name>Url</param-name>
         <param-value>http://localhost:8081/SEV</param-value>
     </context-param>
-    
+    <context-param>
+        <param-name>SesionExpirada</param-name>
+        <param-value>http://localhost:8081/SEV/faces/index.xhtml</param-value>
+    </context-param>
     <servlet>
         <servlet-name>Faces Servlet</servlet-name>
         <servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
@@ -40,7 +43,7 @@
     </servlet-mapping>
     <session-config>
         <session-timeout>
-            30
+            1
         </session-timeout>
     </session-config>
     <welcome-file-list>

@@ -6,9 +6,6 @@
 package com.sev.bean;
 
 import com.sev.dao.ReestablecerDAO;
-import com.sev.dao.RolDAO;
-import com.sev.dao.UsuarioDAO;
-import com.sev.entity.Rol;
 import com.sev.entity.Usuario;
 import com.sev.entity.ReestablecerContra;
 import java.io.Serializable;
@@ -17,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
 
 /**
  *
@@ -25,14 +23,30 @@ import javax.faces.bean.ViewScoped;
 @ManagedBean
 @ViewScoped
 public class ReestablecerBean implements Serializable {
+
     private List<ReestablecerContra> listadoUsuarios = new ArrayList<>();
     private List<ReestablecerContra> filteredUsers;
+    private Usuario sessionUsuario;
     private ReestablecerContra reestablecer = new ReestablecerContra();
     private ReestablecerDAO daoReestablecer = new ReestablecerDAO();
 
-    public ReestablecerBean() throws SQLException {
-        listadoUsuarios = daoReestablecer.findAll();
-        
+    public ReestablecerBean() {
+        try {
+            sessionUsuario = (Usuario) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("Usuario");
+            if (sessionUsuario == null) {
+                FacesContext.getCurrentInstance().getExternalContext().getSessionMap().remove("Usuario");
+                String url = FacesContext.getCurrentInstance().getExternalContext().getInitParameter("SesionExpirada");
+                FacesContext.getCurrentInstance().getExternalContext().redirect(url);
+            } else {
+                /**
+                 * se ejecutan las lineas del constructor**
+                 */
+                listadoUsuarios = daoReestablecer.findAll();
+            }
+        } catch (Exception e) {
+            System.out.println("Bean Constructor: " + e.getMessage());
+        }
+
     }
 
     public void showEditDialog(ReestablecerContra r) {
@@ -45,7 +59,7 @@ public class ReestablecerBean implements Serializable {
 
     public void commitEdit() throws SQLException {
         daoReestablecer.editContra(reestablecer);
-        listadoUsuarios=daoReestablecer.findAll();
+        listadoUsuarios = daoReestablecer.findAll();
     }
 
     public List<ReestablecerContra> getListadoUsuarios() {
@@ -72,5 +86,4 @@ public class ReestablecerBean implements Serializable {
         this.filteredUsers = filteredUsers;
     }
 
-    
 }

@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
 
 /**
  *
@@ -26,16 +27,30 @@ public class UsuarioBean implements Serializable {
 
     private List<Usuario> listadoUsuarios = new ArrayList<>();
     private List<Usuario> filteredUsers;
+    private Usuario sessionUsuario;
     private Usuario usuario = new Usuario();
     private UsuarioDAO daoUsuario = new UsuarioDAO();
     private int idRolSeleted;
     private List<Rol> selectorRoles = new ArrayList<>();
 
-    public UsuarioBean() throws SQLException {
-        RolDAO daoRol = new RolDAO();
-        selectorRoles=daoRol.findAll();
-        listadoUsuarios = daoUsuario.findAll();
-        
+    public UsuarioBean() {
+        try {
+            sessionUsuario = (Usuario) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("Usuario");
+            if (sessionUsuario == null) {
+                FacesContext.getCurrentInstance().getExternalContext().getSessionMap().remove("Usuario");
+                String url = FacesContext.getCurrentInstance().getExternalContext().getInitParameter("SesionExpirada");
+                FacesContext.getCurrentInstance().getExternalContext().redirect(url);
+            } else {
+                /**
+                 * se ejecutan las lineas del constructor**
+                 */
+                RolDAO daoRol = new RolDAO();
+                selectorRoles = daoRol.findAll();
+                listadoUsuarios = daoUsuario.findAll();
+            }
+        } catch (Exception e) {
+            System.out.println("Bean Constructor: " + e.getMessage());
+        }
     }
 
     public void showEditDialog(Usuario u) {
@@ -50,20 +65,20 @@ public class UsuarioBean implements Serializable {
     public void commitEdit() throws SQLException {
         usuario.setIdRol(idRolSeleted);
         daoUsuario.editUsuario(usuario);
-        listadoUsuarios=daoUsuario.findAll();
+        listadoUsuarios = daoUsuario.findAll();
     }
 
     public void commitCreate() throws SQLException {
         usuario.setIdRol(idRolSeleted);
         usuario.setPassword(usuario.getCedula());
         daoUsuario.createUsuario(usuario);
-        listadoUsuarios=daoUsuario.findAll();
+        listadoUsuarios = daoUsuario.findAll();
         setUsuario(new Usuario());
     }
 
-    public void eliminar(Usuario u)throws SQLException {
+    public void eliminar(Usuario u) throws SQLException {
         daoUsuario.deleteUsuario(u);
-        listadoUsuarios=daoUsuario.findAll();
+        listadoUsuarios = daoUsuario.findAll();
     }
 
     public List<Rol> getSelectorRoles() {
@@ -105,5 +120,5 @@ public class UsuarioBean implements Serializable {
     public void setIdRolSeleted(int idRolSeleted) {
         this.idRolSeleted = idRolSeleted;
     }
-    
+
 }

@@ -4,6 +4,7 @@
  * and open the template in the editor.
  */
 package com.sev.bean;
+
 import com.sev.dao.RolDAO;
 import com.sev.dao.UsuarioDAO;
 import com.sev.dao.CanalDAO;
@@ -18,22 +19,38 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
+
 /**
  *
  * @author usuario1
  */
 @ManagedBean
 @ViewScoped
-public class ViaBean implements Serializable{
+public class ViaBean implements Serializable {
+
     private List<ViaComunicacion> listadoVias = new ArrayList<>();
+    private Usuario sessionUsuario;
     private List<ViaComunicacion> filteredVias;
     private ViaComunicacion via = new ViaComunicacion();
     private ViaDAO daoVia = new ViaDAO();
-    
-    public ViaBean() throws SQLException {
-        ViaDAO daoVia = new ViaDAO();
-        listadoVias = daoVia.findAll();
-        
+
+    public ViaBean() {
+        try {
+            sessionUsuario = (Usuario) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("Usuario");
+            if (sessionUsuario == null) {
+                FacesContext.getCurrentInstance().getExternalContext().getSessionMap().remove("Usuario");
+                String url = FacesContext.getCurrentInstance().getExternalContext().getInitParameter("SesionExpirada");
+                FacesContext.getCurrentInstance().getExternalContext().redirect(url);
+            } else {
+                /**
+                 * se ejecutan las lineas del constructor**
+                 */
+                listadoVias = daoVia.findAll();
+            }
+        } catch (Exception e) {
+            System.out.println("Bean Constructor: " + e.getMessage());
+        }
     }
 
     public void showEditDialog(ViaComunicacion vi) {
@@ -46,17 +63,17 @@ public class ViaBean implements Serializable{
 
     public void commitEdit() throws SQLException {
         daoVia.editVia(via);
-        listadoVias=daoVia.findAll();
+        listadoVias = daoVia.findAll();
     }
 
     public void commitCreate() throws SQLException {
         daoVia.createVia(via);
-        listadoVias=daoVia.findAll();
+        listadoVias = daoVia.findAll();
     }
 
-    public void eliminar(ViaComunicacion vi)throws SQLException {
+    public void eliminar(ViaComunicacion vi) throws SQLException {
         daoVia.deleteVia(vi);
-        listadoVias=daoVia.findAll();
+        listadoVias = daoVia.findAll();
     }
 
     public List<ViaComunicacion> getListadoVias() {
@@ -91,7 +108,4 @@ public class ViaBean implements Serializable{
         this.daoVia = daoVia;
     }
 
-    
-    
-    
 }

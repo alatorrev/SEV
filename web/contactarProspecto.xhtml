@@ -15,6 +15,37 @@
             <div class="ContainerIndent">
                 <p:panel>
                     <h:form id="frm">
+                        <p:panel header="Datos del Prospecto">
+                            <h:panelGrid columns="6">
+                                <p:outputLabel value="Cédula"/>
+                                <p:inputText value="#{contactarProspectoBean.prospecto.cedula}"/>
+                                <p:outputLabel value="Nombres"/>
+                                <p:inputText value="#{contactarProspectoBean.prospecto.nombres}"/>
+                                <p:outputLabel value="Apellidos"/>
+                                <p:inputText value="#{contactarProspectoBean.prospecto.apellidos}"/>
+                                <p:outputLabel value="Telef. Celular"/>
+                                <p:inputText value="#{contactarProspectoBean.prospecto.celular}"/>
+                                <p:outputLabel value="Telef. Domicilio"/>
+                                <p:inputText value="#{contactarProspectoBean.prospecto.casa}"/>
+                                <p:outputLabel value="Correo"/>
+                                <p:inputText value="#{contactarProspectoBean.prospecto.email}"/>
+                                <p:outputLabel value="Entidad Proveniente"/>
+                                <p:inputText value="#{contactarProspectoBean.prospecto.establecimientoProveniente}"/>
+                                <p:outputLabel value="Canal Captación"/>
+                                <p:inputText value="#{contactarProspectoBean.prospecto.descripcionCanal}"/>
+                            </h:panelGrid>
+                        </p:panel>
+                        <p:spacer height="10"/>
+                        <p:panel header="Intereses Prospecto">
+                            <h:panelGrid columns="6">
+                                <p:outputLabel value="Cédula"/>
+                                <p:selectOneMenu value="#{contactarProspectoBean.idInteresSelelected}">
+                                    <f:selectItem itemLabel="Seleccionar..." itemValue="0"/>
+                                    <f:selectItems value="#{contactarProspectoBean.interesProspectoList}" var="interes" 
+                                                   itemLabel="#{interes.descripcion}" itemValue="#{interes.idInteresProspecto}"/>
+                                </p:selectOneMenu>
+                            </h:panelGrid>
+                        </p:panel>
                         <p:commandButton value="test" actionListener="#{contactarProspectoBean.verValues()}"/>
                     </h:form>
                 </p:panel>

@@ -64,7 +64,7 @@ public class ProspectoDAO implements Serializable {
         Conexion con = new Conexion();
         con.getConnection().setAutoCommit(false);
         PreparedStatement pst;
-        String query = "insert into prospecto values(?,?,?,?,?,?,?,?,?,?,?)";
+        String query = "insert into prospecto values(?,?,?,?,?,?,?,?,?,?,?,?)";
         pst = con.getConnection().prepareStatement(query);
         try {
             pst.setString(1, pro.getCedula());
@@ -76,8 +76,9 @@ public class ProspectoDAO implements Serializable {
             pst.setString(7, pro.getEmail());
             pst.setString(8, pro.getEstablecimientoProveniente());
             pst.setString(9, pro.getCaptador());
-            pst.setString(10, fmt.format(new Date()));
-            pst.setString(11, null/*for now lolz*/);
+            pst.setString(10, null);
+            pst.setString(11, fmt.format(new Date()));
+            pst.setString(12, null/*for now lolz*/);
 
             pst.executeUpdate();
 //            ResultSet rs = pst.getGeneratedKeys();
@@ -232,7 +233,7 @@ public class ProspectoDAO implements Serializable {
         }
     }
 
-    public List<Prospecto> readProspectobyUsuario(String cedula) {
+    public List<Prospecto> readProspectobyUsuario(String cedulaUsuario) {
         Conexion con = new Conexion();
         List<Prospecto> lista = new ArrayList<>();
         PreparedStatement pst;
@@ -242,7 +243,7 @@ public class ProspectoDAO implements Serializable {
                     + "from PROSPECTO P inner join CANALCAPTACION C "
                     + "ON P.IDCANCAP=C.IDCANAL where P.IDUSUARIO=? ";
             pst = con.getConnection().prepareStatement(query);
-            pst.setString(1, cedula);
+            pst.setString(1, cedulaUsuario);
             rs = pst.executeQuery();
             while (rs.next()) {
                 Prospecto p = new Prospecto();
@@ -261,5 +262,35 @@ public class ProspectoDAO implements Serializable {
             System.out.println("DAO PROSPECTO: "+e.getMessage());
         }
         return lista;
+    }
+    
+    public Prospecto readProspectoContact(String cedulaProspecto,String cedulaUsuario){
+        Conexion con = new Conexion();
+        PreparedStatement pst;
+        Prospecto p = new Prospecto();
+        ResultSet rs;
+        try {
+            String query = "select P.CEDULA,P.NOMBRES,P.APELLIDOS,P.CELULAR,P.CASA,P.CORREO,P.ESTABLECIMIENTO, C.IDCANAL,C.DESCRIPCION "
+                    + "from PROSPECTO P inner join CANALCAPTACION C "
+                    + "ON P.IDCANCAP=C.IDCANAL where P.IDUSUARIO=? and P.CEDULA=? ";
+            pst = con.getConnection().prepareStatement(query);
+            pst.setString(1, cedulaUsuario);
+            pst.setString(2, cedulaProspecto);
+            rs = pst.executeQuery();
+            while (rs.next()) {
+                p.setCedula(rs.getString(1));
+                p.setNombres(rs.getString(2));
+                p.setApellidos(rs.getString(3));
+                p.setCelular(rs.getString(4));
+                p.setCasa(rs.getString(5));
+                p.setEmail(rs.getString(6));
+                p.setEstablecimientoProveniente(rs.getString(7));
+                p.setIdcanal(rs.getInt(8));
+                p.setDescripcionCanal(rs.getString(9));
+            }
+        } catch (Exception e) {
+            System.out.println("DAO PROSPECTO: "+e.getMessage());
+        }
+        return p;
     }
 }

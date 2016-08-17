@@ -21,19 +21,33 @@ import javax.faces.context.FacesContext;
 @ViewScoped
 public class CambiarBean implements Serializable{
     private CambiarContrasena cambiar = new CambiarContrasena();
+    private Usuario sessionUsuario;
     private CambiarDAO daoCambiar = new CambiarDAO();
     private Usuario u = new Usuario();
     
 
     public CambiarBean() {
-        u = (Usuario) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("Usuario");
+        try {
+            sessionUsuario = (Usuario) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("Usuario");
+            if (sessionUsuario == null) {
+                FacesContext.getCurrentInstance().getExternalContext().getSessionMap().remove("Usuario");
+                String url = FacesContext.getCurrentInstance().getExternalContext().getInitParameter("SesionExpirada");
+                FacesContext.getCurrentInstance().getExternalContext().redirect(url);
+            } else {
+                /**
+                 * se ejecutan las lineas del constructor**
+                 */
+            }
+        } catch (Exception e) {
+            System.out.println("Bean Constructor: " + e.getMessage());
+        }
     }
     
     
     
     public void commitEdit() throws SQLException {
         
-        daoCambiar.editCambiar(cambiar,u);
+        daoCambiar.editCambiar(cambiar,sessionUsuario);
     }
 
     public CambiarContrasena getCambiar() {

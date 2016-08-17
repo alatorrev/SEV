@@ -4,13 +4,9 @@
  * and open the template in the editor.
  */
 package com.sev.bean;
-import com.sev.dao.RolDAO;
-import com.sev.dao.UsuarioDAO;
-import com.sev.dao.CanalDAO;
+
 import com.sev.dao.InteresDAO;
-import com.sev.entity.CanalCaptacion;
 import com.sev.entity.InteresProspecto;
-import com.sev.entity.Rol;
 import com.sev.entity.Usuario;
 import java.io.Serializable;
 import java.sql.SQLException;
@@ -18,24 +14,38 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
 
 /**
  *
  * @author usuario1
  */
-
 @ManagedBean
 @ViewScoped
-public class InteresBean implements Serializable{
+public class InteresBean implements Serializable {
+
     private List<InteresProspecto> listadoIntereses = new ArrayList<>();
+    private Usuario sessionUsuario;
     private List<InteresProspecto> filteredIntereses;
     private InteresProspecto interes = new InteresProspecto();
     private InteresDAO daoInteres = new InteresDAO();
-    
-    public InteresBean() throws SQLException {
-        InteresDAO daoInteres = new InteresDAO();
-        listadoIntereses = daoInteres.findAll();
-        
+
+    public InteresBean(){
+        try {
+            sessionUsuario = (Usuario) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("Usuario");
+            if (sessionUsuario == null) {
+                FacesContext.getCurrentInstance().getExternalContext().getSessionMap().remove("Usuario");
+                String url = FacesContext.getCurrentInstance().getExternalContext().getInitParameter("SesionExpirada");
+                FacesContext.getCurrentInstance().getExternalContext().redirect(url);
+            } else {
+                /**
+                 * se ejecutan las lineas del constructor**
+                 */
+                listadoIntereses = daoInteres.findAll();
+            }
+        } catch (Exception e) {
+            System.out.println("Bean Constructor: " + e.getMessage());
+        }
     }
 
     public void showEditDialog(InteresProspecto in) {
@@ -48,17 +58,17 @@ public class InteresBean implements Serializable{
 
     public void commitEdit() throws SQLException {
         daoInteres.editInteres(interes);
-        listadoIntereses=daoInteres.findAll();
+        listadoIntereses = daoInteres.findAll();
     }
 
     public void commitCreate() throws SQLException {
         daoInteres.createInteres(interes);
-        listadoIntereses=daoInteres.findAll();
+        listadoIntereses = daoInteres.findAll();
     }
 
-    public void eliminar(InteresProspecto in)throws SQLException {
+    public void eliminar(InteresProspecto in) throws SQLException {
         daoInteres.deleteInteres(in);
-        listadoIntereses=daoInteres.findAll();
+        listadoIntereses = daoInteres.findAll();
     }
 
     public List<InteresProspecto> getListadoIntereses() {
@@ -92,6 +102,5 @@ public class InteresBean implements Serializable{
     public void setDaoInteres(InteresDAO daoInteres) {
         this.daoInteres = daoInteres;
     }
-    
-    
+
 }

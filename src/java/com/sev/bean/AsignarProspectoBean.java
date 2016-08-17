@@ -15,30 +15,46 @@ import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import javax.faces.context.FacesContext;
 
 /**
  *
  * @author usuario1
  */
-
-
 @ManagedBean
 @ViewScoped
-public class AsignarProspectoBean  implements Serializable {
-     private UsuarioDAO daoUsuario = new UsuarioDAO();
-     private List<Usuario> listaUsuario = daoUsuario.findAll();
-     private String UsuarioIdSelected;
-     private List<AsignaProspecto> listadoProspecto = new ArrayList<>();
-     private List<AsignaProspecto> filteredAccess;
-     private ProspectoDAO daoProspecto = new ProspectoDAO();
-     
+public class AsignarProspectoBean implements Serializable {
+
+    private UsuarioDAO daoUsuario = new UsuarioDAO();
+    private Usuario sessionUsuario;
+    private List<Usuario> listaUsuario = daoUsuario.findAll();
+    private String UsuarioIdSelected;
+    private List<AsignaProspecto> listadoProspecto = new ArrayList<>();
+    private List<AsignaProspecto> filteredAccess;
+    private ProspectoDAO daoProspecto = new ProspectoDAO();
+
+    public AsignarProspectoBean() {
+        try {
+            sessionUsuario = (Usuario) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("Usuario");
+            if (sessionUsuario == null) {
+                FacesContext.getCurrentInstance().getExternalContext().getSessionMap().remove("Usuario");
+                String url = FacesContext.getCurrentInstance().getExternalContext().getInitParameter("SesionExpirada");
+                FacesContext.getCurrentInstance().getExternalContext().redirect(url);
+            } else {
+                /**
+                 * se ejecutan las lineas del constructor**
+                 */
+            }
+        } catch (Exception e) {
+            System.out.println("Bean Constructor: " + e.getMessage());
+        }
+    }
 
     public void obtenerProspectoUsuario() {
-        
         setListadoProspecto(daoProspecto.prospectoAsignadosbyUsuario(UsuarioIdSelected));
     }
-    
-    public void guardarPermisos() throws SQLException{
+
+    public void guardarPermisos() throws SQLException {
         daoProspecto.saveResourcesbyProfile(getListadoProspecto(), UsuarioIdSelected);
         obtenerProspectoUsuario();
     }
@@ -90,7 +106,5 @@ public class AsignarProspectoBean  implements Serializable {
     public void setDaoProspecto(ProspectoDAO daoProspecto) {
         this.daoProspecto = daoProspecto;
     }
-     
-    
-    
+
 }

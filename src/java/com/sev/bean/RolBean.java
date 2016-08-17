@@ -7,7 +7,6 @@ package com.sev.bean;
 
 import com.sev.dao.AsignaRecursoDAO;
 import com.sev.dao.RolDAO;
-import com.sev.dao.UsuarioDAO;
 import com.sev.entity.AsignaRecurso;
 import com.sev.entity.Rol;
 import com.sev.entity.Usuario;
@@ -17,36 +16,49 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
 
 /**
  *
  * @author usuario1
  */
-
 @ManagedBean
 @ViewScoped
 public class RolBean implements Serializable {
-    
+
     private List<Rol> listadoRoles = new ArrayList<>();
     private List<Rol> filteredRols;
     private Rol rol = new Rol();
     private RolDAO daoRol = new RolDAO();
+    private Usuario sessionUsuario;
     private final AsignaRecursoDAO daoAsigRecurso = new AsignaRecursoDAO();
     private List<AsignaRecurso> listadoPermisos = new ArrayList<>();
     private List<AsignaRecurso> filteredAccess;
-    
-    public RolBean() throws SQLException {
-        RolDAO daoRol = new RolDAO();
-        listadoRoles = daoRol.findAll();
-        
+
+    public RolBean() {
+        try {
+            sessionUsuario = (Usuario) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("Usuario");
+            if (sessionUsuario == null) {
+                FacesContext.getCurrentInstance().getExternalContext().getSessionMap().remove("Usuario");
+                String url = FacesContext.getCurrentInstance().getExternalContext().getInitParameter("SesionExpirada");
+                FacesContext.getCurrentInstance().getExternalContext().redirect(url);
+            } else {
+                /**
+                 * se ejecutan las lineas del constructor**
+                 */
+                listadoRoles = daoRol.findAll();
+            }
+        } catch (Exception e) {
+            System.out.println("Bean Constructor: " + e.getMessage());
+        }
     }
 
     public void showEditDialog(Rol r) {
         rol = r;
     }
-    
+
     public void showPermissionDialog(Rol r) {
-        rol=r;
+        rol = r;
         setListadoPermisos(daoAsigRecurso.recursosAsignadosbyRol(rol.getIdRol()));
     }
 
@@ -56,25 +68,25 @@ public class RolBean implements Serializable {
 
     public void commitEdit() throws SQLException {
         daoRol.editRol(rol);
-        listadoRoles=daoRol.findAll();
+        listadoRoles = daoRol.findAll();
     }
 
     public void commitCreate() throws SQLException {
         daoRol.createRol(rol);
-        listadoRoles=daoRol.findAll();
+        listadoRoles = daoRol.findAll();
     }
 
-    public void eliminar(Rol r)throws SQLException {
+    public void eliminar(Rol r) throws SQLException {
         daoRol.deleteRol(r);
-        listadoRoles=daoRol.findAll();
+        listadoRoles = daoRol.findAll();
     }
-    
-    public void commitPermission() throws SQLException{
+
+    public void commitPermission() throws SQLException {
         daoAsigRecurso.saveResourcesbyProfile(getListadoPermisos(), rol.getIdRol());
         setListadoPermisos(daoAsigRecurso.recursosAsignadosbyRol(rol.getIdRol()));
         setRol(new Rol());
     }
-    
+
     public List<Rol> getListadoRoles() {
         return listadoRoles;
     }
@@ -114,6 +126,5 @@ public class RolBean implements Serializable {
     public void setFilteredAccess(List<AsignaRecurso> filteredAccess) {
         this.filteredAccess = filteredAccess;
     }
-    
-    
+
 }
