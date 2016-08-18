@@ -15,6 +15,7 @@ public class AsignaProspecto implements Serializable{
     String cedula;
     String nombres;
     String apellidos;
+    String canalcap;
     boolean estado;
 
     public String getCedula() {
@@ -48,6 +49,14 @@ public class AsignaProspecto implements Serializable{
     public void setEstado(boolean estado) {
         this.estado = estado;
     }
-    
+
+    public String getCanalcap() {
+        return canalcap;
+    }
+
+    public void setCanalcap(String canalcap) {
+        this.canalcap = canalcap;
+    }
+
     
 }

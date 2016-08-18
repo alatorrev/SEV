@@ -171,25 +171,38 @@ public class ProspectoDAO implements Serializable {
         return repitedFlag;
     }
 
-    public List<AsignaProspecto> prospectoAsignadosbyUsuario(String cedulaU) {
+    public List<AsignaProspecto> prospectoAsignadosbyUsuario(String cedulaU, String radiovalue) {
         List<AsignaProspecto> lista = new ArrayList<>();
         Conexion con = new Conexion();
         PreparedStatement pst = null;
         ResultSet rs = null;
-        String query = "SELECT p.CEDULA, p.NOMBRES, p.APELLIDOS, e.ESTADO from prospecto p "
-                + "left join (select pu.IDPROSPECTO, pu.ESTADO FROM PROSPECTOUSUARIO pu "
-                + "inner join usuario u on pu.IDUSUARIO = u.CEDULA where u.CEDULA = ?) E on E.IDPROSPECTO = p.CEDULA "
-                + "where e.ESTADO != 1 or e.Estado is null";
+        String query = "";
+
         try {
+            if (radiovalue.equals("masivo")) {
+                query = " select p.cedula, p.nombres, p.apellidos, c.descripcion "
+                        + " from PROSPECTO p, CANALCAPTACION c"
+                        + " where p.IDUSUARIO is null "
+                        + " and p.IDCANCAP = c.IDCANAL";
+
+            } else if (radiovalue.equals("crud")) {
+                query = " select p.cedula, p.nombres, p.apellidos, c.descripcion "
+                        + " from PROSPECTO p, CANALCAPTACION c"
+                        + " where p.IDUSUARIO =? "
+                        + " and p.IDCANCAP = c.IDCANAL";
+            }
             pst = con.getConnection().prepareStatement(query);
-            pst.setString(1, cedulaU);
+            if (radiovalue.equals("crud")) {
+                pst.setString(1, cedulaU);
+            }
             rs = pst.executeQuery();
             while (rs.next()) {
                 AsignaProspecto ap = new AsignaProspecto();
                 ap.setCedula(rs.getString(1));
                 ap.setNombres(rs.getString(2));
                 ap.setApellidos(rs.getString(3));
-                ap.setEstado((rs.getInt(4) != 0));
+                ap.setCanalcap(rs.getString(4));
+
                 lista.add(ap);
             }
         } catch (Exception e) {
@@ -204,29 +217,38 @@ public class ProspectoDAO implements Serializable {
         return lista;
     }
 
-    public void saveResourcesbyProfile(List<AsignaProspecto> listadoPR, String cedulaU) throws SQLException {
+    public void saveResourcesbyProfile(List<AsignaProspecto> listadoPR, String cedulaU, String radiovalue) throws SQLException {
         Conexion con = new Conexion();
         PreparedStatement pst;
         con.getConnection().setAutoCommit(false);
-        String query = "MERGE PROSPECTOUSUARIO AS PU "
-                + "USING (SELECT ? AS IDPROSPECTO,? AS IDUSUARIO, ? AS ESTADO) AS T "
-                + "ON (PU.IDPROSPECTO=T.IDPROSPECTO AND PU.IDUSUARIO=T.IDUSUARIO) "
-                + "WHEN MATCHED THEN UPDATE SET PU.ESTADO=T.ESTADO "
-                + "WHEN NOT MATCHED THEN INSERT (IDPROSPECTO,IDUSUARIO,ESTADO)VALUES(?,?,?);";
+        ResultSet rs = null;
+        String query = "";
+
         try {
+            if (radiovalue.equals("masivo")) {
+                query = "update prospecto set idusuario=? where cedula=? ";
+            } else if (radiovalue.equals("crud")) {
+                query = "update prospecto set idusuario=null where cedula=? ";
+            }
             pst = con.getConnection().prepareStatement(query);
             for (AsignaProspecto ap : listadoPR) {
-                pst.setString(1, ap.getCedula());
-                pst.setString(2, cedulaU);
-                pst.setInt(3, ap.getEstado() == true ? 1 : 0);
-                pst.setString(4, ap.getCedula());
-                pst.setString(5, cedulaU);
-                pst.setInt(6, ap.getEstado() == true ? 1 : 0);
-                pst.executeUpdate();
+                if (radiovalue.equals("crud")) {
+                    if (ap.getEstado() == true) {
+                        pst.setString(1, ap.getCedula());
+                        pst.executeUpdate();
+                    }
+                }
+                if (radiovalue.equals("masivo")) {
+                    if (ap.getEstado() == true) {
+                        pst.setString(1, cedulaU);
+                        pst.setString(2, ap.getCedula());
+                        pst.executeUpdate();
+                    }
+                }
             }
             con.getConnection().commit();
         } catch (Exception e) {
-            System.out.println("DAO ASIGNAPROSPECTO: " + e.getMessage());
+            System.out.println("DAO ASIGNAPROSPECTOU: " + e.getMessage());
             con.getConnection().rollback();
         } finally {
             con.desconectar();
@@ -259,12 +281,12 @@ public class ProspectoDAO implements Serializable {
                 lista.add(p);
             }
         } catch (Exception e) {
-            System.out.println("DAO PROSPECTO: "+e.getMessage());
+            System.out.println("DAO PROSPECTO: " + e.getMessage());
         }
         return lista;
     }
-    
-    public Prospecto readProspectoContact(String cedulaProspecto,String cedulaUsuario){
+
+    public Prospecto readProspectoContact(String cedulaProspecto, String cedulaUsuario) {
         Conexion con = new Conexion();
         PreparedStatement pst;
         Prospecto p = new Prospecto();
@@ -289,7 +311,7 @@ public class ProspectoDAO implements Serializable {
                 p.setDescripcionCanal(rs.getString(9));
             }
         } catch (Exception e) {
-            System.out.println("DAO PROSPECTO: "+e.getMessage());
+            System.out.println("DAO PROSPECTO: " + e.getMessage());
         }
         return p;
     }

@@ -15,7 +15,6 @@ import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import javax.faces.context.FacesContext;
 
 /**
  *
@@ -26,36 +25,24 @@ import javax.faces.context.FacesContext;
 public class AsignarProspectoBean implements Serializable {
 
     private UsuarioDAO daoUsuario = new UsuarioDAO();
-    private Usuario sessionUsuario;
     private List<Usuario> listaUsuario = daoUsuario.findAll();
-    private String UsuarioIdSelected;
+    private String UsuarioIdSelected, radioButtonValue = "masivo";
     private List<AsignaProspecto> listadoProspecto = new ArrayList<>();
     private List<AsignaProspecto> filteredAccess;
     private ProspectoDAO daoProspecto = new ProspectoDAO();
 
-    public AsignarProspectoBean() {
-        try {
-            sessionUsuario = (Usuario) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("Usuario");
-            if (sessionUsuario == null) {
-                FacesContext.getCurrentInstance().getExternalContext().getSessionMap().remove("Usuario");
-                String url = FacesContext.getCurrentInstance().getExternalContext().getInitParameter("SesionExpirada");
-                FacesContext.getCurrentInstance().getExternalContext().redirect(url);
-            } else {
-                /**
-                 * se ejecutan las lineas del constructor**
-                 */
-            }
-        } catch (Exception e) {
-            System.out.println("Bean Constructor: " + e.getMessage());
-        }
+    public void obtenerProspectoUsuario() {
+        System.out.println(radioButtonValue);
+        setListadoProspecto(daoProspecto.prospectoAsignadosbyUsuario(UsuarioIdSelected, radioButtonValue));
     }
 
-    public void obtenerProspectoUsuario() {
-        setListadoProspecto(daoProspecto.prospectoAsignadosbyUsuario(UsuarioIdSelected));
+    public void asdasdas() {
+        getListadoProspecto().clear();
+        setUsuarioIdSelected("0");
     }
 
     public void guardarPermisos() throws SQLException {
-        daoProspecto.saveResourcesbyProfile(getListadoProspecto(), UsuarioIdSelected);
+        daoProspecto.saveResourcesbyProfile(getListadoProspecto(), UsuarioIdSelected, radioButtonValue);
         obtenerProspectoUsuario();
     }
 
@@ -105,6 +92,14 @@ public class AsignarProspectoBean implements Serializable {
 
     public void setDaoProspecto(ProspectoDAO daoProspecto) {
         this.daoProspecto = daoProspecto;
+    }
+
+    public String getRadioButtonValue() {
+        return radioButtonValue;
+    }
+
+    public void setRadioButtonValue(String radioButtonValue) {
+        this.radioButtonValue = radioButtonValue;
     }
 
 }

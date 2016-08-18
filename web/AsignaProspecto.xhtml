@@ -8,11 +8,33 @@
     <ui:define name="content">
         <h:outputScript name="jquery/jquery.js" library="primefaces" target="head"/>
         <h:outputStylesheet name="style.css" />
-       <div class="Container100 ui-fluid">
+        <div class="Container100 ui-fluid">
             <div class="ContainerIndent">
                 <p:panel>
                     <h:form id="frm">
-                        
+                        <p:outputPanel id="customPanel" >
+                            <p:selectOneRadio id="tipoEntidad" layout="custom" value="#{asignarProspectoBean.radioButtonValue}">
+                                <f:selectItem   itemValue="masivo" />
+                                <f:selectItem  itemValue="crud"/>
+                                <p:ajax listener="#{asignarProspectoBean.asdasdas()}" update="@form" />
+                            </p:selectOneRadio>
+                            <table>
+                                <tr>
+                                    <td width="80">
+                                        <h:outputLabel for="option1" value="Masivo" />
+                                    </td>
+                                    <td width="315">
+                                        <p:radioButton id="option1" for="tipoEntidad" itemIndex="0" />
+                                    </td>
+                                    <td width="100">
+                                        <h:outputLabel for="option2" value="CRUD" />
+                                    </td>
+                                    <td>
+                                        <p:radioButton id="option2" for="tipoEntidad" itemIndex="1" />
+                                    </td>
+                                </tr>
+                            </table>
+                        </p:outputPanel>
                         <h:panelGrid columns="2" >
                             <p:outputLabel value="Usuarios"/>
                             <p:selectOneMenu id="usuarioMenu" value="#{asignarProspectoBean.usuarioIdSelected}">
@@ -22,7 +44,8 @@
                                 <p:ajax event="itemSelect"  listener="#{asignarProspectoBean.obtenerProspectoUsuario()}" update="@form" oncomplete="PF('asignacionTable').clearFilters();"/>
                             </p:selectOneMenu>
                         </h:panelGrid>
-                        <p:dataTable id="asignacionTable" value="#{asignarProspectoBean.listadoProspecto}" var="asignacion" widgetVar="asignacionTable" rows="10"
+
+                        <p:dataTable id="asignacionTbl" value="#{asignarProspectoBean.listadoProspecto}" var="asignacion" widgetVar="asignacionTable" rows="10"
                                      paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
                                      paginatorPosition="bottom" filteredValue="#{asignarProspectoBean.filteredAccess}" lazy="false">
                             <f:facet name="header">
@@ -36,23 +59,27 @@
                                     </table>
                                 </p:outputPanel>
                             </f:facet>
+                            <p:column headerText="Canal de Captación" filterBy="#{asignacion.canalcap}" filterStyle="display:none" filterMatchMode="contains">
+                                <p:outputLabel value="#{asignacion.canalcap}"/>
+                            </p:column>
+
                             <p:column headerText="Cedula" filterBy="#{asignacion.cedula}" filterStyle="display:none" filterMatchMode="contains">
                                 <p:outputLabel value="#{asignacion.cedula}"/>
                             </p:column>
-                            
+
                             <p:column headerText="Nombres" filterBy="#{asignacion.nombres}" filterStyle="display:none" filterMatchMode="contains">
                                 <p:outputLabel value="#{asignacion.nombres}"/>
                             </p:column>
-                            
+
                             <p:column headerText="Apellidos" filterBy="#{asignacion.apellidos}" filterStyle="display:none" filterMatchMode="contains">
                                 <p:outputLabel value="#{asignacion.apellidos}"/>
                             </p:column>
-                            
+
                             <p:column headerText="Asignado">
                                 <p:selectBooleanCheckbox value="#{asignacion.estado}"/>
                             </p:column>
-                        
-                        
+
+
                         </p:dataTable>
                         <p:commandButton ajax="true" update="@form" 
                                          style="position: relative; left: 450px; top: 5px; width: 20%" 
