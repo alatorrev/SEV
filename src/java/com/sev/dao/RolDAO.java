@@ -27,7 +27,7 @@ public class RolDAO implements Serializable {
         List<Rol> listadoRoles = new ArrayList<>();
         PreparedStatement pst;
         ResultSet rs = null;
-        String query = "select * from rol";
+        String query = "select * from rol where estado = 1";
         try {
             pst = con.getConnection().prepareStatement(query);
             rs = pst.executeQuery();
@@ -69,7 +69,7 @@ public class RolDAO implements Serializable {
     public void deleteRol(Rol rol) throws SQLException {
         Conexion con = new Conexion();
         PreparedStatement pst;
-        String query = "delete from rol where idrol=?";
+        String query = "update rol set estado = 0 where idrol=?";
         pst = con.getConnection().prepareStatement(query);
         try {
             pst.setInt(1, rol.getIdRol());
@@ -85,7 +85,7 @@ public class RolDAO implements Serializable {
         Conexion con = new Conexion();
         con.getConnection().setAutoCommit(false);
         PreparedStatement pst;
-        String query = "insert into rol values(?)";
+        String query = "insert into rol values(?,1)";
         pst = con.getConnection().prepareStatement(query);
         try {
             pst.setString(1, rol.getDescripcion());

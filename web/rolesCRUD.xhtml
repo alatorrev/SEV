@@ -49,7 +49,7 @@
                                                    oncomplete="PF('wdlgDatos').show();" update="dlgDatos"/>
                                 </i>   
                                 <i class="icon-trash-2">
-                                    <p:commandLink value="eliminar" actionListener="#{rolBean.eliminar(rol)}"  update=":frm:uTable" >
+                                    <p:commandLink value="desactivar" actionListener="#{rolBean.eliminar(rol)}"  update=":frm:uTable" >
                                         <p:confirm header="Confirmación" message="Está seguro de eliminar el registro" icon="ui-icon-alert" />
                                     </p:commandLink>
                                     <!-- <p:graphicImage name="images/ui-icon-trash.png" library="sentinel-layout"/>-->
@@ -78,7 +78,7 @@
                     </p:dialog>
                     <!--############################################################################################ -->
                     <!--############################################################################################ -->
-                    <p:dialog id="dlgPermisos" header="Permisos Rol" widgetVar="wdlgPermisos" modal="true" 
+                    <p:dialog id="dlgPermisos" header="Permisos Rol: #{rolBean.rol.descripcion}" widgetVar="wdlgPermisos" modal="true" 
                                closable="true" closeOnEscape="true" style="width:600px;height: 300px">
                         <h:form>
                             <p:dataTable id="resourceTable" value="#{rolBean.listadoPermisos}" var="recurso" widgetVar="recursoTable" rows="10" paginator="true"

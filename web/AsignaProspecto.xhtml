@@ -21,13 +21,13 @@
                             <table>
                                 <tr>
                                     <td width="80">
-                                        <h:outputLabel for="option1" value="Masivo" />
+                                        <h:outputLabel for="option1" value="Por Asignar" />
                                     </td>
                                     <td width="315">
                                         <p:radioButton id="option1" for="tipoEntidad" itemIndex="0" />
                                     </td>
                                     <td width="100">
-                                        <h:outputLabel for="option2" value="CRUD" />
+                                        <h:outputLabel for="option2" value="Suprimir Asignación" />
                                     </td>
                                     <td>
                                         <p:radioButton id="option2" for="tipoEntidad" itemIndex="1" />
@@ -74,8 +74,8 @@
                             <p:column headerText="Apellidos" filterBy="#{asignacion.apellidos}" filterStyle="display:none" filterMatchMode="contains">
                                 <p:outputLabel value="#{asignacion.apellidos}"/>
                             </p:column>
-
-                            <p:column headerText="Asignado">
+                               
+                            <p:column headerText="Asignado"> 
                                 <p:selectBooleanCheckbox value="#{asignacion.estado}"/>
                             </p:column>
 

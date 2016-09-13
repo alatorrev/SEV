@@ -29,7 +29,7 @@ public class UsuarioDAO implements Serializable {
         Conexion con = new Conexion();
         con.getConnection().setAutoCommit(false);
         PreparedStatement pst;
-        String query = "insert into usuario values(?,?,?,?,?,?,?,?,?,?)";
+        String query = "insert into usuario values(?,?,?,?,?,?,?,?,?,?,1)";
         pst = con.getConnection().prepareStatement(query);
         try {
             pst.setString(1, us.getCedula());

@@ -33,7 +33,8 @@ public class ProspectoDAO implements Serializable {
         ResultSet rs = null;
         String query = "  select p.IDCANCAP, p.CEDULA, p.NOMBRES, p.APELLIDOS, p.CELULAR, p.CASA, p.CORREO, p.ESTABLECIMIENTO, p.RESPONSABLE, c.DESCRIPCION"
                 + "  from PROSPECTO p"
-                + "  inner join CANALCAPTACION c on p.IDCANCAP = c.IDCANAL";
+                + "  inner join CANALCAPTACION c on p.IDCANCAP = c.IDCANAL"
+                + "  where p.estado = 1";
         pst = con.getConnection().prepareStatement(query);
         try {
             rs = pst.executeQuery();
@@ -64,7 +65,7 @@ public class ProspectoDAO implements Serializable {
         Conexion con = new Conexion();
         con.getConnection().setAutoCommit(false);
         PreparedStatement pst;
-        String query = "insert into prospecto values(?,?,?,?,?,?,?,?,?,?,?,?)";
+        String query = "insert into prospecto values(?,?,?,?,?,?,?,?,?,?,?,?,1)";
         pst = con.getConnection().prepareStatement(query);
         try {
             pst.setString(1, pro.getCedula());
@@ -124,7 +125,7 @@ public class ProspectoDAO implements Serializable {
     public void deleteProspecto(Prospecto p) throws SQLException {
         Conexion con = new Conexion();
         PreparedStatement pst;
-        String query = "delete from prospecto where cedula=?";
+        String query = "update prospecto set estado = 0 where cedula=?";
         pst = con.getConnection().prepareStatement(query);
         try {
             pst.setString(1, p.getCedula());

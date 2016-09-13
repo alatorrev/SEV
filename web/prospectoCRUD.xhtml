@@ -66,7 +66,7 @@
                                     <p:commandLink value="editar" actionListener="#{prospectoBean.showEditDialog(p)}" oncomplete="PF('wdlgDatos').show();" update="dlgDatos"/>
                                 </i>   
                                 <i class="icon-trash-2">
-                                    <p:commandLink value="eliminar" actionListener="#{prospectoBean.eliminar(p)}"  update=":frm:uTable" >
+                                    <p:commandLink value="desactivar" actionListener="#{prospectoBean.eliminar(p)}"  update=":frm:uTable" >
                                         <p:confirm header="Confirmación" message="Está seguro de eliminar el registro" icon="ui-icon-alert" />
                                     </p:commandLink>
                                 </i>

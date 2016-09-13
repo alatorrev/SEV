@@ -23,7 +23,7 @@ public class InteresDAO implements Serializable{
         List<InteresProspecto> listadoIntereses = new ArrayList<>();
         PreparedStatement pst;
         ResultSet rs = null;
-        String query = "select * from interesprospecto";
+        String query = "select * from interesprospecto where estado = 1";
         pst = con.getConnection().prepareStatement(query);
         try {
             rs = pst.executeQuery();
@@ -61,7 +61,7 @@ public class InteresDAO implements Serializable{
     public void deleteInteres(InteresProspecto interes) throws SQLException {
         Conexion con = new Conexion();
         PreparedStatement pst;
-        String query = "delete from interesprospecto where idintpros=?";
+        String query = "update interesprospecto set estado = 0 where idintpros=?";
         pst = con.getConnection().prepareStatement(query);
         try {
             pst.setInt(1, interes.getIdInteresProspecto());
@@ -77,7 +77,7 @@ public class InteresDAO implements Serializable{
         Conexion con = new Conexion();
         con.getConnection().setAutoCommit(false);
         PreparedStatement pst;
-        String query = "insert into interesprospecto values(?)";
+        String query = "insert into interesprospecto values(?,1)";
         pst = con.getConnection().prepareStatement(query);
         try {
             pst.setString(1, interes.getDescripcion());

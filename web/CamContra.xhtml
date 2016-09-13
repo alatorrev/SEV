@@ -30,22 +30,26 @@
                                     </table>
                                 </p:outputPanel>
                             </f:facet>
-                            
-                            
-                            <h:panelGrid id="matchpassword" columns="2">
-                            
-                                <p:outputLabel value="Nueva Contraseña" />
-                                <p:password id="pwd1" match="pwd2" label="contraseña nueva" required="true" value="#{cambiarBean.cambiar.password}"/>
 
-                                <p:outputLabel value="Vuelva a escribir la contraseña" />
-                                <p:password id="pwd2" label="No concuerdan los campos" required="true" value="#{cambiarBean.cambiar.password}"/>
+
+                            <h:panelGrid id="matchpassword" columns="2">
+                                <p:outputLabel for="pwd1" value="Nueva Contraseña" />
+                                <p:password id="pwd1" match="pwd2" label="contraseña nueva" required="true" value="#{cambiarBean.cambiar.password}">
+                                </p:password>
+
+                                <p:outputLabel for="pwd2" value="Vuelva a escribir la contraseña" />
+                                <p:password id="pwd2" label="No concuerdan los campos" required="true" value="#{cambiarBean.cambiar.password}">
+                                </p:password>
+
 
                                 <p:commandButton ajax="true" value="Editar" update="matchpassword" actionListener="#{cambiarBean.commitEdit()}" >
                                     <p:confirm header="Confirmación" message="Está seguro de eliminar el registro" />
                                 </p:commandButton>
-                              <!--  <p:commandButton value="Cancelar" actionListener="# {reestablecerBean.onCancelDialog()}" immediate="true" oncomplete="PF('wdlgDatos').hide();"/>-->
+                                <!--  <p:commandButton value="Cancelar" actionListener="# {reestablecerBean.onCancelDialog()}" immediate="true" oncomplete="PF('wdlgDatos').hide();"/>-->
+
+
                             </h:panelGrid>
-                            
+                            <p:messages id="messages" showDetail="true" autoUpdate="true" />
                         </h:form>
                         <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" >
                             <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check fa fa-check Fs14 white" />
