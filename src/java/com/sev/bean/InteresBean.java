@@ -17,8 +17,11 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
 /**
- *
- * @author usuario1
+ * 
+ * Universidad Politécnica Salesiana
+ * @author Axel Latorre, Jorge Castañeda
+ * Tutor: Ing. Vanessa Jurado
+ * 
  */
 @ManagedBean
 @ViewScoped
@@ -57,17 +60,17 @@ public class InteresBean implements Serializable {
     }
 
     public void commitEdit() throws SQLException {
-        daoInteres.editInteres(interes);
+        daoInteres.editInteres(interes, sessionUsuario);
         listadoIntereses = daoInteres.findAll();
     }
 
     public void commitCreate() throws SQLException {
-        daoInteres.createInteres(interes);
+        daoInteres.createInteres(interes, sessionUsuario);
         listadoIntereses = daoInteres.findAll();
     }
 
     public void eliminar(InteresProspecto in) throws SQLException {
-        daoInteres.deleteInteres(in);
+        daoInteres.deleteInteres(in, sessionUsuario);
         listadoIntereses = daoInteres.findAll();
     }
 

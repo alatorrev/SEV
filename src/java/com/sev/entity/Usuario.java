@@ -9,8 +9,11 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
- *
- * @author alatorre
+ * 
+ * Universidad Politécnica Salesiana
+ * @author Axel Latorre, Jorge Castañeda
+ * Tutor: Ing. Vanessa Jurado
+ * 
  */
 public class Usuario implements Serializable {
 

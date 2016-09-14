@@ -17,12 +17,16 @@ import java.util.Date;
 import java.util.List;
 import com.sev.conexion.Conexion;
 import com.sev.entity.AsignaProspecto;
+import com.sev.entity.Usuario;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- *
- * @author usuario1
+ * 
+ * Universidad Politécnica Salesiana
+ * @author Axel Latorre, Jorge Castañeda
+ * Tutor: Ing. Vanessa Jurado
+ * 
  */
 public class ProspectoDAO implements Serializable {
 
@@ -60,7 +64,7 @@ public class ProspectoDAO implements Serializable {
         return listadoProspecto;
     }
 
-    public void createProspecto(Prospecto pro) throws SQLException {
+    public void createProspecto(Prospecto pro, Usuario u) throws SQLException {
         SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd");
         Conexion con = new Conexion();
         con.getConnection().setAutoCommit(false);
@@ -82,6 +86,9 @@ public class ProspectoDAO implements Serializable {
             pst.setString(12, null/*for now lolz*/);
 
             pst.executeUpdate();
+
+            BitacoraDAO daoBitacora = new BitacoraDAO();
+            daoBitacora.crearRegistro("prospecto", "insert", u);
 //            ResultSet rs = pst.getGeneratedKeys();
 //
 //            while (rs.next()) {
@@ -96,7 +103,7 @@ public class ProspectoDAO implements Serializable {
         }
     }
 
-    public void editProspecto(Prospecto p) throws SQLException {
+    public void editProspecto(Prospecto p, Usuario u) throws SQLException {
         SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd");
         Conexion con = new Conexion();
         PreparedStatement pst;
@@ -115,6 +122,9 @@ public class ProspectoDAO implements Serializable {
             pst.setString(9, fmt.format(new Date()));
             pst.setString(10, p.getCedula());
             pst.executeUpdate();
+
+            BitacoraDAO daoBitacora = new BitacoraDAO();
+            daoBitacora.crearRegistro("prospecto", "Edit", u);
         } catch (Exception e) {
             System.out.println("DAO PROSPECTO: " + e.getMessage());
         } finally {
@@ -122,7 +132,7 @@ public class ProspectoDAO implements Serializable {
         }
     }
 
-    public void deleteProspecto(Prospecto p) throws SQLException {
+    public void deleteProspecto(Prospecto p, Usuario u) throws SQLException {
         Conexion con = new Conexion();
         PreparedStatement pst;
         String query = "update prospecto set estado = 0 where cedula=?";
@@ -130,6 +140,9 @@ public class ProspectoDAO implements Serializable {
         try {
             pst.setString(1, p.getCedula());
             pst.executeUpdate();
+
+            BitacoraDAO daoBitacora = new BitacoraDAO();
+            daoBitacora.crearRegistro("prospecto", "delete", u);
         } catch (Exception e) {
             System.out.println("DAO PROSPECTO: " + e.getMessage());
         } finally {
@@ -161,6 +174,9 @@ public class ProspectoDAO implements Serializable {
             pst.setString(10, fmt.format(new Date()));
             pst.setString(11, null/*for now lolz*/);
             pst.executeUpdate();
+
+//            BitacoraDAO daoBitacora = new BitacoraDAO();
+//            daoBitacora.crearRegistro("prospecto", "insert masivo", u);
             con.getConnection().commit();
         } catch (Exception e) {
             System.out.println("DAO PROSPECTOCARGA: " + e.getMessage());
@@ -218,7 +234,7 @@ public class ProspectoDAO implements Serializable {
         return lista;
     }
 
-    public void saveResourcesbyProfile(List<AsignaProspecto> listadoPR, String cedulaU, String radiovalue) throws SQLException {
+    public void saveResourcesbyProfile(List<AsignaProspecto> listadoPR, String cedulaU, String radiovalue, Usuario u) throws SQLException {
         Conexion con = new Conexion();
         PreparedStatement pst;
         con.getConnection().setAutoCommit(false);
@@ -237,6 +253,8 @@ public class ProspectoDAO implements Serializable {
                     if (ap.getEstado() == true) {
                         pst.setString(1, ap.getCedula());
                         pst.executeUpdate();
+                        BitacoraDAO daoBitacora = new BitacoraDAO();
+                        daoBitacora.crearRegistro("prospecto", "Quitar Asignacion", u);
                     }
                 }
                 if (radiovalue.equals("masivo")) {
@@ -244,6 +262,8 @@ public class ProspectoDAO implements Serializable {
                         pst.setString(1, cedulaU);
                         pst.setString(2, ap.getCedula());
                         pst.executeUpdate();
+                        BitacoraDAO daoBitacora = new BitacoraDAO();
+                        daoBitacora.crearRegistro("prospecto", "Asignacion", u);
                     }
                 }
             }

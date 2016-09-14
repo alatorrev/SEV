@@ -4,23 +4,26 @@
  * and open the template in the editor.
  */
 package com.sev.dao;
+
 import com.sev.entity.Usuario;
 import com.sev.entity.CambiarContrasena;
 import java.io.Serializable;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import com.sev.conexion.Conexion;
+
 /**
+ * 
+ * Universidad Politécnica Salesiana
+ * @author Axel Latorre, Jorge Castañeda
+ * Tutor: Ing. Vanessa Jurado
+ * 
  */
-/**
- *
- * @author usuario1
- */
-public class CambiarDAO implements Serializable{
-    
+public class CambiarDAO implements Serializable {
+
     public void editCambiar(CambiarContrasena ca, Usuario u) throws SQLException {
         Conexion con = new Conexion();
-        
+
         PreparedStatement pst;
         String query = "update usuario set clave=?, estadoclave=?"
                 + " where cedula=? ";
@@ -29,13 +32,15 @@ public class CambiarDAO implements Serializable{
             pst.setString(1, ca.getPassword());
             pst.setInt(2, 0);
             pst.setString(3, u.getCedula());
-            
+
             pst.executeUpdate();
+            BitacoraDAO daoBitacora = new BitacoraDAO();
+            daoBitacora.crearRegistro("usuario", "Cambia clave", u);
         } catch (Exception e) {
             System.out.println("DAO REESTABLECER: " + e.getMessage());
         } finally {
             con.desconectar();
         }
     }
-    
+
 }

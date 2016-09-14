@@ -15,10 +15,14 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import com.sev.conexion.Conexion;
+import com.sev.entity.Usuario;
 
 /**
- *
+ * 
+ * Universidad Politécnica Salesiana
  * @author Axel Latorre, Jorge Castañeda
+ * Tutor: Ing. Vanessa Jurado
+ * 
  */
 public class AsignaRecursoDAO implements Serializable {
 
@@ -53,7 +57,7 @@ public class AsignaRecursoDAO implements Serializable {
         return lista;
     }
 
-    public void saveResourcesbyProfile(List<AsignaRecurso> listadoAR, int idrol) throws SQLException {
+    public void saveResourcesbyProfile(List<AsignaRecurso> listadoAR, int idrol, Usuario u) throws SQLException {
         Conexion con = new Conexion();
         PreparedStatement pst;
         con.getConnection().setAutoCommit(false);
@@ -72,6 +76,8 @@ public class AsignaRecursoDAO implements Serializable {
                 pst.setInt(5, ar.getIdRecurso());
                 pst.setInt(6, ar.getEstado() == true ? 1 : 0);
                 pst.executeUpdate();
+                BitacoraDAO daoBitacora = new BitacoraDAO();
+                daoBitacora.crearRegistro("recursorol", "Asignacion recurso", u);
             }
             con.getConnection().commit();
         } catch (Exception e) {

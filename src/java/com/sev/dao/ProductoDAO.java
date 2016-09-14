@@ -13,16 +13,21 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import com.sev.conexion.Conexion;
+import com.sev.entity.Usuario;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
- *
- * @author usuario1
+ * 
+ * Universidad Politécnica Salesiana
+ * @author Axel Latorre, Jorge Castañeda
+ * Tutor: Ing. Vanessa Jurado
+ * 
  */
 public class ProductoDAO implements Serializable {
 
     public List<Producto> findAll() throws SQLException {
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         Conexion con = new Conexion();
         List<Producto> listadoProductos = new ArrayList<>();
         PreparedStatement pst;
@@ -37,8 +42,8 @@ public class ProductoDAO implements Serializable {
                 producto.setIdprod(rs.getInt(1));
                 producto.setDescripcion(rs.getString(2));
                 producto.setPrecio(rs.getDouble(3));
-                producto.setFechavigenciai(rs.getString(4));
-                producto.setFechavigenciaf(rs.getString(5));
+                producto.setFechavigenciai(rs.getDate(4));
+                producto.setFechavigenciaf(rs.getDate(5));
                 producto.setEstado(rs.getString(6));
                 listadoProductos.add(producto);
             }
@@ -50,7 +55,8 @@ public class ProductoDAO implements Serializable {
         return listadoProductos;
     }
 
-    public void createProducto(Producto producto) throws SQLException {
+    public void createProducto(Producto producto, Usuario u) throws SQLException {
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         Conexion con = new Conexion();
         con.getConnection().setAutoCommit(false);
         PreparedStatement pst;
@@ -59,9 +65,11 @@ public class ProductoDAO implements Serializable {
         try {
             pst.setString(1, producto.getDescripcion());
             pst.setDouble(2, producto.getPrecio());
-            pst.setString(3, producto.getFechavigenciai());
-            pst.setString(4, producto.getFechavigenciaf());
+            pst.setString(3, format.format(producto.getFechavigenciai()));
+            pst.setString(4, format.format(producto.getFechavigenciaf()));
             pst.executeUpdate();
+            BitacoraDAO daoBitacora = new BitacoraDAO();
+            daoBitacora.crearRegistro("producto", "insert", u);
             con.getConnection().commit();
         } catch (Exception e) {
             System.out.println("DAO PRODUCTO: " + e.getMessage());
@@ -71,7 +79,8 @@ public class ProductoDAO implements Serializable {
         }
     }
 
-    public void editProducto(Producto producto) throws SQLException {
+    public void editProducto(Producto producto, Usuario u) throws SQLException {
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         Conexion con = new Conexion();
         PreparedStatement pst;
         String query = "update producto "
@@ -81,10 +90,12 @@ public class ProductoDAO implements Serializable {
         try {
             pst.setString(1, producto.getDescripcion());
             pst.setDouble(2, producto.getPrecio());
-            pst.setString(3, producto.getFechavigenciai());
-            pst.setString(4, producto.getFechavigenciaf());
+            pst.setString(3, format.format(producto.getFechavigenciai()));
+            pst.setString(4, format.format(producto.getFechavigenciaf()));
             pst.setInt(5, producto.getIdprod());
             pst.executeUpdate();
+            BitacoraDAO daoBitacora = new BitacoraDAO();
+            daoBitacora.crearRegistro("producto", "Edit", u);
         } catch (Exception e) {
             System.out.println("DAO PRODUCTO: " + e.getMessage());
         } finally {
@@ -92,7 +103,7 @@ public class ProductoDAO implements Serializable {
         }
     }
     
-    public void deleteProducto(Producto producto) throws SQLException {
+    public void deleteProducto(Producto producto, Usuario u) throws SQLException {
         Conexion con = new Conexion();
         PreparedStatement pst;
         String query = "update producto set estado = 0 where idprod=?";
@@ -100,6 +111,8 @@ public class ProductoDAO implements Serializable {
         try {
             pst.setInt(1, producto.getIdprod());
             pst.executeUpdate();
+            BitacoraDAO daoBitacora = new BitacoraDAO();
+            daoBitacora.crearRegistro("producto", "delete", u);
         } catch (Exception e) {
             System.out.println("DAO PRODUCTO: " + e.getMessage());
         } finally {

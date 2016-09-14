@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:p="http://primefaces.org/ui">
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
 
     <h:head>
         <f:facet name="first">
@@ -11,12 +11,12 @@
             <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
             <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
             <meta name="apple-mobile-web-app-capable" content="yes" />
-            
+
         </f:facet>
-        <title>PrimeFaces Sentinel</title>
+        <title>SEV - Humane</title>
         <h:outputScript name="js/layout.js" library="sentinel-layout" />
         <!--<h:outputStylesheet name="css/styleSheet.css" library="sentinel-layout" />-->
-        
+
         <ui:insert name="head" />
     </h:head>
 
@@ -27,23 +27,28 @@
 
         <div id="layout-portlets-cover" class="fontRegular">
             <ui:insert name="content">
-               Template
+                Template
             </ui:insert>
         </div>
         
-        <p:ajaxStatus style="width:32px; height:32px; position:fixed; right:12px; bottom:10px">
-            <f:facet name="start">
-                <p:graphicImage name="images/preloader.gif" library="sentinel-layout"/>
-            </f:facet>
-
-            <f:facet name="complete">
-                <h:outputText value="" />
-            </f:facet>
-        </p:ajaxStatus>
-
-        <h:outputStylesheet name="css/font-icon-layout.css" library="sentinel-layout" />
-        <h:outputStylesheet name="css/sentinel-layout.css" library="sentinel-layout" />
-        <h:outputStylesheet name="css/core-layout.css" library="sentinel-layout" />
+        <div class="footer"><strong>SEV</strong> <br />
+        <strong>Universidad Politécnica Salesiana © 2016-2016</strong></div>
     </h:body>
+
+    <p:ajaxStatus style="width:32px; height:32px; position:fixed; right:12px; bottom:10px">
+        <f:facet name="start">
+            <p:graphicImage name="images/preloader.gif" library="sentinel-layout"/>
+        </f:facet>
+
+        <f:facet name="complete">
+            <h:outputText value="" />
+        </f:facet>
+    </p:ajaxStatus>
+
+
+    <h:outputStylesheet name="css/font-icon-layout.css" library="sentinel-layout" />
+    <h:outputStylesheet name="css/sentinel-layout.css" library="sentinel-layout" />
+    <h:outputStylesheet name="css/core-layout.css" library="sentinel-layout" />
+
 
 </html>

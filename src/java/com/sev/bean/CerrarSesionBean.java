@@ -11,8 +11,11 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.context.FacesContext;
 
 /**
- *
- * @author Axel Latorre,Jorge Castañeda
+ * 
+ * Universidad Politécnica Salesiana
+ * @author Axel Latorre, Jorge Castañeda
+ * Tutor: Ing. Vanessa Jurado
+ * 
  */
 @ManagedBean
 public class CerrarSesionBean implements Serializable{

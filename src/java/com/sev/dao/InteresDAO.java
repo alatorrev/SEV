@@ -12,10 +12,14 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import com.sev.conexion.Conexion;
+import com.sev.entity.Usuario;
 
 /**
- *
- * @author usuario1
+ * 
+ * Universidad Politécnica Salesiana
+ * @author Axel Latorre, Jorge Castañeda
+ * Tutor: Ing. Vanessa Jurado
+ * 
  */
 public class InteresDAO implements Serializable{
     public List<InteresProspecto> findAll() throws SQLException {
@@ -41,7 +45,7 @@ public class InteresDAO implements Serializable{
         return listadoIntereses;
     }
     
-    public void editInteres(InteresProspecto interes) throws SQLException {
+    public void editInteres(InteresProspecto interes, Usuario u) throws SQLException {
         Conexion con = new Conexion();
         PreparedStatement pst;
         String query = "update interesprospecto set descripcion=?"
@@ -51,6 +55,8 @@ public class InteresDAO implements Serializable{
             pst.setString(1, interes.getDescripcion());
             pst.setInt(2, interes.getIdInteresProspecto());
             pst.executeUpdate();
+            BitacoraDAO daoBitacora = new BitacoraDAO();
+            daoBitacora.crearRegistro("interesprospecto", "insert", u);
         } catch (Exception e) {
             System.out.println("DAO INTERES: " + e.getMessage());
         } finally {
@@ -58,7 +64,7 @@ public class InteresDAO implements Serializable{
         }
     }
     
-    public void deleteInteres(InteresProspecto interes) throws SQLException {
+    public void deleteInteres(InteresProspecto interes, Usuario u) throws SQLException {
         Conexion con = new Conexion();
         PreparedStatement pst;
         String query = "update interesprospecto set estado = 0 where idintpros=?";
@@ -66,6 +72,8 @@ public class InteresDAO implements Serializable{
         try {
             pst.setInt(1, interes.getIdInteresProspecto());
             pst.executeUpdate();
+            BitacoraDAO daoBitacora = new BitacoraDAO();
+            daoBitacora.crearRegistro("interesprospecto", "delete", u);
         } catch (Exception e) {
             System.out.println("DAO INTERES: " + e.getMessage());
         } finally {
@@ -73,7 +81,7 @@ public class InteresDAO implements Serializable{
         }
     }
     
-    public void createInteres(InteresProspecto interes) throws SQLException {
+    public void createInteres(InteresProspecto interes, Usuario u) throws SQLException {
         Conexion con = new Conexion();
         con.getConnection().setAutoCommit(false);
         PreparedStatement pst;
@@ -82,6 +90,8 @@ public class InteresDAO implements Serializable{
         try {
             pst.setString(1, interes.getDescripcion());
             pst.executeUpdate();
+            BitacoraDAO daoBitacora = new BitacoraDAO();
+            daoBitacora.crearRegistro("interesprospecto", "insert", u);
             con.getConnection().commit();
         } catch (Exception e) {
             System.out.println("DAO INTERES: " + e.getMessage());

@@ -16,8 +16,11 @@ import java.util.List;
 import com.sev.conexion.Conexion;
 
 /**
- *
- * @author HOEM
+ * 
+ * Universidad Politécnica Salesiana
+ * @author Axel Latorre, Jorge Castañeda
+ * Tutor: Ing. Vanessa Jurado
+ * 
  */
 public class RecursoDAO implements Serializable {
 

@@ -19,8 +19,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- *
+ * 
+ * Universidad Politécnica Salesiana
  * @author Axel Latorre, Jorge Castañeda
+ * Tutor: Ing. Vanessa Jurado
+ * 
  */
 public class UsuarioDAO implements Serializable {
 
@@ -38,7 +41,7 @@ public class UsuarioDAO implements Serializable {
             pst.setString(4, us.getEmail());
             pst.setString(5, us.getPassword());
             pst.setInt(6, 1); //valor que representa la clave debe ser cambiada.
-            pst.setInt(7,1); //valor que representa el usuario se puedo autenticar en el sistema.
+            pst.setInt(7, 1); //valor que representa el usuario se puedo autenticar en el sistema.
             pst.setString(8, fmt.format(new Date()));
             pst.setString(9, null/*for now lolz*/);
             pst.setString(10, us.getPrioridad());
@@ -49,6 +52,11 @@ public class UsuarioDAO implements Serializable {
             pstUsuarioRol.setString(1, us.getCedula());
             pstUsuarioRol.setInt(2, us.getIdRol());
             pstUsuarioRol.executeUpdate();
+
+            BitacoraDAO daoBitacora = new BitacoraDAO();
+            daoBitacora.crearRegistro("usuario", "Insert", us);
+
+            daoBitacora.crearRegistro("usuariorol", "asigna rol", us);
 //            ResultSet rs = pst.getGeneratedKeys();
 //
 //            while (rs.next()) {
@@ -87,6 +95,10 @@ public class UsuarioDAO implements Serializable {
             pstUsuarioRol.executeUpdate();
 
             pst.executeUpdate();
+
+            BitacoraDAO daoBitacora = new BitacoraDAO();
+            daoBitacora.crearRegistro("usuario", "Edit", us);
+            daoBitacora.crearRegistro("usuariorol", "Actualiza rol", us);
             con.getConnection().commit();
         } catch (Exception e) {
             System.out.println("DAO USUARIO: " + e.getMessage());
@@ -100,12 +112,16 @@ public class UsuarioDAO implements Serializable {
         con.getConnection().setAutoCommit(false);
         PreparedStatement pst;
         //String query = "delete from usuario where cedula=?";
-        String query="update usuario set activo=? where cedula=?";
+        String query = "update usuario set activo=? where cedula=?";
         pst = con.getConnection().prepareStatement(query);
         try {
-            pst.setInt(1,0);
+            pst.setInt(1, 0);
             pst.setString(2, us.getCedula());
             pst.executeUpdate();
+
+            BitacoraDAO daoBitacora = new BitacoraDAO();
+            daoBitacora.crearRegistro("usuario", "delete", us);
+
             con.getConnection().commit();
         } catch (Exception e) {
             System.out.println("DAO USUARIO: " + e.getMessage());
@@ -176,7 +192,7 @@ public class UsuarioDAO implements Serializable {
         return listadoUsuarios;
     }
 
-    public Usuario loginAction(String email, String contrasena) throws SQLException {
+    public Usuario loginAction(String email, String contrasena, Usuario u) throws SQLException {
         Conexion con = new Conexion();
         Usuario us = new Usuario();
         PreparedStatement pst;
@@ -201,7 +217,10 @@ public class UsuarioDAO implements Serializable {
                 us.setDescripcionRol(rs.getString(7));
                 us.setEstadoClave(rs.getInt(8));
                 us.setActivo(rs.getInt(9));
+                BitacoraDAO daoBitacora = new BitacoraDAO();
+                daoBitacora.crearRegistro("usuario", "Login", u);
                 return us;
+                
             }
         } catch (Exception e) {
             System.out.println("DAO USUARIO: " + e.getMessage());

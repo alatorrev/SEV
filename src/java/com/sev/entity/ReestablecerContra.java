@@ -7,8 +7,11 @@ package com.sev.entity;
 
 import java.io.Serializable;
 /**
- *
- * @author usuario1
+ * 
+ * Universidad Politécnica Salesiana
+ * @author Axel Latorre, Jorge Castañeda
+ * Tutor: Ing. Vanessa Jurado
+ * 
  */
 public class ReestablecerContra implements Serializable{
     String cedula;

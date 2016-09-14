@@ -15,10 +15,14 @@ import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import javax.faces.context.FacesContext;
 
 /**
- *
- * @author usuario1
+ * 
+ * Universidad Politécnica Salesiana
+ * @author Axel Latorre, Jorge Castañeda
+ * Tutor: Ing. Vanessa Jurado
+ * 
  */
 @ManagedBean
 @ViewScoped
@@ -30,6 +34,26 @@ public class AsignarProspectoBean implements Serializable {
     private List<AsignaProspecto> listadoProspecto = new ArrayList<>();
     private List<AsignaProspecto> filteredAccess;
     private ProspectoDAO daoProspecto = new ProspectoDAO();
+    private Usuario sessionUsuario;
+
+    public AsignarProspectoBean() {
+        try {
+            sessionUsuario = (Usuario) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("Usuario");
+            if (sessionUsuario == null) {
+                FacesContext.getCurrentInstance().getExternalContext().getSessionMap().remove("Usuario");
+                String url = FacesContext.getCurrentInstance().getExternalContext().getInitParameter("SesionExpirada");
+                FacesContext.getCurrentInstance().getExternalContext().redirect(url);
+            } else {
+                /**
+                 * se ejecutan las lineas del constructor**
+                 */
+//                listadoIntereses = daoInteres.findAll();
+                listaUsuario = daoUsuario.findAll();
+            }
+        } catch (Exception e) {
+            System.out.println("Bean Constructor: " + e.getMessage());
+        }
+    }
 
     public void obtenerProspectoUsuario() {
         System.out.println(radioButtonValue);
@@ -42,7 +66,7 @@ public class AsignarProspectoBean implements Serializable {
     }
 
     public void guardarPermisos() throws SQLException {
-        daoProspecto.saveResourcesbyProfile(getListadoProspecto(), UsuarioIdSelected, radioButtonValue);
+        daoProspecto.saveResourcesbyProfile(getListadoProspecto(), UsuarioIdSelected, radioButtonValue, sessionUsuario);
         obtenerProspectoUsuario();
     }
 

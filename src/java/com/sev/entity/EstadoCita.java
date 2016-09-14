@@ -8,8 +8,11 @@ package com.sev.entity;
 import java.io.Serializable;
 
 /**
- *
- * @author alatorre
+ * 
+ * Universidad Politécnica Salesiana
+ * @author Axel Latorre, Jorge Castañeda
+ * Tutor: Ing. Vanessa Jurado
+ * 
  */
 public class EstadoCita implements Serializable{
     int idEstadoCita;

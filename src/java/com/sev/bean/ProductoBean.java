@@ -19,8 +19,11 @@ import javax.faces.context.FacesContext;
 import java.text.SimpleDateFormat;
 
 /**
- *
- * @author usuario1
+ * 
+ * Universidad Politécnica Salesiana
+ * @author Axel Latorre, Jorge Castañeda
+ * Tutor: Ing. Vanessa Jurado
+ * 
  */
 
 @ManagedBean
@@ -65,17 +68,17 @@ public class ProductoBean implements Serializable {
     }
 
     public void commitEdit() throws SQLException {
-        daoProducto.editProducto(producto);
+        daoProducto.editProducto(producto, sessionUsuario);
         listadoProductos = daoProducto.findAll();
     }
 
     public void commitCreate() throws SQLException {
-        daoProducto.createProducto(producto);
+        daoProducto.createProducto(producto, sessionUsuario);
         listadoProductos = daoProducto.findAll();
     }
 
     public void eliminar(Producto pro) throws SQLException {
-        daoProducto.deleteProducto(pro);
+        daoProducto.deleteProducto(pro, sessionUsuario);
         listadoProductos = daoProducto.findAll();
     }
 

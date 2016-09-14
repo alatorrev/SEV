@@ -5,16 +5,20 @@
  */
 package com.sev.entity;
 import java.io.Serializable;
+import java.util.Date;
 /**
- *
- * @author usuario1
+ * 
+ * Universidad Politécnica Salesiana
+ * @author Axel Latorre, Jorge Castañeda
+ * Tutor: Ing. Vanessa Jurado
+ * 
  */
 public class Producto implements Serializable{
     int idprod;
     String descripcion;
     double precio;
-    String fechavigenciai;
-    String fechavigenciaf;
+    Date fechavigenciai;
+    Date fechavigenciaf;
     String estado;
 
     public int getIdprod() {
@@ -41,21 +45,23 @@ public class Producto implements Serializable{
         this.precio = precio;
     }
 
-    public String getFechavigenciai() {
+    public Date getFechavigenciai() {
         return fechavigenciai;
     }
 
-    public void setFechavigenciai(String fechavigenciai) {
+    public void setFechavigenciai(Date fechavigenciai) {
         this.fechavigenciai = fechavigenciai;
     }
 
-    public String getFechavigenciaf() {
+    public Date getFechavigenciaf() {
         return fechavigenciaf;
     }
 
-    public void setFechavigenciaf(String fechavigenciaf) {
+    public void setFechavigenciaf(Date fechavigenciaf) {
         this.fechavigenciaf = fechavigenciaf;
     }
+
+    
 
     public String getEstado() {
         return estado;

@@ -19,8 +19,11 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
 /**
- *
- * @author usuario1
+ * 
+ * Universidad Politécnica Salesiana
+ * @author Axel Latorre, Jorge Castañeda
+ * Tutor: Ing. Vanessa Jurado
+ * 
  */
 @ManagedBean
 @ViewScoped
@@ -67,22 +70,22 @@ public class RolBean implements Serializable {
     }
 
     public void commitEdit() throws SQLException {
-        daoRol.editRol(rol);
+        daoRol.editRol(rol, sessionUsuario);
         listadoRoles = daoRol.findAll();
     }
 
     public void commitCreate() throws SQLException {
-        daoRol.createRol(rol);
+        daoRol.createRol(rol, sessionUsuario);
         listadoRoles = daoRol.findAll();
     }
 
     public void eliminar(Rol r) throws SQLException {
-        daoRol.deleteRol(r);
+        daoRol.deleteRol(r, sessionUsuario);
         listadoRoles = daoRol.findAll();
     }
 
     public void commitPermission() throws SQLException {
-        daoAsigRecurso.saveResourcesbyProfile(getListadoPermisos(), rol.getIdRol());
+        daoAsigRecurso.saveResourcesbyProfile(getListadoPermisos(), rol.getIdRol(), sessionUsuario);
         setListadoPermisos(daoAsigRecurso.recursosAsignadosbyRol(rol.getIdRol()));
         setRol(new Rol());
     }

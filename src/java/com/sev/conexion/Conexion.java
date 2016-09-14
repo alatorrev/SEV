@@ -9,8 +9,11 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 /**
- *
- * @author latorre
+ * 
+ * Universidad Politécnica Salesiana
+ * @author Axel Latorre, Jorge Castañeda
+ * Tutor: Ing. Vanessa Jurado
+ * 
  */
 public class Conexion {
 

@@ -8,8 +8,11 @@ package com.sev.entity;
 import java.io.Serializable;
 
 /**
- *
- * @author HOEM
+ * 
+ * Universidad Politécnica Salesiana
+ * @author Axel Latorre, Jorge Castañeda
+ * Tutor: Ing. Vanessa Jurado
+ * 
  */
 public class Recurso implements Serializable {
 

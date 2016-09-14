@@ -22,8 +22,11 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
 /**
- *
- * @author usuario1
+ * 
+ * Universidad Politécnica Salesiana
+ * @author Axel Latorre, Jorge Castañeda
+ * Tutor: Ing. Vanessa Jurado
+ * 
  */
 @ManagedBean
 @ViewScoped
@@ -62,17 +65,17 @@ public class ViaBean implements Serializable {
     }
 
     public void commitEdit() throws SQLException {
-        daoVia.editVia(via);
+        daoVia.editVia(via, sessionUsuario);
         listadoVias = daoVia.findAll();
     }
 
     public void commitCreate() throws SQLException {
-        daoVia.createVia(via);
+        daoVia.createVia(via, sessionUsuario);
         listadoVias = daoVia.findAll();
     }
 
     public void eliminar(ViaComunicacion vi) throws SQLException {
-        daoVia.deleteVia(vi);
+        daoVia.deleteVia(vi, sessionUsuario);
         listadoVias = daoVia.findAll();
     }
 

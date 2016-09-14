@@ -13,14 +13,18 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import com.sev.conexion.Conexion;
+import com.sev.entity.Usuario;
 
 /**
- *
- * @author usuario1
+ * 
+ * Universidad Politécnica Salesiana
+ * @author Axel Latorre, Jorge Castañeda
+ * Tutor: Ing. Vanessa Jurado
+ * 
  */
 public class ReestablecerDAO implements Serializable {
 
-    public void editContra(ReestablecerContra r) throws SQLException {
+    public void editContra(ReestablecerContra r, Usuario u) throws SQLException {
         Conexion con = new Conexion();
         PreparedStatement pst;
         String query = "update usuario set clave=?,estadoclave=?"
@@ -31,6 +35,8 @@ public class ReestablecerDAO implements Serializable {
             pst.setInt(2, 1);
             pst.setString(3, r.getCedula());
             pst.executeUpdate();
+            BitacoraDAO daoBitacora = new BitacoraDAO();
+            daoBitacora.crearRegistro("usuario", "Reestablece clave", u);
         } catch (Exception e) {
             System.out.println("DAO REESTABLECER: " + e.getMessage());
         } finally {

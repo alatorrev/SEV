@@ -17,8 +17,11 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
 /**
- *
- * @author usuario1
+ * 
+ * Universidad Politécnica Salesiana
+ * @author Axel Latorre, Jorge Castañeda
+ * Tutor: Ing. Vanessa Jurado
+ * 
  */
 @ManagedBean
 @ViewScoped
@@ -57,17 +60,17 @@ public class CanalBean implements Serializable {
     }
 
     public void commitEdit() throws SQLException {
-        daoCanal.editCanal(canal);
+        daoCanal.editCanal(canal, sessionUsuario);
         listadoCanales = daoCanal.findAll();
     }
 
     public void commitCreate() throws SQLException {
-        daoCanal.createCanal(canal);
+        daoCanal.createCanal(canal, sessionUsuario);
         listadoCanales = daoCanal.findAll();
     }
 
     public void eliminar(CanalCaptacion ca) throws SQLException {
-        daoCanal.deleteCanal(ca);
+        daoCanal.deleteCanal(ca, sessionUsuario);
         listadoCanales = daoCanal.findAll();
     }
 

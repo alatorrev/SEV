@@ -12,9 +12,14 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import com.sev.conexion.Conexion;
+import com.sev.entity.Usuario;
+import com.sev.dao.BitacoraDAO;
 /**
- *
- * @author usuario1
+ * 
+ * Universidad Politécnica Salesiana
+ * @author Axel Latorre, Jorge Castañeda
+ * Tutor: Ing. Vanessa Jurado
+ * 
  */
 public class CanalDAO implements Serializable{
     public List<CanalCaptacion> findAll() throws SQLException {
@@ -40,7 +45,7 @@ public class CanalDAO implements Serializable{
         return listadoCanales;
     }
     
-    public void editCanal(CanalCaptacion canal) throws SQLException {
+    public void editCanal(CanalCaptacion canal, Usuario u) throws SQLException {
         Conexion con = new Conexion();
         PreparedStatement pst;
         String query = "update canalcaptacion set descripcion=?"
@@ -50,6 +55,9 @@ public class CanalDAO implements Serializable{
             pst.setString(1, canal.getDescripcion());
             pst.setInt(2, canal.getIdCanalCaptacion());
             pst.executeUpdate();
+            
+            BitacoraDAO daoBitacora = new BitacoraDAO();
+            daoBitacora.crearRegistro("canalcaptacion", "Edit", u);
         } catch (Exception e) {
             System.out.println("DAO CANAL: " + e.getMessage());
         } finally {
@@ -57,7 +65,7 @@ public class CanalDAO implements Serializable{
         }
     }
     
-    public void deleteCanal(CanalCaptacion canal) throws SQLException {
+    public void deleteCanal(CanalCaptacion canal, Usuario u) throws SQLException {
         Conexion con = new Conexion();
         PreparedStatement pst;
         String query = "update canalcaptacion set estado = 0 where idcanal=?";
@@ -65,6 +73,9 @@ public class CanalDAO implements Serializable{
         try {
             pst.setInt(1, canal.getIdCanalCaptacion());
             pst.executeUpdate();
+            
+            BitacoraDAO daoBitacora = new BitacoraDAO();
+            daoBitacora.crearRegistro("canalcaptacion", "delete", u);
         } catch (Exception e) {
             System.out.println("DAO CANAL: " + e.getMessage());
         } finally {
@@ -72,7 +83,7 @@ public class CanalDAO implements Serializable{
         }
     }
     
-    public void createCanal(CanalCaptacion canal) throws SQLException {
+    public void createCanal(CanalCaptacion canal, Usuario u) throws SQLException {
         Conexion con = new Conexion();
         con.getConnection().setAutoCommit(false);
         PreparedStatement pst;
@@ -81,6 +92,10 @@ public class CanalDAO implements Serializable{
         try {
             pst.setString(1, canal.getDescripcion());
             pst.executeUpdate();
+            
+            BitacoraDAO daoBitacora = new BitacoraDAO();
+            daoBitacora.crearRegistro("canalcaptacion", "insert", u);
+            
             con.getConnection().commit();
         } catch (Exception e) {
             System.out.println("DAO CANAL: " + e.getMessage());

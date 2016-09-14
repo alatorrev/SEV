@@ -19,8 +19,11 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
 /**
- *
- * @author usuario1
+ * 
+ * Universidad Politécnica Salesiana
+ * @author Axel Latorre, Jorge Castañeda
+ * Tutor: Ing. Vanessa Jurado
+ * 
  */
 @ManagedBean
 @ViewScoped
@@ -65,18 +68,18 @@ public class ProspectoBean implements Serializable {
     }
 
     public void commitEdit() throws SQLException {
-        daoProspecto.editProspecto(prospecto);
+        daoProspecto.editProspecto(prospecto, sessionUsuario);
         listadoProspecto = daoProspecto.findAll();
     }
 
     public void commitCreate() throws SQLException {
         prospecto.setIdcanal(idCanalSelected);
-        daoProspecto.createProspecto(prospecto);
+        daoProspecto.createProspecto(prospecto, sessionUsuario);
         listadoProspecto = daoProspecto.findAll();
     }
 
     public void eliminar(Prospecto p) throws SQLException {
-        daoProspecto.deleteProspecto(p);
+        daoProspecto.deleteProspecto(p, sessionUsuario);
         listadoProspecto = daoProspecto.findAll();
     }
 

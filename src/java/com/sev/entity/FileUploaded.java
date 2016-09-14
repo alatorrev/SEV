@@ -9,8 +9,11 @@ import java.io.InputStream;
 import java.io.Serializable;
 
 /**
- *
- * @author a_latorre
+ * 
+ * Universidad Politécnica Salesiana
+ * @author Axel Latorre, Jorge Castañeda
+ * Tutor: Ing. Vanessa Jurado
+ * 
  */
 public class FileUploaded implements Serializable {
     private String extension;

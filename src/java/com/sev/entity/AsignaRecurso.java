@@ -8,8 +8,11 @@ package com.sev.entity;
 import java.io.Serializable;
 
 /**
- *
+ * 
+ * Universidad Politécnica Salesiana
  * @author Axel Latorre, Jorge Castañeda
+ * Tutor: Ing. Vanessa Jurado
+ * 
  */
 public class AsignaRecurso implements Serializable {
 

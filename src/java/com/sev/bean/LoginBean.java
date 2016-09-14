@@ -24,8 +24,11 @@ import org.primefaces.model.menu.DefaultSubMenu;
 import org.primefaces.model.menu.MenuModel;
 
 /**
- *
+ * 
+ * Universidad Politécnica Salesiana
  * @author Axel Latorre, Jorge Castañeda
+ * Tutor: Ing. Vanessa Jurado
+ * 
  */
 @ManagedBean
 @SessionScoped
@@ -42,7 +45,7 @@ public class LoginBean implements Serializable {
 
     public String authenticate() throws SQLException {
         UsuarioDAO usuarioDAO = new UsuarioDAO();
-        setSessionUsuario(usuarioDAO.loginAction(email, contrasena));
+        setSessionUsuario(usuarioDAO.loginAction(email, contrasena, sessionUsuario));
         if (sessionUsuario != null) {
             if (getSessionUsuario().getEstadoClave() == 1) {
                 initMenu(getSessionUsuario());

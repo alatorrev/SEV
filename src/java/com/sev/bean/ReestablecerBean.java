@@ -17,8 +17,11 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
 /**
- *
- * @author usuario1
+ * 
+ * Universidad Politécnica Salesiana
+ * @author Axel Latorre, Jorge Castañeda
+ * Tutor: Ing. Vanessa Jurado
+ * 
  */
 @ManagedBean
 @ViewScoped
@@ -58,7 +61,7 @@ public class ReestablecerBean implements Serializable {
     }
 
     public void commitEdit() throws SQLException {
-        daoReestablecer.editContra(reestablecer);
+        daoReestablecer.editContra(reestablecer, sessionUsuario);
         listadoUsuarios = daoReestablecer.findAll();
     }
 
