@@ -7,9 +7,11 @@ package com.sev.bean;
 
 import com.sev.dao.InteresDAO;
 import com.sev.dao.ProspectoDAO;
+import com.sev.dao.ViaDAO;
 import com.sev.entity.InteresProspecto;
 import com.sev.entity.Prospecto;
 import com.sev.entity.Usuario;
+import com.sev.entity.ViaComunicacion;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,9 +34,11 @@ public class ContactarProspectoBean implements Serializable {
     private Prospecto prospecto = new Prospecto();
     private ProspectoDAO daoProspecto = new ProspectoDAO();
     private InteresDAO daoInteres = new InteresDAO();
+    private ViaDAO viaDao = new ViaDAO();
     private List<InteresProspecto> interesProspectoList = new ArrayList<>();
+    private List<ViaComunicacion> viaComunicacionList = new ArrayList<>();
     private String cedulaProspecto;
-    private int idInteresSelelected;
+    private int idInteresSelelected,idCanalComunicacionSelected;
 
     public ContactarProspectoBean() {
         try {
@@ -47,6 +51,7 @@ public class ContactarProspectoBean implements Serializable {
                 cedulaProspecto = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("cedulaProspecto");
                 prospecto = daoProspecto.readProspectoContact(cedulaProspecto, sessionUsuario.getCedula());
                 interesProspectoList=daoInteres.findAll();
+                viaComunicacionList=viaDao.findAll();
             }
         } catch (Exception e) {
             System.out.println("Bean Constructor: " + e.getMessage());
@@ -88,6 +93,22 @@ public class ContactarProspectoBean implements Serializable {
 
     public void setIdInteresSelelected(int idInteresSelelected) {
         this.idInteresSelelected = idInteresSelelected;
+    }
+
+    public int getIdCanalComunicacionSelected() {
+        return idCanalComunicacionSelected;
+    }
+
+    public void setIdCanalComunicacionSelected(int idCanalComunicacionSelected) {
+        this.idCanalComunicacionSelected = idCanalComunicacionSelected;
+    }
+
+    public List<ViaComunicacion> getViaComunicacionList() {
+        return viaComunicacionList;
+    }
+
+    public void setViaComunicacionList(List<ViaComunicacion> viaComunicacionList) {
+        this.viaComunicacionList = viaComunicacionList;
     }
 
 }

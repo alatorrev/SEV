@@ -89,6 +89,7 @@ public class LoginBean implements Serializable {
                     itemObj.setUrl(urlBase + objRecurso.getRuta());
                     itemObj.setIcon(objRecurso.getItemIcon());
                     subItemObj.addElement(itemObj);
+                    subItemObj.setIcon(objRecurso.getSubItemIcon());
                     temp = subItemObj;
                     if (!aux.getLabel().equals(subItemObj.getLabel())) {
                         modelMenu.addElement(temp);
@@ -98,6 +99,7 @@ public class LoginBean implements Serializable {
                     itemObj.setUrl(urlBase + objRecurso.getRuta());
                     itemObj.setIcon(objRecurso.getItemIcon());
                     temp.addElement(itemObj);
+                    //temp.setIcon(objRecurso.getSubItemIcon());
                     aux = temp;
                 }
             }

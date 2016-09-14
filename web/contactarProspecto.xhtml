@@ -37,16 +37,27 @@
                         </p:panel>
                         <p:spacer height="10"/>
                         <p:panel header="Intereses Prospecto">
-                            <h:panelGrid columns="6">
-                                <p:outputLabel value="Cédula"/>
+                            <h:panelGrid columns="4">
+                                <p:outputLabel value="Estado"/>
                                 <p:selectOneMenu value="#{contactarProspectoBean.idInteresSelelected}">
                                     <f:selectItem itemLabel="Seleccionar..." itemValue="0"/>
                                     <f:selectItems value="#{contactarProspectoBean.interesProspectoList}" var="interes" 
                                                    itemLabel="#{interes.descripcion}" itemValue="#{interes.idInteresProspecto}"/>
                                 </p:selectOneMenu>
+                                <p:outputLabel value="Vía de Comunicación"/>
+                                <p:selectOneMenu value="#{contactarProspectoBean.idCanalComunicacionSelected}">
+                                    <f:selectItem itemLabel="Seleccionar..." itemValue="0"/>
+                                    <f:selectItems value="#{contactarProspectoBean.interesProspectoList}" var="interes" 
+                                                   itemLabel="#{interes.descripcion}" itemValue="#{interes.idInteresProspecto}"/>
+                                </p:selectOneMenu>
+
+                                <p:outputLabel value="Observación"/>
+                                <p:inputTextarea rows="3" cols="50" counter="display" maxlength="300" counterTemplate="{0} characters remaining." autoResize="false" />
+                                <span/>
+                                <h:outputLabel id="display" />
                             </h:panelGrid>
                         </p:panel>
-                        <p:commandButton value="test" actionListener="#{contactarProspectoBean.verValues()}"/>
+                        <p:commandButton value="Guardar" actionListener="#{contactarProspectoBean.verValues()}"/>
                     </h:form>
                 </p:panel>
             </div>

@@ -69,7 +69,7 @@ public class ProspectoDAO implements Serializable {
         Conexion con = new Conexion();
         con.getConnection().setAutoCommit(false);
         PreparedStatement pst;
-        String query = "insert into prospecto values(?,?,?,?,?,?,?,?,?,?,?,?,1)";
+        String query = "insert into prospecto values(?,?,1,?,?,?,?,?,?,?,?,?,?,1)";
         pst = con.getConnection().prepareStatement(query);
         try {
             pst.setString(1, pro.getCedula());
@@ -157,7 +157,7 @@ public class ProspectoDAO implements Serializable {
         con.getConnection().setAutoCommit(false);
         PreparedStatement pst;
         String query = "insert into PROSPECTO"
-                + "(cedula,idcancap,nombres,apellidos,celular,casa,correo,establecimiento,responsable, fecha_creac, fecha_modif)"
+                + "(cedula,idcancap,nombres,apellidos,celular,casa,correo,establecimiento,responsable, fecha_creac, fecha_modif,idintpros)"
                 + "values (?,(select IDCANAL from CANALCAPTACION where DESCRIPCION =?), ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         //String query = "insert into prospecto values(?,?,?,?,?,?,?,?,?)";
         pst = con.getConnection().prepareStatement(query);
@@ -173,6 +173,7 @@ public class ProspectoDAO implements Serializable {
             pst.setString(9, pros.getCaptador());
             pst.setString(10, fmt.format(new Date()));
             pst.setString(11, null/*for now lolz*/);
+            pst.setInt(12, 1);
             pst.executeUpdate();
 
 //            BitacoraDAO daoBitacora = new BitacoraDAO();
@@ -313,9 +314,10 @@ public class ProspectoDAO implements Serializable {
         Prospecto p = new Prospecto();
         ResultSet rs;
         try {
-            String query = "select P.CEDULA,P.NOMBRES,P.APELLIDOS,P.CELULAR,P.CASA,P.CORREO,P.ESTABLECIMIENTO, C.IDCANAL,C.DESCRIPCION "
-                    + "from PROSPECTO P inner join CANALCAPTACION C "
-                    + "ON P.IDCANCAP=C.IDCANAL where P.IDUSUARIO=? and P.CEDULA=? ";
+            String query = "select P.CEDULA,P.NOMBRES,P.APELLIDOS,P.CELULAR,P.CASA,P.CORREO,P.ESTABLECIMIENTO, C.IDCANAL,C.DESCRIPCION,I.IDINTPROS,I.DESCRIPCION "
+                    + "from PROSPECTO P inner join CANALCAPTACION C ON P.IDCANCAP=C.IDCANAL "
+                    + "INNER JOIN INTERESPROSPECTO I on I.IDINTPROS=P.IDINTPROS "
+                    + "where P.IDUSUARIO=? and P.CEDULA=? ";
             pst = con.getConnection().prepareStatement(query);
             pst.setString(1, cedulaUsuario);
             pst.setString(2, cedulaProspecto);
@@ -330,6 +332,8 @@ public class ProspectoDAO implements Serializable {
                 p.setEstablecimientoProveniente(rs.getString(7));
                 p.setIdcanal(rs.getInt(8));
                 p.setDescripcionCanal(rs.getString(9));
+                p.setIdInteres(rs.getInt(10));
+                p.setDescripcionInteres(rs.getString(11));
             }
         } catch (Exception e) {
             System.out.println("DAO PROSPECTO: " + e.getMessage());

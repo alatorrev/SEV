@@ -30,6 +30,8 @@ public class Prospecto implements Serializable {
     Date fecha_modif;
     private int idcanal;
     private String DescripcionCanal;
+    private int idInteres;
+    private String DescripcionInteres;
     private String repeated="único";
 
     @Override
@@ -154,6 +156,22 @@ public class Prospecto implements Serializable {
 
     public void setSecuencial(int secuencial) {
         this.secuencial = secuencial;
+    }
+
+    public int getIdInteres() {
+        return idInteres;
+    }
+
+    public void setIdInteres(int idInteres) {
+        this.idInteres = idInteres;
+    }
+
+    public String getDescripcionInteres() {
+        return DescripcionInteres;
+    }
+
+    public void setDescripcionInteres(String DescripcionInteres) {
+        this.DescripcionInteres = DescripcionInteres;
     }
 
 }
