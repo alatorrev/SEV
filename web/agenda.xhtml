@@ -1,0 +1,74 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template.xhtml">
+
+    <ui:define name="content">
+        <h:outputScript name="jquery/jquery.js" library="primefaces" target="head"/>
+        <h:outputStylesheet name="style.css" />
+        <f:metadata>
+            <f:viewParam name="id" value="#{agendaBean.idContactoDetalle}"/>
+            <f:viewParam name="idprospecto" value="#{agendaBean.idProspecto}"/>
+        </f:metadata>
+        <div class="ContainerIndent">
+            <p:panel>
+                <h:form id="frm">
+                    <p:growl id="growl" showDetail="true"/>
+                    <p:schedule widgetVar="calendario" id="schedule" value="#{agendaBean.modelSchedule}" timeZone="America/Guayaquil">
+                        <p:ajax event="eventSelect" listener="#{agendaBean.onCitaSelected}" update="dlgCitaEdita" oncomplete="PF('wdlgCitaEdita').show();" />
+                        <p:ajax event="dateSelect" listener="#{agendaBean.onNuevaCita}" update="dlgCitaNueva" oncomplete="PF('wdlgCitaNueva').show();" />
+                        <p:ajax event="eventMove" listener="#{agendaBean.onCitaMoved}" update="schedule"  />
+                        <p:ajax event="eventResize" listener="#{agendaBean.onCitaResized}" update="schedule" />
+                    </p:schedule>
+                </h:form>
+                <p:dialog id="dlgCitaNueva" header="Registrar Cita" widgetVar="wdlgCitaNueva" modal="true" responsive="true">
+                    <h:form>    
+                        <h:panelGrid columns="2">
+                            <p:outputLabel value="Título"/>
+                            <p:inputText value="#{agendaBean.cita.titulo}"/>
+                            <p:outputLabel value="Prospecto" rendered="#{agendaBean.idProspecto==null}"/>
+                            <p:selectOneMenu id="prospecto" value="#{agendaBean.idProspectoSelected}" rendered="#{agendaBean.idProspecto==null}" converter="generalConverter" panelStyle="width:180px"
+                                             effect="fade" var="p" style="width:140px" filter="true" filterMatchMode="startsWith">
+                                <f:selectItem itemLabel="Seleccionar..." itemValue="0"/>
+                                <f:selectItems value="#{agendaBean.listaProspectos}" var="prospecto" itemLabel="#{prospecto.cedula}" itemValue="#{prospecto.cedula}" />
+                                <p:column>
+                                    <h:outputText value="#{p.cedula}" />
+                                </p:column>
+                            </p:selectOneMenu>
+                            <p:outputLabel value="Inicio"/>
+                            <p:calendar value="#{agendaBean.cita.fechaInicio}" pattern="dd/MM/yyyy HH:mm" />
+                            <p:outputLabel value="Fin"/>
+                            <p:calendar value="#{agendaBean.cita.fechaFin}" pattern="dd/MM/yyyy HH:mm" />
+                            <p:outputLabel value="Status"/>
+                            <p:selectBooleanCheckbox value="#{agendaBean.cita.estado}"/>
+                            <p:outputLabel value="Descripción"/>
+                            <p:inputTextarea value="#{agendaBean.cita.observacion}"/>
+                        </h:panelGrid>
+                        <p:commandButton value="Crear" actionListener="#{agendaBean.guardarCita()}" update="frm:growl frm:schedule" oncomplete="PF('wdlgCitaNueva').hide();"/>
+                    </h:form>
+                </p:dialog>
+
+                <p:dialog id="dlgCitaEdita" header="Modificar Cita" widgetVar="wdlgCitaEdita" modal="true" responsive="true">
+                    <h:form>
+                        <h:panelGrid columns="2">
+                            <p:outputLabel value="Título"/>
+                            <p:inputText value="#{agendaBean.cita.titulo}"/>
+                            <p:outputLabel value="Inicio"/>
+                            <p:calendar value="#{agendaBean.cita.fechaInicio}" pattern="dd/MM/yyyy HH:mm" />
+                            <p:outputLabel value="Fin"/>
+                            <p:calendar value="#{agendaBean.cita.fechaFin}" pattern="dd/MM/yyyy HH:mm" />
+                            <p:outputLabel value="Status"/>
+                            <p:selectBooleanCheckbox value="#{agendaBean.cita.estado}"/>
+                            <p:outputLabel value="Descripción"/>
+                            <p:inputTextarea value="#{agendaBean.cita.observacion}"/>
+                        </h:panelGrid>
+                        <p:commandButton value="Modificar" actionListener="#{agendaBean.guardarCita()}" update="frm:growl frm:schedule" oncomplete="PF('wdlgCitaEdita').hide();"/>
+                    </h:form>              
+                </p:dialog>
+            </p:panel>
+        </div>
+    </ui:define>
+
+</ui:composition>

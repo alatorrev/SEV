@@ -170,7 +170,7 @@ body{background-color: #F6F8F8; margin:0px;}
                                 .slimmenu .layout-menubar-container li a .i{ margin-right:20px;}
 	
 	/* PORTLETS COVER */
-	#layout-portlets-cover{background-color: #ffffff; overflow-y:hidden; padding-top: 55px; color:#72828B; overflow-x:auto;}
+	#layout-portlets-cover{background-color: #ffffff; overflow-y:hidden; padding-top: 55px;padding-bottom:60px; color:#72828B; overflow-x:auto;}
 
     #sm-mobiletopmenu {
         display: none;

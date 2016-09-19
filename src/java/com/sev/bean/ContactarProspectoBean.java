@@ -5,6 +5,7 @@
  */
 package com.sev.bean;
 
+import com.sev.dao.ContactoDetalleDAO;
 import com.sev.dao.InteresDAO;
 import com.sev.dao.ProspectoDAO;
 import com.sev.dao.ViaDAO;
@@ -35,10 +36,11 @@ public class ContactarProspectoBean implements Serializable {
     private ProspectoDAO daoProspecto = new ProspectoDAO();
     private InteresDAO daoInteres = new InteresDAO();
     private ViaDAO viaDao = new ViaDAO();
+    private ContactoDetalleDAO daoContactoDetalle = new ContactoDetalleDAO();
     private List<InteresProspecto> interesProspectoList = new ArrayList<>();
     private List<ViaComunicacion> viaComunicacionList = new ArrayList<>();
-    private String cedulaProspecto;
-    private int idInteresSelelected,idCanalComunicacionSelected;
+    private String cedulaProspecto, observaciones;
+    private int idInteresSelected, idViaComunicacionSelected, keyGenerated;
 
     public ContactarProspectoBean() {
         try {
@@ -50,8 +52,9 @@ public class ContactarProspectoBean implements Serializable {
             } else {
                 cedulaProspecto = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("cedulaProspecto");
                 prospecto = daoProspecto.readProspectoContact(cedulaProspecto, sessionUsuario.getCedula());
-                interesProspectoList=daoInteres.findAll();
-                viaComunicacionList=viaDao.findAll();
+                idInteresSelected = prospecto.getIdInteres();
+                interesProspectoList = daoInteres.findAll();
+                viaComunicacionList = viaDao.findAll();
             }
         } catch (Exception e) {
             System.out.println("Bean Constructor: " + e.getMessage());
@@ -59,6 +62,20 @@ public class ContactarProspectoBean implements Serializable {
 
     }
 
+    public void guardarContactoDetalle() {
+        keyGenerated = daoContactoDetalle.crearContactoDetalle(prospecto, idViaComunicacionSelected, idInteresSelected, observaciones);
+    }
+    
+    public void declineCitaDialog(){
+        try {
+            String urlBase = FacesContext.getCurrentInstance().getExternalContext().getInitParameter("Url");
+            String url="/faces/workingList.xhtml";
+            FacesContext.getCurrentInstance().getExternalContext().redirect(urlBase+url);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+    
     public void verValues() {
         System.out.println(cedulaProspecto);
     }
@@ -87,20 +104,20 @@ public class ContactarProspectoBean implements Serializable {
         this.interesProspectoList = interesProspectoList;
     }
 
-    public int getIdInteresSelelected() {
-        return idInteresSelelected;
+    public int getIdInteresSelected() {
+        return idInteresSelected;
     }
 
-    public void setIdInteresSelelected(int idInteresSelelected) {
-        this.idInteresSelelected = idInteresSelelected;
+    public void setIdInteresSelected(int idInteresSelected) {
+        this.idInteresSelected = idInteresSelected;
     }
 
-    public int getIdCanalComunicacionSelected() {
-        return idCanalComunicacionSelected;
+    public int getIdViaComunicacionSelected() {
+        return idViaComunicacionSelected;
     }
 
-    public void setIdCanalComunicacionSelected(int idCanalComunicacionSelected) {
-        this.idCanalComunicacionSelected = idCanalComunicacionSelected;
+    public void setIdViaComunicacionSelected(int idViaComunicacionSelected) {
+        this.idViaComunicacionSelected = idViaComunicacionSelected;
     }
 
     public List<ViaComunicacion> getViaComunicacionList() {
@@ -109,6 +126,22 @@ public class ContactarProspectoBean implements Serializable {
 
     public void setViaComunicacionList(List<ViaComunicacion> viaComunicacionList) {
         this.viaComunicacionList = viaComunicacionList;
+    }
+
+    public String getObservaciones() {
+        return observaciones;
+    }
+
+    public void setObservaciones(String observaciones) {
+        this.observaciones = observaciones;
+    }
+
+    public int getKeyGenerated() {
+        return keyGenerated;
+    }
+
+    public void setKeyGenerated(int keyGenerated) {
+        this.keyGenerated = keyGenerated;
     }
 
 }

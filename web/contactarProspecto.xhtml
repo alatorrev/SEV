@@ -39,26 +39,46 @@
                         <p:panel header="Intereses Prospecto">
                             <h:panelGrid columns="4">
                                 <p:outputLabel value="Estado"/>
-                                <p:selectOneMenu value="#{contactarProspectoBean.idInteresSelelected}">
+                                <p:selectOneMenu value="#{contactarProspectoBean.idInteresSelected}">
                                     <f:selectItem itemLabel="Seleccionar..." itemValue="0"/>
                                     <f:selectItems value="#{contactarProspectoBean.interesProspectoList}" var="interes" 
                                                    itemLabel="#{interes.descripcion}" itemValue="#{interes.idInteresProspecto}"/>
                                 </p:selectOneMenu>
                                 <p:outputLabel value="Vía de Comunicación"/>
-                                <p:selectOneMenu value="#{contactarProspectoBean.idCanalComunicacionSelected}">
+                                <p:selectOneMenu value="#{contactarProspectoBean.idViaComunicacionSelected}">
                                     <f:selectItem itemLabel="Seleccionar..." itemValue="0"/>
-                                    <f:selectItems value="#{contactarProspectoBean.interesProspectoList}" var="interes" 
-                                                   itemLabel="#{interes.descripcion}" itemValue="#{interes.idInteresProspecto}"/>
+                                    <f:selectItems value="#{contactarProspectoBean.viaComunicacionList}" var="via" 
+                                                   itemLabel="#{via.descripcion}" itemValue="#{via.idViaComunicacion}"/>
                                 </p:selectOneMenu>
 
                                 <p:outputLabel value="Observación"/>
-                                <p:inputTextarea rows="3" cols="50" counter="display" maxlength="300" counterTemplate="{0} characters remaining." autoResize="false" />
-                                <span/>
+                                <p:inputTextarea value="#{contactarProspectoBean.observaciones}" rows="3" cols="50" counter="display" maxlength="300" counterTemplate="{0} characters remaining." autoResize="false" />
+                                <h:inputHidden/><h:inputHidden/><h:inputHidden/>
                                 <h:outputLabel id="display" />
                             </h:panelGrid>
                         </p:panel>
-                        <p:commandButton value="Guardar" actionListener="#{contactarProspectoBean.verValues()}"/>
+                        <p:commandButton value="Guardar" actionListener="#{contactarProspectoBean.guardarContactoDetalle()}"
+                                         oncomplete="PF('wdlgAgenda').show();" update="dlgAgenda">
+                            <p:confirm header="Confirmación" message="Está seguro de realizar esta acción" icon="ui-icon-alert" />
+                        </p:commandButton>
+
                     </h:form>
+                    <p:dialog id="dlgAgenda" header="Registrar Cita" widgetVar="wdlgAgenda" modal="true" responsive="true" >
+                        ¿Desea Registrar una cita?
+                        <h:form>
+                            <h:panelGrid columns="2">
+                                <p:commandButton action="/agenda?faces-redirect=true&amp;includeViewParams=true" value="Yes" styleClass="ui-confirmdialog-yes" icon="ui-icon-check fa fa-check Fs14 white">
+                                    <f:param name="id" value="#{contactarProspectoBean.keyGenerated}"/>
+                                    <f:param name="idprospecto" value="#{contactarProspectoBean.prospecto.cedula}"/>
+                                </p:commandButton>
+                                <p:commandButton actionListener="#{contactarProspectoBean.declineCitaDialog()}" value="No" styleClass="ui-confirmdialog-no" icon="ui-icon-close fa fa-close Fs14 white" />
+                            </h:panelGrid>
+                        </h:form>
+                    </p:dialog>
+                    <p:confirmDialog  global="true" showEffect="fade" hideEffect="fade" >
+                        <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check fa fa-check Fs14 white" />
+                        <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close fa fa-close Fs14 white" />
+                    </p:confirmDialog>
                 </p:panel>
             </div>
         </div>

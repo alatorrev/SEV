@@ -27,7 +27,6 @@ import java.util.Date;
 public class ProductoDAO implements Serializable {
 
     public List<Producto> findAll() throws SQLException {
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         Conexion con = new Conexion();
         List<Producto> listadoProductos = new ArrayList<>();
         PreparedStatement pst;
