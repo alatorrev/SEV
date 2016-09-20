@@ -36,6 +36,9 @@ public class EjecutivoWorkingListBean implements Serializable {
     private ProspectoDAO daoProspecto = new ProspectoDAO();
     private Prospecto prospecto = new Prospecto();
 
+    public void authorized() {
+    }
+    
     public EjecutivoWorkingListBean() {
         try {
             sessionUsuario = (Usuario) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("Usuario");

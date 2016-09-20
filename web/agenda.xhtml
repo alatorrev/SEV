@@ -9,6 +9,9 @@
         <h:outputScript name="jquery/jquery.js" library="primefaces" target="head"/>
         <h:outputStylesheet name="style.css" />
         <f:metadata>
+            <f:event type="preRenderView" listener="#{agendaBean.authorized()}"/>
+        </f:metadata>
+        <f:metadata>
             <f:viewParam name="id" value="#{agendaBean.idContactoDetalle}"/>
             <f:viewParam name="idprospecto" value="#{agendaBean.idProspecto}"/>
         </f:metadata>
@@ -20,7 +23,7 @@
                         <p:ajax event="eventSelect" listener="#{agendaBean.onCitaSelected}" update="dlgCitaEdita" oncomplete="PF('wdlgCitaEdita').show();" />
                         <p:ajax event="dateSelect" listener="#{agendaBean.onNuevaCita}" update="dlgCitaNueva" oncomplete="PF('wdlgCitaNueva').show();" />
                         <p:ajax event="eventMove" listener="#{agendaBean.onCitaMoved}" update="schedule"  />
-                        <p:ajax event="eventResize" listener="#{agendaBean.onCitaResized}" update="schedule" />
+                       <!-- <p:ajax event="eventResize" listener="# {agendaBean.onCitaResized}" update="schedule" /> -->
                     </p:schedule>
                 </h:form>
                 <p:dialog id="dlgCitaNueva" header="Registrar Cita" widgetVar="wdlgCitaNueva" modal="true" responsive="true">
@@ -29,7 +32,7 @@
                             <p:outputLabel value="Título"/>
                             <p:inputText value="#{agendaBean.cita.titulo}"/>
                             <p:outputLabel value="Prospecto" rendered="#{agendaBean.idProspecto==null}"/>
-                            <p:selectOneMenu id="prospecto" value="#{agendaBean.idProspectoSelected}" rendered="#{agendaBean.idProspecto==null}" converter="generalConverter" panelStyle="width:180px"
+                            <p:selectOneMenu id="prospecto" value="#{agendaBean.idProspectoSelected}" rendered="#{agendaBean.idProspecto==null}" panelStyle="width:180px"
                                              effect="fade" var="p" style="width:140px" filter="true" filterMatchMode="startsWith">
                                 <f:selectItem itemLabel="Seleccionar..." itemValue="0"/>
                                 <f:selectItems value="#{agendaBean.listaProspectos}" var="prospecto" itemLabel="#{prospecto.cedula}" itemValue="#{prospecto.cedula}" />

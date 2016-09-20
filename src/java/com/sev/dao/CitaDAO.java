@@ -13,7 +13,9 @@ import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 /**
  * 
@@ -74,8 +76,11 @@ public class CitaDAO {
     
     public List<Cita> findCitaByUsuario(String cedulaUsuario) throws SQLException {
         List<Cita> lista = new ArrayList<>();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        sdf.setTimeZone(TimeZone.getTimeZone("GTM-5"));
         Conexion con = new Conexion();
         PreparedStatement pst;
+        
         ResultSet rs;
         try {
             con.getConnection().setAutoCommit(false);
@@ -89,8 +94,10 @@ public class CitaDAO {
                 c.setIdProspecto(rs.getString(2));
                 c.setIdContacto(rs.getInt(3));
                 c.setTitulo(rs.getString(4));
-                c.setFechaInicio(rs.getTimestamp(5));
-                c.setFechaFin(rs.getTimestamp(6));
+                String inicio =sdf.format(new Date(rs.getTimestamp(5).getTime()));
+                c.setFechaInicio(sdf.parse(inicio));
+                String fin =sdf.format(new Date(rs.getTimestamp(6).getTime()));
+                c.setFechaFin(sdf.parse(fin));
                 c.setObservacion(rs.getString(7));
                 c.setEstado(rs.getBoolean(8));
                 lista.add(c);

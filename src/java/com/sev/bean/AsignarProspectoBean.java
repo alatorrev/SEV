@@ -35,7 +35,9 @@ public class AsignarProspectoBean implements Serializable {
     private List<AsignaProspecto> filteredAccess;
     private ProspectoDAO daoProspecto = new ProspectoDAO();
     private Usuario sessionUsuario;
-
+    
+    public void authorized(){}
+    
     public AsignarProspectoBean() {
         try {
             sessionUsuario = (Usuario) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("Usuario");

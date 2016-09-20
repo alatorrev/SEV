@@ -17,11 +17,11 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
 /**
- * 
+ *
  * Universidad Politécnica Salesiana
- * @author Axel Latorre, Jorge Castañeda
- * Tutor: Ing. Vanessa Jurado
- * 
+ *
+ * @author Axel Latorre, Jorge Castañeda Tutor: Ing. Vanessa Jurado
+ *
  */
 @ManagedBean
 @ViewScoped
@@ -33,7 +33,10 @@ public class CanalBean implements Serializable {
     private CanalCaptacion canal = new CanalCaptacion();
     private CanalDAO daoCanal = new CanalDAO();
 
-    public CanalBean(){
+    public void authorized() {
+    }
+
+    public CanalBean() throws SQLException {
         try {
             sessionUsuario = (Usuario) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("Usuario");
             if (sessionUsuario == null) {
@@ -41,13 +44,10 @@ public class CanalBean implements Serializable {
                 String url = FacesContext.getCurrentInstance().getExternalContext().getInitParameter("SesionExpirada");
                 FacesContext.getCurrentInstance().getExternalContext().redirect(url);
             } else {
-                /**
-                 * se ejecutan las lineas del constructor**
-                 */
                 listadoCanales = daoCanal.findAll();
             }
         } catch (Exception e) {
-            System.out.println("Bean Constructor: " + e.getMessage());
+            System.out.println(e.getMessage());
         }
     }
 

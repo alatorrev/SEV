@@ -4,6 +4,7 @@
  * and open the template in the editor.
  */
 package com.sev.bean;
+
 import com.sev.dao.CambiarDAO;
 import com.sev.entity.Usuario;
 import com.sev.entity.CambiarContrasena;
@@ -12,22 +13,26 @@ import java.sql.SQLException;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
+
 /**
- * 
+ *
  * Universidad Politécnica Salesiana
- * @author Axel Latorre, Jorge Castañeda
- * Tutor: Ing. Vanessa Jurado
- * 
+ *
+ * @author Axel Latorre, Jorge Castañeda Tutor: Ing. Vanessa Jurado
+ *
  */
 
 @ManagedBean
 @ViewScoped
-public class CambiarBean implements Serializable{
+public class CambiarBean implements Serializable {
+
     private CambiarContrasena cambiar = new CambiarContrasena();
     private Usuario sessionUsuario;
     private CambiarDAO daoCambiar = new CambiarDAO();
     private Usuario u = new Usuario();
-    
+
+    public void authorized() {
+    }
 
     public CambiarBean() {
         try {
@@ -45,12 +50,10 @@ public class CambiarBean implements Serializable{
             System.out.println("Bean Constructor: " + e.getMessage());
         }
     }
-    
-    
-    
+
     public void commitEdit() throws SQLException {
-        
-        daoCambiar.editCambiar(cambiar,sessionUsuario);
+
+        daoCambiar.editCambiar(cambiar, sessionUsuario);
     }
 
     public CambiarContrasena getCambiar() {
@@ -68,5 +71,5 @@ public class CambiarBean implements Serializable{
     public void setDaoCambiar(CambiarDAO daoCambiar) {
         this.daoCambiar = daoCambiar;
     }
-    
+
 }

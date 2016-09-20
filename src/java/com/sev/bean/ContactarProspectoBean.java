@@ -42,6 +42,9 @@ public class ContactarProspectoBean implements Serializable {
     private String cedulaProspecto, observaciones;
     private int idInteresSelected, idViaComunicacionSelected, keyGenerated;
 
+    public void authorized() {
+    }
+    
     public ContactarProspectoBean() {
         try {
             sessionUsuario = (Usuario) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("Usuario");

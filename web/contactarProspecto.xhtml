@@ -9,6 +9,7 @@
         <h:outputScript name="jquery/jquery.js" library="primefaces" target="head"/>
         <h:outputStylesheet name="style.css" />
         <f:metadata>
+            <f:event type="preRenderView" listener="#{contactarProspectoBean.authorized()}"/>
             <f:viewParam name="cedulaProspecto" value="#{contactarProspectoBean.cedulaProspecto}"/>
         </f:metadata>
         <div class="Container100 ui-fluid">

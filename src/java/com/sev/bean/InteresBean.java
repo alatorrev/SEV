@@ -33,6 +33,9 @@ public class InteresBean implements Serializable {
     private InteresProspecto interes = new InteresProspecto();
     private InteresDAO daoInteres = new InteresDAO();
 
+    public void authorized() {
+    }
+    
     public InteresBean(){
         try {
             sessionUsuario = (Usuario) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("Usuario");

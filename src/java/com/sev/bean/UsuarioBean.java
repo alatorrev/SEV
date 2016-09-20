@@ -36,6 +36,9 @@ public class UsuarioBean implements Serializable {
     private int idRolSeleted;
     private List<Rol> selectorRoles = new ArrayList<>();
 
+    public void authorized() {
+    }
+    
     public UsuarioBean() {
         try {
             sessionUsuario = (Usuario) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("Usuario");

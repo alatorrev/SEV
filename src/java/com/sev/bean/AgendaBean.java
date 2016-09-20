@@ -13,6 +13,7 @@ import com.sev.entity.Usuario;
 import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import javax.faces.application.FacesMessage;
@@ -49,13 +50,16 @@ public class AgendaBean implements Serializable {
     private Cita cita = new Cita();
     private List<Cita> listadoCitas = new ArrayList<>();
 
+    public void authorized() {
+    }
+
     public AgendaBean() {
         try {
             sessionUsuario = (Usuario) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("Usuario");
             if (sessionUsuario == null) {
                 FacesContext.getCurrentInstance().getExternalContext().getSessionMap().remove("Usuario");
                 String url = FacesContext.getCurrentInstance().getExternalContext().getInitParameter("SesionExpirada");
-                //FacesContext.getCurrentInstance().getExternalContext().redirect(url);
+                FacesContext.getCurrentInstance().getExternalContext().redirect(url);
             } else {
                 String id = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("id");
                 idProspecto = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("idprospecto");
@@ -80,7 +84,7 @@ public class AgendaBean implements Serializable {
             evento.setEndDate(obj.getFechaFin());
             evento.setData(obj);
             evento.setDescription(obj.getObservacion());
-            evento.setAllDay(true);
+            evento.setAllDay(false);
             evento.setEditable(true);
             modelSchedule.addEvent(evento);
         }
@@ -121,7 +125,11 @@ public class AgendaBean implements Serializable {
                         new FacesMessage(FacesMessage.SEVERITY_ERROR, "Atención", "Error al crear la cita"));
             }
         } else {
-            if (cita.getFechaInicio().getTime() <= cita.getFechaFin().getTime()) {
+            Calendar calInicio = Calendar.getInstance();
+            calInicio.setTime(cita.getFechaInicio());
+            Calendar calFin = Calendar.getInstance();
+            calFin.setTime(cita.getFechaFin());
+            if (calInicio.get(Calendar.DAY_OF_MONTH)== calFin.get(Calendar.DAY_OF_MONTH)) {
                 try {
                     if (idProspecto != null) {
                         cita.setIdProspecto(idProspecto);
@@ -139,7 +147,7 @@ public class AgendaBean implements Serializable {
                 }
             } else {
                 FacesContext.getCurrentInstance().addMessage(null,
-                        new FacesMessage(FacesMessage.SEVERITY_ERROR, "Atención", "La fecha inicial no puede ser menor que la final"));
+                        new FacesMessage(FacesMessage.SEVERITY_ERROR, "Atención", "La fecha inicial debe ser igual a la final"));
             }
         }
     }

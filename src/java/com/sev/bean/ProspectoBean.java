@@ -37,6 +37,9 @@ public class ProspectoBean implements Serializable {
     private int idCanalSelected;
     private List<CanalCaptacion> selectorCanal = new ArrayList<>();
 
+    public void authorized() {
+    }
+    
     public ProspectoBean() {
         try {
             sessionUsuario = (Usuario) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("Usuario");

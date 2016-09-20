@@ -56,7 +56,10 @@ public class CargarProspectoBean implements Serializable {
     private ProspectoDAO daoProspecto = new ProspectoDAO();
     private int idCanalSelected, cantidadProspectosRepetidos = 0;
     private List<CanalCaptacion> selectorCanal = new ArrayList<>();
-
+    
+    public void authorized() {
+    }
+    
     public CargarProspectoBean(){
         try {
             sessionUsuario = (Usuario) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("Usuario");

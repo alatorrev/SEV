@@ -33,6 +33,9 @@ public class ReestablecerBean implements Serializable {
     private ReestablecerContra reestablecer = new ReestablecerContra();
     private ReestablecerDAO daoReestablecer = new ReestablecerDAO();
 
+    public void authorized() {
+    }
+    
     public ReestablecerBean() {
         try {
             sessionUsuario = (Usuario) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("Usuario");

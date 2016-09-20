@@ -38,6 +38,9 @@ public class ViaBean implements Serializable {
     private ViaComunicacion via = new ViaComunicacion();
     private ViaDAO daoVia = new ViaDAO();
 
+    public void authorized() {
+    }
+    
     public ViaBean() {
         try {
             sessionUsuario = (Usuario) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("Usuario");

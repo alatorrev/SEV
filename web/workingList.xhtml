@@ -8,6 +8,9 @@
     <ui:define name="content">
         <h:outputScript name="jquery/jquery.js" library="primefaces" target="head"/>
         <h:outputStylesheet name="style.css" />
+        <f:metadata>
+            <f:event type="preRenderView" listener="#{ejecutivoWorkingListBean.authorized()}"/>
+        </f:metadata>
         <div class="Container100 ui-fluid">
             <div class="ContainerIndent">
                 <p:panel>

@@ -38,6 +38,9 @@ public class RolBean implements Serializable {
     private List<AsignaRecurso> listadoPermisos = new ArrayList<>();
     private List<AsignaRecurso> filteredAccess;
 
+    public void authorized() {
+    }
+    
     public RolBean() {
         try {
             sessionUsuario = (Usuario) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("Usuario");

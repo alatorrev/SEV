@@ -36,6 +36,8 @@ public class ProductoBean implements Serializable {
     private Producto producto = new Producto();
     private ProductoDAO daoProducto = new ProductoDAO();
     
+    public void authorized() {
+    }
     
     public ProductoBean(){
         try {
