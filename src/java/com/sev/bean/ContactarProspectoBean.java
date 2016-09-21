@@ -14,6 +14,7 @@ import com.sev.entity.Prospecto;
 import com.sev.entity.Usuario;
 import com.sev.entity.ViaComunicacion;
 import java.io.Serializable;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.faces.bean.ManagedBean;
@@ -65,7 +66,8 @@ public class ContactarProspectoBean implements Serializable {
 
     }
 
-    public void guardarContactoDetalle() {
+    public void guardarContactoDetalle() throws SQLException {
+        daoProspecto.editProspecto(prospecto, sessionUsuario);
         keyGenerated = daoContactoDetalle.crearContactoDetalle(prospecto, idViaComunicacionSelected, idInteresSelected, observaciones);
     }
     

@@ -13,6 +13,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import com.sev.conexion.Conexion;
+import com.sev.entity.Cita;
 import com.sev.entity.Usuario;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -53,7 +54,41 @@ public class ProductoDAO implements Serializable {
         }
         return listadoProductos;
     }
-
+    
+    public List<Producto> supportedProductbyDate(Cita c) throws SQLException {
+        Conexion con = new Conexion();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        List<Producto> listadoProductos = new ArrayList<>();
+        PreparedStatement pst;
+        ResultSet rs = null;
+        String query = "select idprod, descripcion, precio, fechavigenciai, fechavigenciaf,"
+                + "case estado when '1' then 'activo' else 'inactivo' end as estado "
+                + "from producto where FECHAVIGENCIAI<=? and FECHAVIGENCIAF>=? and estado=1";
+        pst = con.getConnection().prepareStatement(query);
+        try {
+            String ini=sdf.format(c.getFechaInicio());
+            String fin=sdf.format(c.getFechaFin());
+            pst.setString(1, ini);
+            pst.setString(2, fin);
+            rs = pst.executeQuery();
+            while (rs.next()) {
+                Producto producto = new Producto();
+                producto.setIdprod(rs.getInt(1));
+                producto.setDescripcion(rs.getString(2));
+                producto.setPrecio(rs.getDouble(3));
+                producto.setFechavigenciai(rs.getDate(4));
+                producto.setFechavigenciaf(rs.getDate(5));
+                producto.setEstado(rs.getString(6));
+                listadoProductos.add(producto);
+            }
+        } catch (Exception e) {
+            System.out.println("DAO PRODUCTOS: " + e.getMessage());
+        } finally {
+            con.desconectar();
+        }
+        return listadoProductos;
+    }
+    
     public void createProducto(Producto producto, Usuario u) throws SQLException {
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         Conexion con = new Conexion();

@@ -6,8 +6,10 @@
 package com.sev.bean;
 
 import com.sev.dao.CitaDAO;
+import com.sev.dao.ProductoDAO;
 import com.sev.dao.ProspectoDAO;
 import com.sev.entity.Cita;
+import com.sev.entity.Producto;
 import com.sev.entity.Prospecto;
 import com.sev.entity.Usuario;
 import java.io.Serializable;
@@ -43,12 +45,15 @@ public class AgendaBean implements Serializable {
     private String idProspecto;
     private String idProspectoSelected;
     private Prospecto prospecto = new Prospecto();
+    private Producto producto = new Producto();
     private List<Prospecto> listaProspectos = new ArrayList<>();
     private CitaDAO daoCita = new CitaDAO();
     private ProspectoDAO daoProspecto = new ProspectoDAO();
+    private ProductoDAO daoProducto = new ProductoDAO();
     private DefaultScheduleModel modelSchedule = new DefaultScheduleModel();
     private Cita cita = new Cita();
     private List<Cita> listadoCitas = new ArrayList<>();
+    private List<Producto> listadoProducto = new ArrayList<>();
 
     public void authorized() {
     }
@@ -104,21 +109,32 @@ public class AgendaBean implements Serializable {
 
     public void onCitaMoved(ScheduleEntryMoveEvent e) throws SQLException {
         cita = (Cita) e.getScheduleEvent().getData();
-        daoCita.editarCita(cita);
+        daoCita.editarCita(cita, 0);
         buildScheduler();
     }
 
     public void onCitaResized(ScheduleEntryResizeEvent e) throws SQLException {
         cita = (Cita) e.getScheduleEvent().getData();
-        daoCita.editarCita(cita);
+        daoCita.editarCita(cita, 0);
         buildScheduler();
+    }
+
+    public void onCitacompletada() throws SQLException {
+        if (cita.getCompletado()) {
+            listadoProducto = daoProducto.supportedProductbyDate(cita);
+        }
     }
 
     public void guardarCita() {
         if (cita.getIdCita() != 0) {
             try {
-                daoCita.editarCita(cita);
-                buildScheduler();
+                if (cita.getCompletado() && producto.getIdprod() == 0) {
+                    FacesContext.getCurrentInstance().addMessage(null,
+                            new FacesMessage(FacesMessage.SEVERITY_WARN, "Atención", "Si completa la cita, debe elegir un producto de referencia"));
+                } else {
+                    daoCita.editarCita(cita, cita.getCompletado() ? producto.getIdprod() : 0);
+                    buildScheduler();
+                }
             } catch (Exception e) {
                 System.out.println(e.getMessage());
                 FacesContext.getCurrentInstance().addMessage(null,
@@ -129,7 +145,7 @@ public class AgendaBean implements Serializable {
             calInicio.setTime(cita.getFechaInicio());
             Calendar calFin = Calendar.getInstance();
             calFin.setTime(cita.getFechaFin());
-            if (calInicio.get(Calendar.DAY_OF_MONTH)== calFin.get(Calendar.DAY_OF_MONTH)) {
+            if (calInicio.get(Calendar.DAY_OF_MONTH) == calFin.get(Calendar.DAY_OF_MONTH)) {
                 try {
                     if (idProspecto != null) {
                         cita.setIdProspecto(idProspecto);
@@ -222,6 +238,22 @@ public class AgendaBean implements Serializable {
 
     public void setSessionUsuario(Usuario sessionUsuario) {
         this.sessionUsuario = sessionUsuario;
+    }
+
+    public List<Producto> getListadoProducto() {
+        return listadoProducto;
+    }
+
+    public void setListadoProducto(List<Producto> listadoProducto) {
+        this.listadoProducto = listadoProducto;
+    }
+
+    public Producto getProducto() {
+        return producto;
+    }
+
+    public void setProducto(Producto producto) {
+        this.producto = producto;
     }
 
 }

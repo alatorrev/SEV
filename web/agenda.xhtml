@@ -44,8 +44,6 @@
                             <p:calendar value="#{agendaBean.cita.fechaInicio}" pattern="dd/MM/yyyy HH:mm" />
                             <p:outputLabel value="Fin"/>
                             <p:calendar value="#{agendaBean.cita.fechaFin}" pattern="dd/MM/yyyy HH:mm" />
-                            <p:outputLabel value="Status"/>
-                            <p:selectBooleanCheckbox value="#{agendaBean.cita.estado}"/>
                             <p:outputLabel value="Descripción"/>
                             <p:inputTextarea value="#{agendaBean.cita.observacion}"/>
                         </h:panelGrid>
@@ -54,7 +52,7 @@
                 </p:dialog>
 
                 <p:dialog id="dlgCitaEdita" header="Modificar Cita" widgetVar="wdlgCitaEdita" modal="true" responsive="true">
-                    <h:form>
+                    <h:form id="edit">
                         <h:panelGrid columns="2">
                             <p:outputLabel value="Título"/>
                             <p:inputText value="#{agendaBean.cita.titulo}"/>
@@ -62,10 +60,22 @@
                             <p:calendar value="#{agendaBean.cita.fechaInicio}" pattern="dd/MM/yyyy HH:mm" />
                             <p:outputLabel value="Fin"/>
                             <p:calendar value="#{agendaBean.cita.fechaFin}" pattern="dd/MM/yyyy HH:mm" />
-                            <p:outputLabel value="Status"/>
-                            <p:selectBooleanCheckbox value="#{agendaBean.cita.estado}"/>
                             <p:outputLabel value="Descripción"/>
                             <p:inputTextarea value="#{agendaBean.cita.observacion}"/>
+                            <p:outputLabel value="Completar"/>
+                            <p:selectBooleanCheckbox value="#{agendaBean.cita.completado}" >
+                                <p:ajax update="edit" listener="#{agendaBean.onCitacompletada()}"  />
+                            </p:selectBooleanCheckbox>
+                            <p:outputLabel value="Producto" rendered="#{agendaBean.cita.completado}"/>
+                            <p:selectOneMenu id="productos" value="#{agendaBean.producto}" converter="converter" rendered="#{agendaBean.cita.completado}" panelStyle="width:180px"
+                                             effect="fade" var="pro" style="width:140px" filter="true" filterMatchMode="startsWith">
+                                <f:selectItems value="#{agendaBean.listadoProducto}" var="producto" itemLabel="#{producto.descripcion}" itemValue="#{producto}" />
+                                <p:column>
+                                    <h:outputText value="#{pro.descripcion}" />
+                                </p:column>
+                            </p:selectOneMenu>
+                            <p:outputLabel value="Cancelar Cita"/>
+                            <p:selectBooleanCheckbox value="#{agendaBean.cita.estado}"/>
                         </h:panelGrid>
                         <p:commandButton value="Modificar" actionListener="#{agendaBean.guardarCita()}" update="frm:growl frm:schedule" oncomplete="PF('wdlgCitaEdita').hide();"/>
                     </h:form>              

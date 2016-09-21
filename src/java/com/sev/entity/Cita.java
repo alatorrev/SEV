@@ -23,6 +23,7 @@ public class Cita implements Serializable{
     private Date fechaInicio;
     private Date fechaFin;
     private String observacion;
+    private boolean completado;
     private boolean estado;
 
     public int getIdCita() {
@@ -79,6 +80,14 @@ public class Cita implements Serializable{
 
     public void setObservacion(String observacion) {
         this.observacion = observacion;
+    }
+
+    public boolean getCompletado() {
+        return completado;
+    }
+
+    public void setCompletado(boolean completado) {
+        this.completado = completado;
     }
 
     public boolean getEstado() {
