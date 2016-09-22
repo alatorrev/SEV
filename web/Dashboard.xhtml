@@ -14,10 +14,9 @@
             <h1>Reporte Gráfico</h1>
             
             <h:form>
-                <p:commandButton value="Graficar" actionListener="#{dashboardBean.graficar}" update="panel"/>
                 <h:panelGrid id="panel">
                     <p:chart type="bar" model="#{dashboardBean.barra}"
-                             style="width: 600px; height: 350px"
+                             style="width: 500px; height: 350px"
                              rendered="#{dashboardBean.barra != null}"/>
                 </h:panelGrid>
                 

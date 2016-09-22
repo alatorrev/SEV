@@ -29,6 +29,7 @@ public class DashboardBean {
     
     public DashboardBean(){
         listar();
+        graficar();
     }
     
     public void listar(){
@@ -44,19 +45,19 @@ public class DashboardBean {
     public void graficar(){
         barra = new BarChartModel();
         
-//        for (int i = 0; i < lista.size(); i++){
-//            ChartSeries serie = new BarChartSeries();
-//            serie.setLabel(lista.get(i).getNombres());
-//            serie.set(lista.get(i).getNombres(), lista.get(i).getCantidad());
-//            barra.addSeries(serie);
-//        }
-        
-        for (Dashboard dashboard : lista) {
+        for (int i = 0; i < lista.size(); i++){
             ChartSeries serie = new BarChartSeries();
-            serie.setLabel(dashboard.getNombres());
-            serie.set(dashboard.getNombres(), dashboard.getCantidad());
+            serie.setLabel(lista.get(i).getNombres());
+            serie.set(lista.get(i).getNombres(), lista.get(i).getCantidad());
             barra.addSeries(serie);
         }
+        
+//        for (Dashboard dashboard : lista) {
+//            ChartSeries serie = new BarChartSeries();
+//            serie.setLabel(dashboard.getNombres());
+//            serie.set(dashboard.getNombres(), dashboard.getCantidad());
+//            barra.addSeries(serie);
+//        }
         
         barra.setTitle("Cantidad de prospectos asignados a ejecutivos");
         barra.setLegendPosition("ne");
