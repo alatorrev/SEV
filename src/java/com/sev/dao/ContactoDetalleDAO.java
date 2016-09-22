@@ -7,9 +7,12 @@ package com.sev.dao;
 
 import com.sev.conexion.Conexion;
 import com.sev.entity.Prospecto;
+import com.sev.entity.Usuario;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -22,7 +25,8 @@ import java.util.logging.Logger;
  */
 public class ContactoDetalleDAO {
 
-    public int crearContactoDetalle(Prospecto p, int via, int interes, String observacion) {
+    public int crearContactoDetalle(Usuario u,Prospecto p, int via, int interes, String observacion) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         Conexion con = new Conexion();
         ResultSet rs;
         int autoIncrementidContactoDetalle = 0;
@@ -41,7 +45,27 @@ public class ContactoDetalleDAO {
                 autoIncrementidContactoDetalle = rs.getInt(1);
                 System.out.println(autoIncrementidContactoDetalle);
             }
+            
+            String sqlUpdateProspecto="update prospecto set idcancap=?,nombres=?,apellidos=?,celular=?,casa=?,correo=?,"
+                    + "establecimiento=?, responsable=?, fecha_modif=?,idintpros=?"
+                + " where cedula=?";
+            pst=con.getConnection().prepareStatement(sqlUpdateProspecto);
+            pst.setInt(1, p.getIdcanal());
+            pst.setString(2, p.getNombres());
+            pst.setString(3, p.getApellidos());
+            pst.setString(4, p.getCelular());
+            pst.setString(5, p.getCasa());
+            pst.setString(6, p.getEmail());
+            pst.setString(7, p.getEstablecimientoProveniente());
+            pst.setString(8, p.getCaptador());
+            pst.setString(9, sdf.format(new Date()));
+            pst.setInt(10,p.getIdInteres());
+            pst.setString(11, p.getCedula());
+            pst.executeUpdate();
             con.getConnection().commit();
+            BitacoraDAO daoBitacora = new BitacoraDAO();
+            daoBitacora.crearRegistro("detallecontacto", "insert", u);
+            daoBitacora.crearRegistro("prospecto", "Edit", u);
         } catch (Exception e) {
             System.out.println(e.getMessage());
         } finally {

@@ -7,9 +7,18 @@
     <navigation-rule>
         <from-view-id>/index.xhtml</from-view-id>
         <navigation-case>
-            <from-outcome>correcto</from-outcome>
-            <to-view-id>/administrador.xhtml</to-view-id>
+            <from-outcome>dashboard</from-outcome>
+            <to-view-id>/Dashboard.xhtml</to-view-id>
         </navigation-case>
+        <navigation-case>
+            <from-outcome>agenda</from-outcome>
+            <to-view-id>/agenda.xhtml</to-view-id>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>otros</from-outcome>
+            <to-view-id>/empty-page.xhtml</to-view-id>
+        </navigation-case>
+        
         <navigation-case>
             <from-outcome>incorrecto</from-outcome>
             <to-view-id>/index.xhtml</to-view-id>

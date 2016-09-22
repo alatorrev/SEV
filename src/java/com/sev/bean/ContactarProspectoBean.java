@@ -67,8 +67,7 @@ public class ContactarProspectoBean implements Serializable {
     }
 
     public void guardarContactoDetalle() throws SQLException {
-        daoProspecto.editProspecto(prospecto, sessionUsuario);
-        keyGenerated = daoContactoDetalle.crearContactoDetalle(prospecto, idViaComunicacionSelected, idInteresSelected, observaciones);
+        keyGenerated = daoContactoDetalle.crearContactoDetalle(sessionUsuario,prospecto, idViaComunicacionSelected, idInteresSelected, observaciones);
     }
     
     public void declineCitaDialog(){

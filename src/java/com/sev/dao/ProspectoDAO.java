@@ -157,8 +157,8 @@ public class ProspectoDAO implements Serializable {
         con.getConnection().setAutoCommit(false);
         PreparedStatement pst;
         String query = "insert into PROSPECTO"
-                + "(cedula,idcancap,nombres,apellidos,celular,casa,correo,establecimiento,responsable, fecha_creac, fecha_modif,idintpros)"
-                + "values (?,(select IDCANAL from CANALCAPTACION where DESCRIPCION =?), ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                + "(cedula,idcancap,nombres,apellidos,celular,casa,correo,establecimiento,responsable, fecha_creac, fecha_modif, idintpros, estado)"
+                + "values (?,(select IDCANAL from CANALCAPTACION where DESCRIPCION =?), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         //String query = "insert into prospecto values(?,?,?,?,?,?,?,?,?)";
         pst = con.getConnection().prepareStatement(query);
         try {
@@ -174,6 +174,7 @@ public class ProspectoDAO implements Serializable {
             pst.setString(10, fmt.format(new Date()));
             pst.setString(11, null/*for now lolz*/);
             pst.setInt(12, 1);
+            pst.setInt(13,1);
             pst.executeUpdate();
 
 //            BitacoraDAO daoBitacora = new BitacoraDAO();
