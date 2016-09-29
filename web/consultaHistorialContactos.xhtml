@@ -1,0 +1,88 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template.xhtml">
+
+    <ui:define name="content">
+        <h:outputScript name="jquery/jquery.js" library="primefaces" target="head"/>
+        <h:outputStylesheet name="style.css" />
+        <h:form id="frm">
+            <p:panel header="Filtrar Por">
+                <h:panelGrid columns="6">
+                    <p:outputLabel value="Usuario"/>
+                    <p:autoComplete value="#{consultaHistorialcontactosBean.usuario}" completeMethod="#{consultaHistorialcontactosBean.completeUsuario}"
+                                    minQueryLength="3" maxResults="5" var="us" itemLabel="#{us.apellidos} #{us.nombres}" itemValue="#{us}" converter="converter">
+                        <p:ajax event="itemSelect" listener="#{consultaHistorialcontactosBean.onItemSelectUsuario}"/>
+                    </p:autoComplete>
+                    <p:outputLabel value="Prospecto"/>
+                    <p:autoComplete value="#{consultaHistorialcontactosBean.prospecto}" completeMethod="#{consultaHistorialcontactosBean.completeProspecto}"
+                                    minQueryLength="3" maxResults="5" var="pros" itemLabel="#{pros.apellidos} #{pros.nombres}" itemValue="#{pros}" converter="converter">
+                        <p:ajax event="itemSelect" listener="#{consultaHistorialcontactosBean.onItemSelectProspecto}"/>
+                    </p:autoComplete>
+                    <p:outputLabel value="Via Comunicación"/>
+                    <p:selectOneMenu value="#{consultaHistorialcontactosBean.idViaComunicacion}">
+                        <f:selectItem itemLabel="Seleccionar" itemValue="0"/>
+                        <f:selectItems value="#{consultaHistorialcontactosBean.listaViaComunicacion}" var="via" itemLabel="#{via.descripcion}" itemValue="#{via.idViaComunicacion}"/>
+                    </p:selectOneMenu>
+                    <p:outputLabel value="Interes Prospecto"/>
+                    <p:selectOneMenu value="#{consultaHistorialcontactosBean.idInteresProspecto}">
+                        <f:selectItem itemLabel="Seleccionar" itemValue="0"/>
+                        <f:selectItems value="#{consultaHistorialcontactosBean.listaInteresProspecto}" var="interes" itemLabel="#{interes.descripcion}" itemValue="#{interes.idInteresProspecto}"/>
+                    </p:selectOneMenu>
+                    <p:outputLabel value="Fecha Desde"/>
+                    <p:calendar value="#{consultaHistorialcontactosBean.fechaInicio}" pattern="dd/MM/yyyy"/>
+                    <p:outputLabel value="Fecha Hasta"/>
+                    <p:calendar value="#{consultaHistorialcontactosBean.fechaFin}" pattern="dd/MM/yyyy"/>
+                </h:panelGrid>
+            </p:panel>
+            <p:dataTable id="tbl_report" var="report" value="#{consultaHistorialcontactosBean.listaReporte}">
+                <p:columnGroup type="header">
+                    <p:row>
+                        <p:column colspan="2" headerText="Ejecutivo" />
+                        <p:column colspan="2" headerText="Prospecto" />
+                        <p:column colspan="3" headerText="Información" />
+                    </p:row>
+                    <p:row>
+                        <p:column headerText="Apellidos" />
+                        <p:column headerText="Nombres" />
+                        <p:column headerText="Apellidos" />
+                        <p:column headerText="Nombres" />
+                        <p:column headerText="Vía Comunicación" />
+                        <p:column headerText="Interés" />
+                        <p:column headerText="Fecha Contacto" />
+                    </p:row>
+                </p:columnGroup>
+                <p:column>
+                    <h:outputLabel value="#{report.apellidosUsuario}"/>
+                </p:column>
+                <p:column>
+                    <h:outputLabel value="#{report.nombresUsuario}"/>
+                </p:column>
+                <p:column>
+                    <h:outputLabel value="#{report.apellidosProspecto}"/>
+                </p:column>
+                <p:column>
+                    <h:outputLabel value="#{report.nombresProspecto}"/>
+                </p:column>
+                <p:column>
+                    <h:outputLabel value="#{report.descripcionVia}"/>
+                </p:column>
+                <p:column>
+                    <h:outputLabel value="#{report.descripcioInteres}"/>
+                </p:column>
+                <p:column>
+                    <h:outputLabel value="#{report.fechaContacto}">
+                        <f:convertDateTime type="date" pattern="dd/MM/yyyy HH:mm:ss"/>
+                    </h:outputLabel>
+                </p:column>
+            </p:dataTable>
+            <p:commandLink value="consultar" action="#{consultaHistorialcontactosBean.consultarHistorial()}" update="tbl_report" />
+            <p:commandLink value="limpiar" action="#{consultaHistorialcontactosBean.limpiar()}" update="@form" />
+            <h:commandLink value="export" action="#{exportReportTest.export()}"/>
+        </h:form>
+
+    </ui:define>
+
+</ui:composition>

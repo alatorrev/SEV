@@ -341,4 +341,32 @@ public class ProspectoDAO implements Serializable {
         }
         return p;
     }
+    
+    public List<Prospecto> completeProspectoMethod(String pattern) throws SQLException{
+        List<Prospecto> lista = new ArrayList<>();
+        Conexion con = new Conexion();
+        PreparedStatement pst;
+        ResultSet rs = null;
+        String query = "select * from prospecto where upper(APELLIDOS+' '+NOMBRES) like upper(?) and estado!=0";
+        pst= con.getConnection().prepareStatement(query);
+        try {
+            pst.setString(1, pattern.trim().concat("%"));
+            rs=pst.executeQuery();
+            while(rs.next()){
+                Prospecto p = new Prospecto();
+                p.setCedula(rs.getString(1));
+                p.setIdcanal(rs.getInt(2));
+                p.setIdInteres(rs.getInt(3));
+                p.setNombres(rs.getString(4));
+                p.setApellidos(rs.getString(5));
+                p.setCelular(rs.getString(6));
+                p.setCasa(rs.getString(7));
+                p.setEstablecimientoProveniente(rs.getString(9));
+                lista.add(p);
+            }
+        } catch (Exception e) {
+            System.out.println("DAO PROSPECTO: " + e.getMessage());
+        }
+        return lista;
+    }
 }

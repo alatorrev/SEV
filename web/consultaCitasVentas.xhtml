@@ -1,0 +1,95 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template.xhtml">
+
+    <ui:define name="content">
+        <h:outputScript name="jquery/jquery.js" library="primefaces" target="head"/>
+        <h:outputStylesheet name="style.css" />
+        <h:form id="frm">
+            <p:panel header="Filtrar Por">
+                <h:panelGrid columns="6">
+                    <p:outputLabel value="Usuario"/>
+                    <p:autoComplete value="#{consultaCitasBean.usuario}" completeMethod="#{consultaCitasBean.completeUsuario}"
+                                    minQueryLength="3" maxResults="5" var="us" itemLabel="#{us.apellidos} #{us.nombres}" itemValue="#{us}" converter="converter">
+                        <p:ajax event="itemSelect" listener="#{consultaCitasBean.onItemSelectUsuario}"/>
+                    </p:autoComplete>
+                    <p:outputLabel value="Prospecto"/>
+                    <p:autoComplete value="#{consultaCitasBean.prospecto}" completeMethod="#{consultaCitasBean.completeProspecto}"
+                                    minQueryLength="3" maxResults="5" var="pros" itemLabel="#{pros.apellidos} #{pros.nombres}" itemValue="#{pros}" converter="converter">
+                        <p:ajax event="itemSelect" listener="#{consultaCitasBean.onItemSelectProspecto}"/>
+                    </p:autoComplete>
+                    <p:outputLabel value="Producto"/>
+                    <p:autoComplete value="#{consultaCitasBean.producto}" completeMethod="#{consultaCitasBean.completeProducto}"
+                                    minQueryLength="3" maxResults="5" var="prod" itemLabel="#{prod.descripcion}" itemValue="#{prod}" converter="converter">
+                        <p:ajax event="itemSelect" listener="#{consultaCitasBean.onItemSelectProducto}"/>
+                    </p:autoComplete>
+                    <p:outputLabel value="Citas Desde"/>
+                    <p:calendar value="#{consultaCitasBean.desde}" pattern="dd/MM/yyyy"/>
+                    <p:outputLabel value="Citas Hasta"/>
+                    <p:calendar value="#{consultaCitasBean.hasta}" pattern="dd/MM/yyyy"/>
+                    <p:outputLabel value="Citas Completadas"/>
+                    <p:selectBooleanCheckbox value="#{consultaCitasBean.completado}"/>
+                </h:panelGrid>
+            </p:panel>
+            <p:dataTable id="tbl_report" var="report" value="#{consultaCitasBean.listaReporte}">
+                <p:columnGroup type="header">
+                    <p:row>
+                        <p:column colspan="2" headerText="Ejecutivo" />
+                        <p:column colspan="2" headerText="Prospecto" />
+                        <p:column colspan="5" headerText="Información" />
+                    </p:row>
+                    <p:row>
+                        <p:column headerText="Apellidos" />
+                        <p:column headerText="Nombres" />
+                        <p:column headerText="Apellidos" />
+                        <p:column headerText="Nombres" />
+                        <p:column headerText="Título Cita" />
+                        <p:column headerText="Fecha Cita" />
+                        <p:column headerText="Fecha Contacto" />
+                        <p:column headerText="Precio" />
+                        <p:column headerText="Observación" />
+                    </p:row>
+                </p:columnGroup> 
+                <p:column>
+                    <h:outputLabel value="#{report.apellidosUsuario}"/>
+                </p:column>
+                <p:column>
+                    <h:outputLabel value="#{report.nombresUsuario}"/>
+                </p:column>
+                <p:column>
+                    <h:outputLabel value="#{report.apellidosProspecto}"/>
+                </p:column>
+                <p:column>
+                    <h:outputLabel value="#{report.nombresProspecto}"/>
+                </p:column>
+                <p:column>
+                    <h:outputLabel value="#{report.titulo}"/>
+                </p:column>
+                <p:column>
+                    <h:outputLabel value="#{report.fechaCita}">
+                        <f:convertDateTime type="date" pattern="dd/MM/yyyy HH:mm:ss"/>
+                    </h:outputLabel>
+                </p:column>
+                <p:column>
+                    <h:outputLabel value="#{report.fechaContacto}">
+                        <f:convertDateTime type="date" pattern="dd/MM/yyyy HH:mm:ss"/>
+                    </h:outputLabel>
+                </p:column>
+                <p:column>
+                    <h:outputLabel value="#{report.precio}"/>
+                </p:column>
+                <p:column>
+                    
+                </p:column>
+            </p:dataTable>
+            <p:commandLink value="consultar" action="#{consultaCitasBean.consultarCitaVentas()}" update="tbl_report" />
+            <p:commandLink value="limpiar" action="#{consultaCitasBean.limpiar()}" update="@form" />
+        </h:form>
+
+
+    </ui:define>
+
+</ui:composition>

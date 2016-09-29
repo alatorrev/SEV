@@ -153,4 +153,40 @@ public class ProductoDAO implements Serializable {
             con.desconectar();
         }
     }
+    
+    public List<Producto> completeProductoMethod(String pattern) throws SQLException {
+        Conexion con = new Conexion();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        List<Producto> listadoProductos = new ArrayList<>();
+        PreparedStatement pst;
+        ResultSet rs = null;
+        String query = "select idprod, descripcion, precio, fechavigenciai, fechavigenciaf,"
+                + "case estado when '1' then 'activo' else 'inactivo' end as estado "
+                + "from producto where estado=1 "
+                + "and upper(descripcion) like upper(?) and FECHAVIGENCIAI<=? and FECHAVIGENCIAF>=?";
+        pst = con.getConnection().prepareStatement(query);
+        try {
+            pst.setString(1,pattern.trim().concat("%"));
+            String ini=sdf.format(new Date());
+            String fin=sdf.format(new Date());
+            pst.setString(2, ini);
+            pst.setString(3, fin);
+            rs = pst.executeQuery();
+            while (rs.next()) {
+                Producto producto = new Producto();
+                producto.setIdprod(rs.getInt(1));
+                producto.setDescripcion(rs.getString(2));
+                producto.setPrecio(rs.getDouble(3));
+                producto.setFechavigenciai(rs.getDate(4));
+                producto.setFechavigenciaf(rs.getDate(5));
+                producto.setEstado(rs.getString(6));
+                listadoProductos.add(producto);
+            }
+        } catch (Exception e) {
+            System.out.println("DAO PRODUCTOS: " + e.getMessage());
+        } finally {
+            con.desconectar();
+        }
+        return listadoProductos;
+    }
 }

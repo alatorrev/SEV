@@ -19,11 +19,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * 
+ *
  * Universidad Politécnica Salesiana
- * @author Axel Latorre, Jorge Castañeda
- * Tutor: Ing. Vanessa Jurado
- * 
+ *
+ * @author Axel Latorre, Jorge Castañeda Tutor: Ing. Vanessa Jurado
+ *
  */
 public class UsuarioDAO implements Serializable {
 
@@ -220,7 +220,7 @@ public class UsuarioDAO implements Serializable {
                 BitacoraDAO daoBitacora = new BitacoraDAO();
                 daoBitacora.crearRegistro("usuario", "Login", u);
                 return us;
-                
+
             }
         } catch (Exception e) {
             System.out.println("DAO USUARIO: " + e.getMessage());
@@ -230,4 +230,35 @@ public class UsuarioDAO implements Serializable {
         return null;
     }
 
+    public List<Usuario> completeUsuarioMethod(String pattern) throws SQLException {
+        System.out.println(pattern);
+        List<Usuario> lista = new ArrayList<>();
+        Conexion con = new Conexion();
+        PreparedStatement pst;
+        ResultSet rs = null;
+        String query = "select * from usuario where upper(APELLIDOS+' '+NOMBRES) like upper(?) and activo!=0";
+        pst= con.getConnection().prepareStatement(query);
+        try {
+            pst.setString(1, pattern.trim().concat("%"));
+            rs=pst.executeQuery();
+            while(rs.next()){
+                Usuario u = new Usuario();
+                u.setCedula(rs.getString(1));
+                u.setNombres(rs.getString(2));
+                u.setApellidos(rs.getString(3));
+                u.setEmail(rs.getString(4));
+                u.setEstadoClave(rs.getInt(6));
+                u.setActivo(rs.getInt(7));
+                u.setFecha_crea(rs.getDate(8));
+                u.setFecha_modif(rs.getDate(9));
+                lista.add(u);
+            }
+        } catch (Exception e) {
+            System.out.println("DAO USUARIO: "+e.getMessage());
+        }finally{
+            con.desconectar();
+            System.out.println(lista.size());
+        }
+        return lista;
+    }
 }

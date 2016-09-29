@@ -17,7 +17,7 @@ import java.util.Date;
  */
 public class Prospecto implements Serializable {
 
-    private String cedula;
+    private String cedula="";
     private String nombres;
     private String apellidos;
     private String celular;
