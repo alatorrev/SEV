@@ -6,8 +6,10 @@
 package com.sev.bean;
 
 import com.sev.dao.RecursoDAO;
+import com.sev.dao.RolDAO;
 import com.sev.dao.UsuarioDAO;
 import com.sev.entity.Recurso;
+import com.sev.entity.Rol;
 import com.sev.entity.Usuario;
 import java.io.Serializable;
 import java.sql.SQLException;
@@ -35,17 +37,21 @@ import org.primefaces.model.menu.MenuModel;
 public class LoginBean implements Serializable {
 
     private Usuario sessionUsuario = new Usuario();
+    private RolDAO daorol = new RolDAO();
+    private List<Rol> listaRoles = new ArrayList<>();
     private String email;
+    private int idRolSelected=0;
     private MenuModel modelMenu;
     private List<String> subMenuList = new ArrayList<>();
     private String contrasena;
 
     public LoginBean() {
+        listaRoles=daorol.findAll();
     }
 
     public String authenticate() throws SQLException {
         UsuarioDAO usuarioDAO = new UsuarioDAO();
-        setSessionUsuario(usuarioDAO.loginAction(email, contrasena, sessionUsuario));
+        setSessionUsuario(usuarioDAO.loginAction(email, contrasena, sessionUsuario,idRolSelected));
         if (sessionUsuario != null) {
             if (getSessionUsuario().getEstadoClave() == 1) {
                 initMenu(getSessionUsuario());
@@ -152,6 +158,22 @@ public class LoginBean implements Serializable {
 
     public void setModelMenu(MenuModel modelMenu) {
         this.modelMenu = modelMenu;
+    }
+
+    public List<Rol> getListaRoles() {
+        return listaRoles;
+    }
+
+    public void setListaRoles(List<Rol> listaRoles) {
+        this.listaRoles = listaRoles;
+    }
+
+    public int getIdRolSelected() {
+        return idRolSelected;
+    }
+
+    public void setIdRolSelected(int idRolSelected) {
+        this.idRolSelected = idRolSelected;
     }
 
 }

@@ -192,7 +192,7 @@ public class UsuarioDAO implements Serializable {
         return listadoUsuarios;
     }
 
-    public Usuario loginAction(String email, String contrasena, Usuario u) throws SQLException {
+    public Usuario loginAction(String email, String contrasena, Usuario u,int idrol) throws SQLException {
         Conexion con = new Conexion();
         Usuario us = new Usuario();
         PreparedStatement pst;
@@ -200,12 +200,13 @@ public class UsuarioDAO implements Serializable {
         String query = "select u.CEDULA,u.NOMBRES,u.APELLIDOS,u.EMAIL,u.PRIORIDAD,r.IDROL,r.DESCRIPCION,u.ESTADOCLAVE,"
                 + "u.ACTIVO from usuario u "
                 + "inner join USUARIOROL ur on ur.IDUSUARIO=u.CEDULA "
-                + "inner join ROL r on r.IDROL=ur.IDROL where u.EMAIL=? and u.CLAVE=? and u.ACTIVO=?";
+                + "inner join ROL r on r.IDROL=ur.IDROL where u.EMAIL=? and u.CLAVE=? and ur.idrol=? and u.ACTIVO=?";
         pst = con.getConnection().prepareStatement(query);
         try {
             pst.setString(1, email);
             pst.setString(2, contrasena);
-            pst.setInt(3, 1);
+            pst.setInt(3, idrol);
+            pst.setInt(4, 1);
             rs = pst.executeQuery();
             while (rs.next()) {
                 us.setCedula(rs.getString(1));

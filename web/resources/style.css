@@ -43,6 +43,18 @@ and open the template in the editor.
     background:rgba(255, 85, 85, 0.39)!important;
 }
 
+.loginRoles{
+    display: inline-block;
+    position: relative;
+    width: 80%;
+    zoom: 1;
+    cursor: pointer;
+}
+
+.loginLabelRoles .ui-selectonemenu-label{
+    font-size: 18px;
+}
+
 html {
     height: 100%;
     box-sizing: border-box;
