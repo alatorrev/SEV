@@ -11,13 +11,14 @@
         <h3 class="hardblue TexAlCenter">Reporte Gráfico</h3>
         
         <h:body>
-            <h1>Reporte Gráfico</h1>
+           
             
             <h:form>
                 <h:panelGrid id="panel">
                     <p:chart type="bar" model="#{dashboardBean.barra}"
-                             style="width: 500px; height: 350px"
-                             rendered="#{dashboardBean.barra != null}"/>
+                             class="center-block"
+                             rendered="#{dashboardBean.barra != null}"
+                             responsive="true"/>
                 </h:panelGrid>
                 
             </h:form>

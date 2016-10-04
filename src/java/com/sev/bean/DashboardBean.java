@@ -61,8 +61,10 @@ public class DashboardBean {
         
         barra.setTitle("Cantidad de prospectos asignados a ejecutivos");
         barra.setLegendPosition("ne");
+        
         Axis xAxis = barra.getAxis(AxisType.X);
         xAxis.setLabel("Ejecutivo");
+        
         Axis yAxis = barra.getAxis(AxisType.Y);
         yAxis.setLabel("Prospectos");
         yAxis.setMin(0);

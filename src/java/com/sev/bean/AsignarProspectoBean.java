@@ -29,7 +29,7 @@ import javax.faces.context.FacesContext;
 public class AsignarProspectoBean implements Serializable {
 
     private UsuarioDAO daoUsuario = new UsuarioDAO();
-    private List<Usuario> listaUsuario = daoUsuario.findAll();
+    private List<Usuario> listaUsuario = daoUsuario.findAllAsigna();
     private String UsuarioIdSelected, radioButtonValue = "masivo";
     private List<AsignaProspecto> listadoProspecto = new ArrayList<>();
     private List<AsignaProspecto> filteredAccess;
@@ -50,7 +50,7 @@ public class AsignarProspectoBean implements Serializable {
                  * se ejecutan las lineas del constructor**
                  */
 //                listadoIntereses = daoInteres.findAll();
-                listaUsuario = daoUsuario.findAll();
+                listaUsuario = daoUsuario.findAllAsigna();
             }
         } catch (Exception e) {
             System.out.println("Bean Constructor: " + e.getMessage());

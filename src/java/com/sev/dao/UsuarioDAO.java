@@ -191,6 +191,41 @@ public class UsuarioDAO implements Serializable {
         }
         return listadoUsuarios;
     }
+    
+    public List<Usuario> findAllAsigna() {
+        Conexion con = new Conexion();
+        List<Usuario> listadoUsuarios = new ArrayList<>();
+        PreparedStatement pst;
+        ResultSet rs = null;
+        String query = "select u.cedula,u.nombres,u.apellidos,u.email,u.prioridad,r.IDROL,r.DESCRIPCION from USUARIO u "
+                + "inner join USUARIOROL ru on u.CEDULA=ru.IDUSUARIO inner join ROL r on ru.IDROL=r.IDROL where u.ACTIVO=? and r.IDROL = 3";
+
+        try {
+            pst = con.getConnection().prepareStatement(query);
+            pst.setInt(1, 1); //todos los usuario que pueden autenticarse en el sistema.
+            rs = pst.executeQuery();
+            while (rs.next()) {
+                Usuario us = new Usuario();
+                us.setCedula(rs.getString(1));
+                us.setNombres(rs.getString(2));
+                us.setApellidos(rs.getString(3));
+                us.setEmail(rs.getString(4));
+                us.setPrioridad(rs.getString(5));
+                us.setIdRol(rs.getInt(6));
+                us.setDescripcionRol(rs.getString(7));
+                listadoUsuarios.add(us);
+            }
+        } catch (Exception e) {
+            System.out.println("DAO USUARIO: " + e.getMessage());
+        } finally {
+            try {
+                con.desconectar();
+            } catch (SQLException ex) {
+                Logger.getLogger(UsuarioDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return listadoUsuarios;
+    }
 
     public Usuario loginAction(String email, String contrasena, Usuario u,int idrol) throws SQLException {
         Conexion con = new Conexion();
