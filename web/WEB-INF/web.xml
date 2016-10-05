@@ -22,7 +22,6 @@
         <filter-name>PrimeFaces FileUpload Filter</filter-name>
         <servlet-name>Faces Servlet</servlet-name>
     </filter-mapping>
-    
     <context-param>
         <param-name>Url</param-name>
         <param-value>http://localhost:8081/SEV</param-value>
