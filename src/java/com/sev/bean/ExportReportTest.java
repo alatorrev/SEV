@@ -27,13 +27,15 @@ import net.sf.jasperreports.engine.JasperPrint;
 @ViewScoped
 public class ExportReportTest {
 
-    public void export() throws JRException, IOException {
+    public void exportpdf() throws JRException, IOException {
         Conexion con = new Conexion();
         Map<String, Object> parametros = new HashMap<String, Object>();
         FacesContext context = FacesContext.getCurrentInstance();
         ServletContext servleContext = (ServletContext) context.getExternalContext().getContext();
+        parametros.put("RutaImagenes", servleContext.getRealPath("/Reportes"));
+        
         String dirReporte = "";
-        dirReporte = servleContext.getRealPath("/Reportes/testReport.jasper");
+        dirReporte = servleContext.getRealPath("/Reportes/CitasVentas.jasper");
         HttpServletResponse response = (HttpServletResponse) context.getExternalContext().getResponse();
         response.addHeader("Content-disposition", "attachment;filename=ACM1PT.pdf");
         response.setContentType("application/pdf");

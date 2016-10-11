@@ -82,11 +82,15 @@
                     <h:outputLabel value="#{report.precio}"/>
                 </p:column>
                 <p:column>
-                    
+
                 </p:column>
             </p:dataTable>
             <p:commandLink value="consultar" action="#{consultaCitasBean.consultarCitaVentas()}" update="tbl_report" />
+            <h:commandLink id="export" styleClass="btn_exportarDialog" actionListener="#{exportReportTest.exportpdf()}"  >  
+                Exportar
+            </h:commandLink>
             <p:commandLink value="limpiar" action="#{consultaCitasBean.limpiar()}" update="@form" />
+
         </h:form>
 
 
