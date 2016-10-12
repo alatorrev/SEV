@@ -52,7 +52,7 @@ public class CanalDAO implements Serializable{
                 + " where idcanal=? ";
         pst = con.getConnection().prepareStatement(query);
         try {
-            pst.setString(1, canal.getDescripcion());
+            pst.setString(1, canal.getDescripcion().toUpperCase());
             pst.setInt(2, canal.getIdCanalCaptacion());
             pst.executeUpdate();
             
@@ -90,7 +90,7 @@ public class CanalDAO implements Serializable{
         String query = "insert into canalcaptacion values(?,1)";
         pst = con.getConnection().prepareStatement(query);
         try {
-            pst.setString(1, canal.getDescripcion());
+            pst.setString(1, canal.getDescripcion().toUpperCase());
             pst.executeUpdate();
             
             BitacoraDAO daoBitacora = new BitacoraDAO();

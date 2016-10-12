@@ -51,7 +51,7 @@ public class ViaDAO implements Serializable{
                 + " where idviacom=? ";
         pst = con.getConnection().prepareStatement(query);
         try {
-            pst.setString(1, via.getDescripcion());
+            pst.setString(1, via.getDescripcion().toUpperCase());
             pst.setInt(2, via.getIdViaComunicacion());
             pst.executeUpdate();
             
@@ -89,7 +89,7 @@ public class ViaDAO implements Serializable{
         String query = "insert into viacomunicacion values(?,1)";
         pst = con.getConnection().prepareStatement(query);
         try {
-            pst.setString(1, via.getDescripcion());
+            pst.setString(1, via.getDescripcion().toUpperCase());
             pst.executeUpdate();
             
             BitacoraDAO daoBitacora = new BitacoraDAO();
