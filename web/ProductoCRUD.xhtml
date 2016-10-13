@@ -24,7 +24,7 @@
                         <p:spacer height="10"/>
                         <p:dataTable id="uTable" value="#{productoBean.listadoProductos}" var="pro" widgetVar="userTable" paginator="true" rows="10"
                                      paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
-                                     paginatorPosition="bottom" filteredValue="#{canalBean.filteredCanales}"
+                                     paginatorPosition="bottom" filteredValue="#{productoBean.filteredProductos}"
                                      rowsPerPageTemplate="5,10,15"  lazy="false">
                             <f:facet name="header">
                                 <p:outputPanel style="text-align: right;">
@@ -41,20 +41,24 @@
                                 <h:outputText value="#{pro.idprod}"/>
                             </p:column>
 
-                            <p:column headerText="Producto" style="text-align: center">
+                            <p:column headerText="Producto" filterBy="#{pro.descripcion}" filterStyle="display:none" filterMatchMode="contains" style="text-align: center">
                                 <h:outputText value="#{pro.descripcion}"/>
                             </p:column>
 
-                            <p:column headerText="Precio" style="text-align: center">
+                            <p:column headerText="Precio" filterBy="#{pro.precio}" filterStyle="display:none" filterMatchMode="contains" style="text-align: center">
                                 <h:outputText value="#{pro.precio}"/>
                             </p:column>
 
-                            <p:column headerText="Válido desde" style="text-align: center">
-                                <h:outputText value="#{pro.fechavigenciai}"/>
+                            <p:column headerText="Válido desde" filterBy="#{pro.fechavigenciai}" filterStyle="display:none" filterMatchMode="contains" style="text-align: center">
+                                <h:outputText value="#{pro.fechavigenciai}">
+                                    <f:convertDateTime type="date" pattern="dd-MM-yyyy"/>
+                                </h:outputText>
                             </p:column>
 
-                            <p:column headerText="Válido hasta" style="text-align: center">
-                                <h:outputText value="#{pro.fechavigenciaf}"/>
+                            <p:column headerText="Válido hasta" filterBy="#{pro.fechavigenciaf}" filterStyle="display:none" filterMatchMode="contains" style="text-align: center">
+                                <h:outputText value="#{pro.fechavigenciaf}">
+                                    <f:convertDateTime type="date" pattern="dd-MM-yyyy"/>
+                                </h:outputText>
                             </p:column>
 
                          

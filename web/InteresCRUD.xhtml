@@ -41,7 +41,7 @@
                                <h:outputText value="#{inte.idInteresProspecto}"/>
                             </p:column>
                             
-                            <p:column headerText="Interés" style="text-align: center">
+                           <p:column headerText="Interés" filterBy="#{inte.descripcion}" filterStyle="display:none" filterMatchMode="contains" style="text-align: center">
                                 <h:outputText value="#{inte.descripcion}"/>
                             </p:column>
                            

@@ -32,19 +32,24 @@ public class UsuarioDAO implements Serializable {
         Conexion con = new Conexion();
         con.getConnection().setAutoCommit(false);
         PreparedStatement pst;
-        String query = "insert into usuario values(?,?,?,?,?,?,?,?,?,?,1)";
-        pst = con.getConnection().prepareStatement(query);
+        String sql="MERGE USUARIO AS U USING (SELECT ? AS CEDULA) AS T "
+                + "ON(U.CEDULA=T.CEDULA) WHEN NOT MATCHED THEN INSERT "
+                + "(CEDULA,NOMBRES,APELLIDOS,EMAIL,CLAVE,ESTADOCLAVE,ACTIVO,FECHA_CREAC,FECHA_MODIF,PRIORIDAD) "
+                + "VALUES(?,?,?,?,?,?,?,?,?,1);";
+                
+        pst = con.getConnection().prepareStatement(sql);
         try {
-            pst.setString(1, us.getCedula());
-            pst.setString(2, us.getNombres());
-            pst.setString(3, us.getApellidos());
-            pst.setString(4, us.getEmail());
-            pst.setString(5, us.getPassword());
-            pst.setInt(6, 1); //valor que representa la clave debe ser cambiada.
-            pst.setInt(7, 1); //valor que representa el usuario se puedo autenticar en el sistema.
-            pst.setString(8, fmt.format(new Date()));
-            pst.setString(9, null/*for now lolz*/);
-            pst.setString(10, us.getPrioridad());
+            pst.setString(1,us.getCedula());
+            pst.setString(2, us.getCedula());
+            pst.setString(3, us.getNombres().toUpperCase());
+            pst.setString(4, us.getApellidos().toUpperCase());
+            pst.setString(5, us.getEmail().toLowerCase());
+            pst.setString(6, us.getPassword());
+            pst.setInt(7, 1); //valor que representa la clave debe ser cambiada.
+            pst.setInt(8, 1); //valor que representa el usuario se puedo autenticar en el sistema.
+            pst.setString(9, fmt.format(new Date()));
+            pst.setString(10, null/*for now lolz*/);
+            //pst.setString(11, us.getPrioridad());
             pst.executeUpdate();
 
             PreparedStatement pstUsuarioRol = con.getConnection().prepareStatement(
@@ -72,7 +77,7 @@ public class UsuarioDAO implements Serializable {
         }
     }
 
-    public void editUsuario(Usuario us) throws SQLException {
+    public void editUsuario(Usuario us, int oldIdRol) throws SQLException {
         SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd");
         Conexion con = new Conexion();
         con.getConnection().setAutoCommit(false);
@@ -81,17 +86,18 @@ public class UsuarioDAO implements Serializable {
                 + " where cedula=? ";
         pst = con.getConnection().prepareStatement(query);
         try {
-            pst.setString(1, us.getNombres());
-            pst.setString(2, us.getApellidos());
-            pst.setString(3, us.getEmail());
+            pst.setString(1, us.getNombres().toUpperCase());
+            pst.setString(2, us.getApellidos().toUpperCase());
+            pst.setString(3, us.getEmail().toLowerCase());
             pst.setString(4, fmt.format(new Date()));
             pst.setString(5, us.getPrioridad());
             pst.setString(6, us.getCedula());
 
             PreparedStatement pstUsuarioRol = con.getConnection().prepareStatement(
-                    "update usuariorol set idrol=? where idusuario=?");
+                    "update usuariorol set idrol=? where idusuario=? and idrol=?");
             pstUsuarioRol.setInt(1, us.getIdRol());
             pstUsuarioRol.setString(2, us.getCedula());
+            pstUsuarioRol.setInt(3, oldIdRol);
             pstUsuarioRol.executeUpdate();
 
             pst.executeUpdate();
@@ -136,7 +142,7 @@ public class UsuarioDAO implements Serializable {
         Usuario us = null;
         PreparedStatement pst;
         ResultSet rs = null;
-        String query = "select * from usuario where cedula=?";
+        String query = "select * from usuario where cedula=? and activo=1";
         pst = con.getConnection().prepareStatement(query);
         try {
             pst.setString(1, cedula);
@@ -163,7 +169,7 @@ public class UsuarioDAO implements Serializable {
         PreparedStatement pst;
         ResultSet rs = null;
         String query = "select u.cedula,u.nombres,u.apellidos,u.email,u.prioridad,r.IDROL,r.DESCRIPCION from USUARIO u "
-                + "inner join USUARIOROL ru on u.CEDULA=ru.IDUSUARIO inner join ROL r on ru.IDROL=r.IDROL where u.ACTIVO=?";
+                + "inner join USUARIOROL ru on u.CEDULA=ru.IDUSUARIO inner join ROL r on ru.IDROL=r.IDROL where u.ACTIVO=? and r.estado=1";
 
         try {
             pst = con.getConnection().prepareStatement(query);
@@ -198,7 +204,7 @@ public class UsuarioDAO implements Serializable {
         PreparedStatement pst;
         ResultSet rs = null;
         String query = "select u.cedula,u.nombres,u.apellidos,u.email,u.prioridad,r.IDROL,r.DESCRIPCION from USUARIO u "
-                + "inner join USUARIOROL ru on u.CEDULA=ru.IDUSUARIO inner join ROL r on ru.IDROL=r.IDROL where u.ACTIVO=? and r.IDROL = 3";
+                + "inner join USUARIOROL ru on u.CEDULA=ru.IDUSUARIO inner join ROL r on ru.IDROL=r.IDROL where u.ACTIVO=? and r.IDROL = 3 and r.estado=1";
 
         try {
             pst = con.getConnection().prepareStatement(query);

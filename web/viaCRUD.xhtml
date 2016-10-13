@@ -41,7 +41,7 @@
                                <h:outputText value="#{via.idViaComunicacion}"/>
                             </p:column>
                             
-                            <p:column headerText="Rol" style="text-align: center">
+                           <p:column headerText="Rol" filterBy="#{via.descripcion}" filterStyle="display:none" filterMatchMode="contains" style="text-align: center">
                                 <h:outputText value="#{via.descripcion}"/>
                             </p:column>
                            

@@ -97,7 +97,7 @@ public class ProductoDAO implements Serializable {
         String query = "insert into producto values(?,?,?,?,1)";
         pst = con.getConnection().prepareStatement(query);
         try {
-            pst.setString(1, producto.getDescripcion());
+            pst.setString(1, producto.getDescripcion().toUpperCase());
             pst.setDouble(2, producto.getPrecio());
             pst.setString(3, format.format(producto.getFechavigenciai()));
             pst.setString(4, format.format(producto.getFechavigenciaf()));
@@ -122,7 +122,7 @@ public class ProductoDAO implements Serializable {
                 + " where idprod=? ";
         pst = con.getConnection().prepareStatement(query);
         try {
-            pst.setString(1, producto.getDescripcion());
+            pst.setString(1, producto.getDescripcion().toUpperCase());
             pst.setDouble(2, producto.getPrecio());
             pst.setString(3, format.format(producto.getFechavigenciai()));
             pst.setString(4, format.format(producto.getFechavigenciaf()));

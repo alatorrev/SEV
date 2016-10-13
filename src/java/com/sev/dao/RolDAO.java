@@ -60,7 +60,7 @@ public class RolDAO implements Serializable {
                 + " where idrol=? ";
         pst = con.getConnection().prepareStatement(query);
         try {
-            pst.setString(1, rol.getDescripcion());
+            pst.setString(1, rol.getDescripcion().toUpperCase());
             pst.setInt(2, rol.getIdRol());
             pst.executeUpdate();
             BitacoraDAO daoBitacora = new BitacoraDAO();
@@ -96,7 +96,7 @@ public class RolDAO implements Serializable {
         String query = "insert into rol values(?,1)";
         pst = con.getConnection().prepareStatement(query);
         try {
-            pst.setString(1, rol.getDescripcion());
+            pst.setString(1, rol.getDescripcion().toUpperCase());
             pst.executeUpdate();
             BitacoraDAO daoBitacora = new BitacoraDAO();
             daoBitacora.crearRegistro("rol", "insert", u);

@@ -48,7 +48,7 @@
                             <p:column headerText="Email" filterBy="#{us.email}" filterStyle="display:none" filterMatchMode="contains">
                                 <h:outputText value="#{us.email}"/>
                             </p:column>
-                            <p:column headerText="Rol">
+                            <p:column headerText="Rol" filterBy="#{us.descripcionRol}" filterStyle="display:none" filterMatchMode="contains">
                                 <h:outputText value="#{us.descripcionRol}"/>
                             </p:column>
                             <!-- <p:column headerText="Rol">
@@ -80,7 +80,7 @@
                                 <p:inputText value="#{usuarioBean.usuario.email}"/>
                                 <p:outputLabel value="Rol"/>
                                 <p:selectOneMenu id="roles" value="#{usuarioBean.idRolSeleted}">
-                                    <f:selectItem itemLabel="Seleccionar.." itemValue="" />
+                                    <f:selectItem itemLabel="Seleccionar.." itemValue="0" />
                                     <f:selectItems value="#{usuarioBean.selectorRoles}" var="rol" itemLabel="#{rol.descripcion}" itemValue="#{rol.idRol}" />
                                 </p:selectOneMenu>
                                 <p:commandButton ajax="true" value="Editar" actionListener="#{usuarioBean.commitEdit()}"  oncomplete="PF('wdlgDatos').hide();" update=":frm:uTable">

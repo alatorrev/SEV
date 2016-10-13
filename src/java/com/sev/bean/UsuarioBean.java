@@ -61,6 +61,7 @@ public class UsuarioBean implements Serializable {
 
     public void showEditDialog(Usuario u) {
         usuario = u;
+        setIdRolSeleted(u.getIdRol());
     }
 
     public void onCancelDialog() {
@@ -69,9 +70,11 @@ public class UsuarioBean implements Serializable {
     }
 
     public void commitEdit() throws SQLException {
+        int oldIdRol = usuario.getIdRol();
         usuario.setIdRol(idRolSeleted);
-        daoUsuario.editUsuario(usuario);
+        daoUsuario.editUsuario(usuario,oldIdRol);
         listadoUsuarios = daoUsuario.findAll();
+        setUsuario(new Usuario());
     }
 
     public void commitCreate() throws SQLException {
@@ -79,7 +82,9 @@ public class UsuarioBean implements Serializable {
         usuario.setPassword(usuario.getCedula());
         daoUsuario.createUsuario(usuario);
         listadoUsuarios = daoUsuario.findAll();
+        setIdRolSeleted(0);
         setUsuario(new Usuario());
+        
     }
 
     public void eliminar(Usuario u) throws SQLException {

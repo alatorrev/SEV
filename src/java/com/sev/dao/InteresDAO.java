@@ -52,7 +52,7 @@ public class InteresDAO implements Serializable{
                 + " where idintpros=? ";
         pst = con.getConnection().prepareStatement(query);
         try {
-            pst.setString(1, interes.getDescripcion());
+            pst.setString(1, interes.getDescripcion().toUpperCase());
             pst.setInt(2, interes.getIdInteresProspecto());
             pst.executeUpdate();
             BitacoraDAO daoBitacora = new BitacoraDAO();
@@ -88,7 +88,7 @@ public class InteresDAO implements Serializable{
         String query = "insert into interesprospecto values(?,1)";
         pst = con.getConnection().prepareStatement(query);
         try {
-            pst.setString(1, interes.getDescripcion());
+            pst.setString(1, interes.getDescripcion().toUpperCase());
             pst.executeUpdate();
             BitacoraDAO daoBitacora = new BitacoraDAO();
             daoBitacora.crearRegistro("interesprospecto", "insert", u);
