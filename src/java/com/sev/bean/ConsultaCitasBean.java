@@ -19,6 +19,7 @@ import java.util.Date;
 import java.util.List;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
 import org.primefaces.event.SelectEvent;
 
 /**
@@ -33,6 +34,7 @@ import org.primefaces.event.SelectEvent;
 public class ConsultaCitasBean {
 
     List<ReporteCitasVentas> listaReporte = new ArrayList<>();
+    private Usuario sessionUsuario;
     boolean completado;
     Date desde = new Date(), hasta = new Date();
     List<Producto> listaProducto = new ArrayList<>();
@@ -44,7 +46,20 @@ public class ConsultaCitasBean {
     Prospecto prospecto = new Prospecto();
     Producto producto = new Producto();
     
+    public void authorized() {
+    }
+    
     public ConsultaCitasBean() {
+        try {
+            sessionUsuario = (Usuario) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("Usuario");
+            if (sessionUsuario == null) {
+                FacesContext.getCurrentInstance().getExternalContext().getSessionMap().remove("Usuario");
+                String url = FacesContext.getCurrentInstance().getExternalContext().getInitParameter("SesionExpirada");
+                FacesContext.getCurrentInstance().getExternalContext().redirect(url);
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
     }
     
     public void consultarCitaVentas() throws SQLException{

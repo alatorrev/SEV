@@ -20,6 +20,7 @@
                     </div>
                     <p:panel>
                         <h:form id="frm">
+                            <p:growl id="growl" showDetail="true"/>
                             <p:spacer height="10"/>
                             <f:facet name="header" >
                                 <p:outputPanel>
@@ -32,26 +33,47 @@
                                     </table>
                                 </p:outputPanel>
                             </f:facet>
+                            <h:panelGrid id="matchGrid" columns="3"  columnClasses="alinder_new,alinizq" >                    
 
-
+                                <h:outputLabel value="Contraseña actual" />
+                                <p:password id="contrasenaActual" value="#{cambiarBean.cambiar.actualPassword}"/>  
+                                <h:inputHidden/>
+                                <h:outputLabel value="Nueva Contraseña" for="contrasenaNueva" />
+                                <p:password id="contrasenaNueva" value="#{cambiarBean.cambiar.newPassword}" feedback="true"
+                                            promptLabel="Ingrese Contraseña" weakLabel="Nivel:Baja"  
+                                            goodLabel="Nivel:Media" strongLabel="Nivel:Alta"  />
+                                <p:message for="contrasenaNueva"/>                
+                                <h:outputLabel value="Confirmación de Contraseña" for="contrasenaConfirmacion" />
+                                <p:password id="contrasenaConfirmacion" value="#{cambiarBean.cambiar.confirmpassword}" feedback="true"
+                                            promptLabel="Ingrese Contraseña" weakLabel="Nivel:Baja"  
+                                            goodLabel="Nivel:Media" strongLabel="Nivel:Alta"/>  
+                                <p:message for="contrasenaConfirmacion" display="icon"/>
+                                <p:commandButton ajax="true" value="Editar" update="@form " action="#{cambiarBean.cambioClave()}" >
+                                    <p:confirm header="Confirmación" message="Está seguro de cambiar su contraseña" />
+                                </p:commandButton>
+                            </h:panelGrid>
+                            <!--#####################################################################################################################################################################################
                             <h:panelGrid id="matchpassword" columns="2">
                                 <p:outputLabel for="pwd1" value="Nueva Contraseña" />
-                                <p:password id="pwd1" match="pwd2" label="contraseña nueva" required="true" value="#{cambiarBean.cambiar.password}">
+                                <p:password id="pwd1" match="pwd2" 
+                                            required="true" validatorMessage="Contraseñas deben ser iguales"
+                                            value="# {cambiarBean.cambiar.newPassword}">
                                 </p:password>
 
                                 <p:outputLabel for="pwd2" value="Vuelva a escribir la contraseña" />
-                                <p:password id="pwd2" label="No concuerdan los campos" required="true" value="#{cambiarBean.cambiar.password}">
+                                <p:password id="pwd2" value="# {cambiarBean.cambiar.confirmpassword}" 
+                                            required="true" 
+                                            >
                                 </p:password>
 
 
-                                <p:commandButton ajax="true" value="Editar" update="matchpassword" actionListener="#{cambiarBean.commitEdit()}" >
-                                    <p:confirm header="Confirmación" message="Está seguro de eliminar el registro" />
+                                <p:commandButton ajax="true" value="Editar" update="matchpassword " actionListener="# {cambiarBean.commitEdit()}" >
+                                    <p:confirm header="Confirmación" message="Está seguro de cambiar su contraseña" />
                                 </p:commandButton>
-                                <!--  <p:commandButton value="Cancelar" actionListener="# {reestablecerBean.onCancelDialog()}" immediate="true" oncomplete="PF('wdlgDatos').hide();"/>-->
-
+                                <p:commandButton value="Cancelar" actionListener="# {reestablecerBean.onCancelDialog()}" immediate="true" oncomplete="PF('wdlgDatos').hide();"/>
 
                             </h:panelGrid>
-                            <p:messages id="messages" showDetail="true" autoUpdate="true" />
+                            <h:message for="pwd1" /> -->
                         </h:form>
                         <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" >
                             <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check fa fa-check Fs14 white" />

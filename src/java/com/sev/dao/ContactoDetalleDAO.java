@@ -99,7 +99,7 @@ public class ContactoDetalleDAO {
                 + "ON U.CEDULA=DC.IDUSUARIO "
                 + "where DC.IDUSUARIO =ISNULL(?,DC.IDUSUARIO) AND DC.IDPROSPECTO=ISNULL(?,DC.IDPROSPECTO) AND "
                 + "DC.IDVIA = ISNULL(?,DC.IDVIA) AND DC.IDINTPROS = ISNULL(?,DC.IDINTPROS) AND "
-                + "DC.FECHACONTACTO BETWEEN (?) and (?)";
+                + "CAST(DC.FECHACONTACTO AS DATE) BETWEEN (?) and (?)";
         try {
             pst=con.getConnection().prepareStatement(sql);
             pst.setString(1, u.getCedula());

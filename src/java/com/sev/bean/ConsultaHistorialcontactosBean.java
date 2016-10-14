@@ -21,6 +21,7 @@ import java.util.Date;
 import java.util.List;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
 import org.primefaces.event.SelectEvent;
 
 /**
@@ -41,19 +42,34 @@ public class ConsultaHistorialcontactosBean {
     ProspectoDAO daoProspecto = new ProspectoDAO();
     ViaDAO daoVia = new ViaDAO();
     InteresDAO daoIntetes = new InteresDAO();
-    int idViaComunicacion=0, idInteresProspecto=0;
+    int idViaComunicacion = 0, idInteresProspecto = 0;
     Usuario usuario = new Usuario();
+    private Usuario sessionUsuario;
     Date fechaInicio = new Date(), fechaFin = new Date();
     Prospecto prospecto = new Prospecto();
 
+    public void authorized() {
+    }
+
     public ConsultaHistorialcontactosBean() throws SQLException {
-        listaViaComunicacion = daoVia.findAll();
-        listaInteresProspecto = daoIntetes.findAll();
+        try {
+            sessionUsuario = (Usuario) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("Usuario");
+            if (sessionUsuario == null) {
+                FacesContext.getCurrentInstance().getExternalContext().getSessionMap().remove("Usuario");
+                String url = FacesContext.getCurrentInstance().getExternalContext().getInitParameter("SesionExpirada");
+                FacesContext.getCurrentInstance().getExternalContext().redirect(url);
+            } else {
+                listaViaComunicacion = daoVia.findAll();
+                listaInteresProspecto = daoIntetes.findAll();
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     public void consultarHistorial() throws SQLException {
         ContactoDetalleDAO daocontactodetalle = new ContactoDetalleDAO();
-        listaReporte = daocontactodetalle.listaHistorialContactos(usuario,prospecto,idViaComunicacion,idInteresProspecto,fechaInicio,fechaFin);
+        listaReporte = daocontactodetalle.listaHistorialContactos(usuario, prospecto, idViaComunicacion, idInteresProspecto, fechaInicio, fechaFin);
     }
 
     public void limpiar() {

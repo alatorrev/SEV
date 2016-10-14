@@ -15,15 +15,24 @@ import java.io.Serializable;
  * 
  */
 public class CambiarContrasena implements Serializable{
-    String password;
+    String actualPassword;
+    String newPassword;
     String confirmpassword;
 
-    public String getPassword() {
-        return password;
+    public String getActualPassword() {
+        return actualPassword;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void setActualPassword(String actualPassword) {
+        this.actualPassword = actualPassword;
+    }
+
+    public String getNewPassword() {
+        return newPassword;
+    }
+
+    public void setNewPassword(String newPassword) {
+        this.newPassword = newPassword;
     }
 
     public String getConfirmpassword() {

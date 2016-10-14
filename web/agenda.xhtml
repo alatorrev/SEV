@@ -10,8 +10,6 @@
         <h:outputStylesheet name="style.css" />
         <f:metadata>
             <f:event type="preRenderView" listener="#{agendaBean.authorized()}"/>
-        </f:metadata>
-        <f:metadata>
             <f:viewParam name="id" value="#{agendaBean.idContactoDetalle}"/>
             <f:viewParam name="idprospecto" value="#{agendaBean.idProspecto}"/>
         </f:metadata>

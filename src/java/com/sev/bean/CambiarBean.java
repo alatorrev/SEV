@@ -8,11 +8,14 @@ package com.sev.bean;
 import com.sev.dao.CambiarDAO;
 import com.sev.entity.Usuario;
 import com.sev.entity.CambiarContrasena;
+import java.io.IOException;
 import java.io.Serializable;
 import java.sql.SQLException;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
+import org.primefaces.context.RequestContext;
 
 /**
  *
@@ -21,7 +24,6 @@ import javax.faces.context.FacesContext;
  * @author Axel Latorre, Jorge Castañeda Tutor: Ing. Vanessa Jurado
  *
  */
-
 @ManagedBean
 @ViewScoped
 public class CambiarBean implements Serializable {
@@ -51,9 +53,23 @@ public class CambiarBean implements Serializable {
         }
     }
 
-    public void commitEdit() throws SQLException {
-
-        daoCambiar.editCambiar(cambiar, sessionUsuario);
+    public String cambioClave() throws SQLException, IOException {
+        if (cambiar.getNewPassword().equals(cambiar.getConfirmpassword())) {
+            if (daoCambiar.editCambiar(cambiar, sessionUsuario)) {
+                FacesContext context = FacesContext.getCurrentInstance();
+                context.addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Atención", "Datos actualizados"));
+                cambiar = new CambiarContrasena();
+                return "Inicio";
+            } else {
+                FacesContext context = FacesContext.getCurrentInstance();
+                context.addMessage("", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Datos no actualizados:contraseña incorrecta"));
+                return "Incorrecto";
+            }
+        } else {
+            FacesContext context = FacesContext.getCurrentInstance();
+            context.addMessage("", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Contraseñas deben coincidir"));
+            return "Incorrecto";
+        }
     }
 
     public CambiarContrasena getCambiar() {

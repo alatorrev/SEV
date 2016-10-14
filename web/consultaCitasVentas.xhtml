@@ -8,6 +8,9 @@
     <ui:define name="content">
         <h:outputScript name="jquery/jquery.js" library="primefaces" target="head"/>
         <h:outputStylesheet name="style.css" />
+        <f:metadata>
+            <f:event type="preRenderView" listener="#{agendaBean.authorized()}"/>
+        </f:metadata>
         <h:form id="frm">
             <p:panel header="Filtrar Por">
                 <h:panelGrid columns="6">

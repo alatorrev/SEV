@@ -289,7 +289,7 @@
         </navigation-case>
     </navigation-rule>
     
-    <navigation-rule>
+   <!-- <navigation-rule>
         <from-view-id>/CamContra.xhtml</from-view-id>
         <navigation-case>
             <from-outcome>admin</from-outcome>
@@ -323,5 +323,18 @@
             <from-outcome>crudCamb</from-outcome>
             <to-view-id>/CamContra.xhtml</to-view-id>
         </navigation-case>
+    </navigation-rule>-->
+    <navigation-rule>
+        <from-view-id>/CamContra.xhtml</from-view-id>
+        <navigation-case>
+            <from-outcome>Inicio</from-outcome>
+            <to-view-id>/index.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>   
+        <navigation-case>
+            <from-outcome>Incorrecto</from-outcome>
+            <to-view-id>/CamContra.xhtml</to-view-id>
+        </navigation-case>  
     </navigation-rule>
+        
 </faces-config>

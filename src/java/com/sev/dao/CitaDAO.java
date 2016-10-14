@@ -156,7 +156,7 @@ public class CitaDAO {
                 + "ON PD.IDPROD=C.IDPRODUCTO INNER JOIN DETALLECONTACTO DC ON DC.IDCONTACTO=C.IDCONTACTO "
                 + "WHERE C.IDUSUARIO =ISNULL(?,C.IDUSUARIO) AND C.IDPROSPECTO=ISNULL(?,C.IDPROSPECTO) "
                 + "AND C.COMPLETADO= ISNULL(?,C.COMPLETADO) AND C.IDPRODUCTO= ISNULL(?,c.IDPRODUCTO) "
-                + "AND C.FECHAINICIO BETWEEN (?) and (?)";
+                + "AND CAST(C.FECHAINICIO AS DATE) BETWEEN (?) and (?)";
         try {
             pst = con.getConnection().prepareStatement(sql);
             pst.setString(1, u.getCedula());
