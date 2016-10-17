@@ -16,9 +16,11 @@
             <div class="ContainerIndent">
                 <p:panel>
                     <h:form id="frm">
+                        <p:growl id="growl" showDetail="true"/>
                         <!-- <div class="FontBold Fs18 hardblue" style="margin: 15px 10px">Listado Usuarios</div>-->
                         <div class="Separator">
-                            <p:commandLink  value="Agregar usuario" oncomplete="PF('wdlgCrearUsuario').show();" update="dlgCrearUsuario" style="font-size: 20px; "  styleClass="icon-plus-circled"/>
+                            <p:commandLink  value="Agregar usuario" actionListener="#{usuarioBean.showCreateDialog()}" oncomplete="PF('wdlgCrearUsuario').show();" 
+                                            update="dlgCrearUsuario" style="font-size: 20px; "  styleClass="icon-plus-circled"/>
                         </div>
                         <p:spacer height="10"/>
                         <p:dataTable id="uTable" value="#{usuarioBean.listadoUsuarios}" var="us" widgetVar="userTable" paginator="true" rows="10"
@@ -56,9 +58,6 @@
                                       filterBy="#{us.descripcionRol}" filterStyle="display:none" filterMatchMode="contains">
                                 <h:outputText value="#{us.descripcionRol}"/>
                             </p:column>
-                            <!-- <p:column headerText="Rol">
-                                 <p:inputSwitch />
-                             </p:column>-->
                             <p:column  style="text-align: center">
                                 <i class="icon-edit">
                                     <p:commandLink value="editar" actionListener="#{usuarioBean.showEditDialog(us)}" oncomplete="PF('wdlgDatos').show();" update="dlgDatos"/>
@@ -71,8 +70,9 @@
                                     <!-- <p:graphicImage name="images/ui-icon-trash.png" library="sentinel-layout"/>-->
                                 </i>
                                 <i class="icon-wrench">
-                                    <p:commandLink value="perfiles" actionListener="#{usuarioBean.showProfilesDialog(us)}"  
-                                                   oncomplete="PF('wdlgPermisos').show();" update="dlgPermisos" />
+                                    <p:commandLink partialSubmit="true" id="idProfiler" value="perfiles" ajax="true" actionListener="#{usuarioBean.showProfilesDialog(us)}"  
+                                                   oncomplete="PF('wdlgPermisos').show();" update="dlgPermisos">
+                                    </p:commandLink>
                                 </i>
                             </p:column>
                         </p:dataTable>
@@ -113,24 +113,25 @@
                         </h:form>
                     </p:dialog> 
                     <p:dialog  id="dlgPermisos" header="Roles de Usuario: #{usuarioBean.usuario.apellidos} #{usuarioBean.usuario.nombres}" widgetVar="wdlgPermisos" modal="true" 
-                               closable="true" closeOnEscape="true" style="width:600px;height: 300px">
+                               closable="false" style="width:600px;height: 300px">
                         <h:form id="idDlg">
                             <p:dataTable id="resourceTable" value="#{usuarioBean.listadoPermisos}" var="recurso" widgetVar="recursoTable" rows="10" paginator="true"
                                          paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
                                          paginatorPosition="bottom" rowsPerPageTemplate="5,10,15" filteredValue="#{usuarioBean.filteredAccess}" lazy="false">
-                                <p:column headerText="Rol" filterBy="#{recurso.descripcionRol}" filterStyle="display:none" filterMatchMode="contains">
-                                    <p:outputLabel value="#{recurso.descripcionRol}"/>
+                                <p:column  headerText="Rol" filterBy="#{recurso.descripcionRol}" filterStyle="display:none" filterMatchMode="contains">
+                                    <p:outputLabel id="rol" value="#{recurso.descripcionRol}"/>
                                 </p:column>
-                                <p:column headerText="Asignado">
-                                    <p:selectBooleanCheckbox value="#{recurso.estado}"/>
+                                <p:column  headerText="Asignado">
+                                    <p:selectBooleanCheckbox id="asignado" value="#{recurso.estado}"/>
                                 </p:column>
                             </p:dataTable>
-                            <p:commandButton ajax="true" update=":idDlg:resourceTable :frm:uTable" 
+                            <p:commandButton ajax="true" update=":idDlg:resourceTable" 
                                              value="Guardar" actionListener="#{usuarioBean.commitProfiles()}"
                                              oncomplete="PF('recursoTable').clearFilters();">
                                 <p:confirm header="Confirmación" message="Está seguro de realizar esta acción" icon="ui-icon-alert" />
                             </p:commandButton>
-                            <p:commandButton value="Cancelar" oncomplete="PF('wdlgPermisos').hide();" actionListener="#{usuarioBean.onCancelDialog()}" update=":frm:uTable"/>
+                            <p:commandButton ajax="true" value="Cancelar" actionListener="#{usuarioBean.onCancelProfileDialog()}" 
+                                             oncomplete="PF('wdlgPermisos').hide();" update=":frm:uTable :frm:growl :idDlg:resourceTable"/>
                         </h:form>
                     </p:dialog>
 

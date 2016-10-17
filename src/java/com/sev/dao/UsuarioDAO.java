@@ -94,7 +94,8 @@ public class UsuarioDAO implements Serializable {
         return done;
     }
 
-    public void deleteUsuario(Usuario us) throws SQLException {
+    public boolean deleteUsuario(Usuario us,Usuario session) throws SQLException {
+        boolean done=false;
         Conexion con = new Conexion();
         con.getConnection().setAutoCommit(false);
         PreparedStatement pst;
@@ -107,15 +108,18 @@ public class UsuarioDAO implements Serializable {
             pst.executeUpdate();
 
             BitacoraDAO daoBitacora = new BitacoraDAO();
-            daoBitacora.crearRegistro("usuario", "delete", us);
+            daoBitacora.crearRegistro("usuario", "delete", session);
 
             con.getConnection().commit();
+            done=true;
         } catch (Exception e) {
             System.out.println("DAO USUARIO: " + e.getMessage());
             con.getConnection().rollback();
+            done=false;
         } finally {
             con.desconectar();
         }
+        return done;
     }
 
     public Usuario readUsuario(String cedula) throws SQLException {
@@ -245,7 +249,6 @@ public class UsuarioDAO implements Serializable {
                 BitacoraDAO daoBitacora = new BitacoraDAO();
                 daoBitacora.crearRegistro("usuario", "Login", u);
                 return us;
-
             }
         } catch (Exception e) {
             System.out.println("DAO USUARIO: " + e.getMessage());

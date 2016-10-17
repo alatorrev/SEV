@@ -11,13 +11,17 @@ import com.sev.dao.UsuarioDAO;
 import com.sev.entity.AsignaRol;
 import com.sev.entity.Rol;
 import com.sev.entity.Usuario;
+import java.io.IOException;
 import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
+import org.primefaces.context.RequestContext;
 
 /**
  *
@@ -50,9 +54,6 @@ public class UsuarioBean implements Serializable {
                 String url = FacesContext.getCurrentInstance().getExternalContext().getInitParameter("SesionExpirada");
                 FacesContext.getCurrentInstance().getExternalContext().redirect(url);
             } else {
-                /**
-                 * se ejecutan las lineas del constructor**
-                 */
                 listadoUsuarios = daoUsuario.findAll();
             }
         } catch (Exception e) {
@@ -64,37 +65,92 @@ public class UsuarioBean implements Serializable {
         usuario = u;
     }
 
+    public void showProfilesDialog(Usuario u) {
+        usuario = u;
+        listadoPermisos = daoAsignaRol.rolesAsignadosbyUsuario(usuario);
+    }
+
+    public void showCreateDialog() {
+        usuario = new Usuario();
+    }
+
     public void onCancelDialog() {
         setUsuario(new Usuario());
     }
 
     public void commitEdit() throws SQLException {
-        daoUsuario.editUsuario(usuario, sessionUsuario);
-        listadoUsuarios = daoUsuario.findAll();
-        setUsuario(new Usuario());
+        boolean flag = daoUsuario.editUsuario(usuario, sessionUsuario);
+        if (flag) {
+            listadoUsuarios = daoUsuario.findAll();
+            FacesContext context = FacesContext.getCurrentInstance();
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Correcto", "Datos del usuario actualizados correctamente"));
+            RequestContext.getCurrentInstance().update("frm:growl");
+        } else {
+            FacesContext context = FacesContext.getCurrentInstance();
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Atención", "Lo sentimos, ocurrió un problema"));
+            RequestContext.getCurrentInstance().update("frm:growl");
+        }
     }
 
     public void commitCreate() throws SQLException {
         usuario.setPassword(usuario.getCedula());
-        daoUsuario.createUsuario(usuario,sessionUsuario);
-        listadoUsuarios = daoUsuario.findAll();
-        setUsuario(new Usuario());
+        boolean flag = daoUsuario.createUsuario(usuario, sessionUsuario);
+        if (flag) {
+            listadoUsuarios = daoUsuario.findAll();
+            FacesContext context = FacesContext.getCurrentInstance();
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Correcto", "Nuevo usuario añadido correctamente al sistema, favor asignarle un rol"));
+            RequestContext.getCurrentInstance().update("frm:growl");
+        } else {
+            FacesContext context = FacesContext.getCurrentInstance();
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Atención", "Lo sentimos, ocurrió un problema"));
+            RequestContext.getCurrentInstance().update("frm:growl");
+        }
     }
 
     public void eliminar(Usuario u) throws SQLException {
-        daoUsuario.deleteUsuario(u);
-        listadoUsuarios = daoUsuario.findAll();
+        boolean flag = daoUsuario.deleteUsuario(u, sessionUsuario);
+        if (flag) {
+            listadoUsuarios = daoUsuario.findAll();
+            FacesContext context = FacesContext.getCurrentInstance();
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Correcto", "Usuario desactivado"));
+            RequestContext.getCurrentInstance().update("frm:growl");
+        } else {
+            FacesContext context = FacesContext.getCurrentInstance();
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Atención", "Lo sentimos, ocurrió un problema"));
+            RequestContext.getCurrentInstance().update("frm:growl");
+        }
     }
 
-    public void showProfilesDialog(Usuario u) {
-        usuario = u;
-        setListadoPermisos(daoAsignaRol.rolesAsignadosbyUsuario(usuario));
+    public void commitProfiles() throws SQLException, IOException {
+        boolean flagValidation = validateProfiles();
+        System.out.println(flagValidation);
+        if (flagValidation) {
+            daoAsignaRol.saveProfilesbyUsuario(listadoPermisos, usuario, sessionUsuario);
+            setListadoPermisos(daoAsignaRol.rolesAsignadosbyUsuario(usuario));
+            FacesContext context = FacesContext.getCurrentInstance();
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Correcto", "Roles concedidos correctamente"));
+            RequestContext.getCurrentInstance().update("frm:growl");
+        } else {
+            setListadoPermisos(daoAsignaRol.rolesAsignadosbyUsuario(usuario));
+            FacesContext context = FacesContext.getCurrentInstance();
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Atención", "Un usuario debe tener al menos un rol"));
+            RequestContext.getCurrentInstance().update("frm:growl");
+        }
     }
 
-    public void commitProfiles() throws SQLException {
-        daoAsignaRol.saveProfilesbyUsuario(getListadoPermisos(), usuario, sessionUsuario);
-        setListadoPermisos(daoAsignaRol.rolesAsignadosbyUsuario(usuario));
-        listadoUsuarios = daoUsuario.findAll();
+    public void onCancelProfileDialog() throws IOException {
+        String url = FacesContext.getCurrentInstance().getExternalContext().getInitParameter("Url");
+        FacesContext.getCurrentInstance().getExternalContext().redirect(url + "/faces/usuarioCRUD.xhtml");
+    }
+
+    public boolean validateProfiles() {
+        int contador = 0;
+        for (AsignaRol ar : getListadoPermisos()) {
+            if (ar.getEstado()) {
+                contador++;
+            }
+        }
+        return contador >= 1;
     }
 
     public List<Usuario> getListadoUsuarios() {

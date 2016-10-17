@@ -10,20 +10,23 @@ import com.sev.dao.RolDAO;
 import com.sev.entity.AsignaRecurso;
 import com.sev.entity.Rol;
 import com.sev.entity.Usuario;
+import java.io.IOException;
 import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
+import org.primefaces.context.RequestContext;
 
 /**
- * 
+ *
  * Universidad Politécnica Salesiana
- * @author Axel Latorre, Jorge Castañeda
- * Tutor: Ing. Vanessa Jurado
- * 
+ *
+ * @author Axel Latorre, Jorge Castañeda Tutor: Ing. Vanessa Jurado
+ *
  */
 @ManagedBean
 @ViewScoped
@@ -40,7 +43,7 @@ public class RolBean implements Serializable {
 
     public void authorized() {
     }
-    
+
     public RolBean() {
         try {
             sessionUsuario = (Usuario) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("Usuario");
@@ -49,9 +52,6 @@ public class RolBean implements Serializable {
                 String url = FacesContext.getCurrentInstance().getExternalContext().getInitParameter("SesionExpirada");
                 FacesContext.getCurrentInstance().getExternalContext().redirect(url);
             } else {
-                /**
-                 * se ejecutan las lineas del constructor**
-                 */
                 listadoRoles = daoRol.findAll();
             }
         } catch (Exception e) {
@@ -68,29 +68,73 @@ public class RolBean implements Serializable {
         setListadoPermisos(daoAsigRecurso.recursosAsignadosbyRol(rol.getIdRol()));
     }
 
+    public void showCreateDialog() {
+        rol = new Rol();
+    }
+
     public void onCancelDialog() {
         setRol(new Rol());
     }
 
     public void commitEdit() throws SQLException {
-        daoRol.editRol(rol, sessionUsuario);
-        listadoRoles = daoRol.findAll();
+        boolean flag = daoRol.editRol(rol, sessionUsuario);
+        if (flag) {
+            listadoRoles = daoRol.findAll();
+            FacesContext context = FacesContext.getCurrentInstance();
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Correcto", "Datos del rol actualizados correctamente"));
+            RequestContext.getCurrentInstance().update("frm:growl");
+        } else {
+            FacesContext context = FacesContext.getCurrentInstance();
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Atención", "Lo sentimos, ocurrió un problema"));
+            RequestContext.getCurrentInstance().update("frm:growl");
+        }
     }
 
     public void commitCreate() throws SQLException {
-        daoRol.createRol(rol, sessionUsuario);
-        listadoRoles = daoRol.findAll();
+        boolean flag = daoRol.createRol(rol, sessionUsuario);
+        if (flag) {
+            listadoRoles = daoRol.findAll();
+            FacesContext context = FacesContext.getCurrentInstance();
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Correcto", "Rol creado correctamente"));
+            RequestContext.getCurrentInstance().update("frm:growl");
+        } else {
+            FacesContext context = FacesContext.getCurrentInstance();
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Atención", "Lo sentimos, ocurrió un problema"));
+            RequestContext.getCurrentInstance().update("frm:growl");
+        }
     }
 
     public void eliminar(Rol r) throws SQLException {
-        daoRol.deleteRol(r, sessionUsuario);
-        listadoRoles = daoRol.findAll();
+        boolean flag = daoRol.deleteRol(r, sessionUsuario);
+        if (flag) {
+            listadoRoles = daoRol.findAll();
+            FacesContext context = FacesContext.getCurrentInstance();
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Correcto", "Rol desactivado correctamente"));
+            RequestContext.getCurrentInstance().update("frm:growl");
+        } else {
+            FacesContext context = FacesContext.getCurrentInstance();
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Atención", "Lo sentimos, ocurrió un problema"));
+            RequestContext.getCurrentInstance().update("frm:growl");
+        }
     }
 
     public void commitPermission() throws SQLException {
-        daoAsigRecurso.saveResourcesbyProfile(getListadoPermisos(), rol.getIdRol(), sessionUsuario);
-        setListadoPermisos(daoAsigRecurso.recursosAsignadosbyRol(rol.getIdRol()));
-        setRol(new Rol());
+        boolean flag = daoAsigRecurso.saveResourcesbyProfile(getListadoPermisos(), rol.getIdRol(), sessionUsuario);
+        if (flag) {
+            setListadoPermisos(daoAsigRecurso.recursosAsignadosbyRol(rol.getIdRol()));
+            FacesContext context = FacesContext.getCurrentInstance();
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Correcto", "Vistas asignadas correctamente"));
+            RequestContext.getCurrentInstance().update("frm:growl");
+        } else {
+            FacesContext context = FacesContext.getCurrentInstance();
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Atención", "Lo sentimos, ocurrió un problema"));
+            RequestContext.getCurrentInstance().update("frm:growl");
+        }
+    }
+
+    public void onCancelPermissionDialog() throws IOException {
+        String url = FacesContext.getCurrentInstance().getExternalContext().getInitParameter("Url");
+        FacesContext.getCurrentInstance().getExternalContext().redirect(url + "/faces/rolesCRUD.xhtml");
     }
 
     public List<Rol> getListadoRoles() {

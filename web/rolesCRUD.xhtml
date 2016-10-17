@@ -16,6 +16,7 @@
             <div class="ContainerIndent">
                 <p:panel>
                     <h:form id="frm">
+                        <p:growl id="growl" showDetail="true"/>
                         <!-- <div class="FontBold Fs18 hardblue" style="margin: 15px 10px">Listado Usuarios</div>-->
                         <div class="Separator">
                             <p:commandLink  value="Agregar Rol" oncomplete="PF('wdlgCrearRol').show();" style="font-size: 20px; "  styleClass="icon-plus-circled"/>
@@ -82,8 +83,8 @@
                     <!--############################################################################################ -->
                     <!--############################################################################################ -->
                     <p:dialog id="dlgPermisos" header="Permisos Rol: #{rolBean.rol.descripcion}" widgetVar="wdlgPermisos" modal="true" 
-                              closable="true" closeOnEscape="true" style="width:600px;height: 300px">
-                        <h:form>
+                              closable="false" closeOnEscape="false" style="width:600px;height: 300px">
+                        <h:form id="frmDlgPermiso">
                             <p:dataTable id="resourceTable" value="#{rolBean.listadoPermisos}" var="recurso" widgetVar="recursoTable" rows="10" paginator="true"
                                          paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
                                          paginatorPosition="bottom" rowsPerPageTemplate="5,10,15" filteredValue="#{rolBean.filteredAccess}" lazy="false">
@@ -105,12 +106,12 @@
                                     <p:selectBooleanCheckbox value="#{recurso.estado}"/>
                                 </p:column>
                             </p:dataTable>
-                            <p:commandButton ajax="true" update="@form" 
+                            <p:commandButton ajax="true" update=":frmDlgPermiso:resourceTable" 
                                              value="Guardar" actionListener="#{rolBean.commitPermission()}"
                                              oncomplete="PF('recursoTable').clearFilters();">
                                 <p:confirm header="Confirmación" message="Está seguro de realizar esta acción" icon="ui-icon-alert" />
                             </p:commandButton>
-                            <p:commandButton value="Cancelar" actionListener="#{rolBean.onCancelDialog()}"
+                            <p:commandButton value="Cancelar" actionListener="#{rolBean.onCancelPermissionDialog()}"
                                              oncomplete="PF('wdlgPermisos').hide();"/>
                         </h:form>
                     </p:dialog>

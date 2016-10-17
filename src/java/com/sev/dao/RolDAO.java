@@ -53,8 +53,10 @@ public class RolDAO implements Serializable {
         return listadoRoles;
     }
 
-    public void editRol(Rol rol, Usuario u) throws SQLException {
+    public boolean editRol(Rol rol, Usuario u) throws SQLException {
+        boolean done=false;
         Conexion con = new Conexion();
+        con.getConnection().setAutoCommit(false);
         PreparedStatement pst;
         String query = "update rol set descripcion=?"
                 + " where idrol=? ";
@@ -65,15 +67,22 @@ public class RolDAO implements Serializable {
             pst.executeUpdate();
             BitacoraDAO daoBitacora = new BitacoraDAO();
             daoBitacora.crearRegistro("rol", "Edit", u);
+            con.getConnection().commit();
+            done=true;
         } catch (Exception e) {
             System.out.println("DAO ROL: " + e.getMessage());
+            con.getConnection().rollback();
+            done=false;
         } finally {
             con.desconectar();
         }
+        return done;
     }
 
-    public void deleteRol(Rol rol, Usuario u) throws SQLException {
+    public boolean deleteRol(Rol rol, Usuario u) throws SQLException {
+        boolean done=false;
         Conexion con = new Conexion();
+        con.getConnection().setAutoCommit(false);
         PreparedStatement pst;
         String query = "update rol set estado = 0 where idrol=?";
         pst = con.getConnection().prepareStatement(query);
@@ -82,14 +91,20 @@ public class RolDAO implements Serializable {
             pst.executeUpdate();
             BitacoraDAO daoBitacora = new BitacoraDAO();
             daoBitacora.crearRegistro("rol", "delete", u);
+            con.getConnection().commit();
+            done=true;
         } catch (Exception e) {
             System.out.println("DAO ROL: " + e.getMessage());
+            con.getConnection().rollback();
+            done=false;
         } finally {
             con.desconectar();
         }
+        return done;
     }
 
-    public void createRol(Rol rol, Usuario u) throws SQLException {
+    public boolean createRol(Rol rol, Usuario u) throws SQLException {
+        boolean done=false;
         Conexion con = new Conexion();
         con.getConnection().setAutoCommit(false);
         PreparedStatement pst;
@@ -101,12 +116,15 @@ public class RolDAO implements Serializable {
             BitacoraDAO daoBitacora = new BitacoraDAO();
             daoBitacora.crearRegistro("rol", "insert", u);
             con.getConnection().commit();
+            done=true;
         } catch (Exception e) {
             System.out.println("DAO ROL: " + e.getMessage());
             con.getConnection().rollback();
+            done=false;
         } finally {
             con.desconectar();
         }
+        return done;
     }
 
 }

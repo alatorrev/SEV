@@ -57,7 +57,8 @@ public class AsignaRecursoDAO implements Serializable {
         return lista;
     }
 
-    public void saveResourcesbyProfile(List<AsignaRecurso> listadoAR, int idrol, Usuario u) throws SQLException {
+    public boolean saveResourcesbyProfile(List<AsignaRecurso> listadoAR, int idrol, Usuario u) throws SQLException {
+        boolean done=false;
         Conexion con = new Conexion();
         PreparedStatement pst;
         con.getConnection().setAutoCommit(false);
@@ -80,12 +81,15 @@ public class AsignaRecursoDAO implements Serializable {
                 daoBitacora.crearRegistro("recursorol", "Asignacion recurso", u);
             }
             con.getConnection().commit();
+            done=true;
         } catch (Exception e) {
             System.out.println("DAO ASIGNARECURSO: " + e.getMessage());
             con.getConnection().rollback();
+            done=false;
         } finally {
             con.desconectar();
         }
+        return done;
     }
 
 }
