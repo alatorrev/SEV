@@ -67,7 +67,7 @@
                                 <p:outputLabel value="Nueva Contraseña"/>
                                 <p:inputText value="#{reestablecerBean.usuario.password}"/>
                                 
-                                <p:commandButton ajax="true" value="Editar" actionListener="#{reestablecerBean.commitEdit()}"  oncomplete="PF('wdlgDatos').hide();" update=":frm:uTable">
+                                <p:commandButton ajax="true" value="Editar" actionListener="#{reestablecerBean.commitEdit()}"  oncomplete="PF('wdlgDatos').hide();" update=":frm:uTable :frm:growl">
                                     <p:confirm header="Confirmación" message="Está seguro de realizar esta acción" icon="ui-icon-alert" />
                                 </p:commandButton>
                                 <p:commandButton value="Cancelar" actionListener="#{reestablecerBean.onCancelDialog()}" immediate="true" oncomplete="PF('wdlgDatos').hide();"/>

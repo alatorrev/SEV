@@ -59,6 +59,8 @@ public class CambiarBean implements Serializable {
                 FacesContext context = FacesContext.getCurrentInstance();
                 context.addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Atención", "Datos actualizados"));
                 cambiar = new CambiarContrasena();
+                CerrarSesionBean invalidate = new CerrarSesionBean();
+                invalidate.logout();
                 return "Inicio";
             } else {
                 FacesContext context = FacesContext.getCurrentInstance();

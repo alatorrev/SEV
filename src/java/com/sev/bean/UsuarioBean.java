@@ -5,8 +5,10 @@
  */
 package com.sev.bean;
 
+import com.sev.dao.AsignaRolDAO;
 import com.sev.dao.RolDAO;
 import com.sev.dao.UsuarioDAO;
+import com.sev.entity.AsignaRol;
 import com.sev.entity.Rol;
 import com.sev.entity.Usuario;
 import java.io.Serializable;
@@ -18,11 +20,11 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
 /**
- * 
+ *
  * Universidad Politécnica Salesiana
- * @author Axel Latorre, Jorge Castañeda
- * Tutor: Ing. Vanessa Jurado
- * 
+ *
+ * @author Axel Latorre, Jorge Castañeda Tutor: Ing. Vanessa Jurado
+ *
  */
 @ManagedBean
 @ViewScoped
@@ -33,12 +35,13 @@ public class UsuarioBean implements Serializable {
     private Usuario sessionUsuario;
     private Usuario usuario = new Usuario();
     private UsuarioDAO daoUsuario = new UsuarioDAO();
-    private int idRolSeleted;
-    private List<Rol> selectorRoles = new ArrayList<>();
+    private List<AsignaRol> listadoPermisos = new ArrayList<>();
+    private List<AsignaRol> filteredAccess;
+    private AsignaRolDAO daoAsignaRol = new AsignaRolDAO();
 
     public void authorized() {
     }
-    
+
     public UsuarioBean() {
         try {
             sessionUsuario = (Usuario) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("Usuario");
@@ -50,8 +53,6 @@ public class UsuarioBean implements Serializable {
                 /**
                  * se ejecutan las lineas del constructor**
                  */
-                RolDAO daoRol = new RolDAO();
-                selectorRoles = daoRol.findAll();
                 listadoUsuarios = daoUsuario.findAll();
             }
         } catch (Exception e) {
@@ -61,30 +62,23 @@ public class UsuarioBean implements Serializable {
 
     public void showEditDialog(Usuario u) {
         usuario = u;
-        setIdRolSeleted(u.getIdRol());
     }
 
     public void onCancelDialog() {
         setUsuario(new Usuario());
-        setIdRolSeleted(0);
     }
 
     public void commitEdit() throws SQLException {
-        int oldIdRol = usuario.getIdRol();
-        usuario.setIdRol(idRolSeleted);
-        daoUsuario.editUsuario(usuario,oldIdRol);
+        daoUsuario.editUsuario(usuario, sessionUsuario);
         listadoUsuarios = daoUsuario.findAll();
         setUsuario(new Usuario());
     }
 
     public void commitCreate() throws SQLException {
-        usuario.setIdRol(idRolSeleted);
         usuario.setPassword(usuario.getCedula());
-        daoUsuario.createUsuario(usuario);
+        daoUsuario.createUsuario(usuario,sessionUsuario);
         listadoUsuarios = daoUsuario.findAll();
-        setIdRolSeleted(0);
         setUsuario(new Usuario());
-        
     }
 
     public void eliminar(Usuario u) throws SQLException {
@@ -92,12 +86,15 @@ public class UsuarioBean implements Serializable {
         listadoUsuarios = daoUsuario.findAll();
     }
 
-    public List<Rol> getSelectorRoles() {
-        return selectorRoles;
+    public void showProfilesDialog(Usuario u) {
+        usuario = u;
+        setListadoPermisos(daoAsignaRol.rolesAsignadosbyUsuario(usuario));
     }
 
-    public void setSelectorRoles(List<Rol> selectorRoles) {
-        this.selectorRoles = selectorRoles;
+    public void commitProfiles() throws SQLException {
+        daoAsignaRol.saveProfilesbyUsuario(getListadoPermisos(), usuario, sessionUsuario);
+        setListadoPermisos(daoAsignaRol.rolesAsignadosbyUsuario(usuario));
+        listadoUsuarios = daoUsuario.findAll();
     }
 
     public List<Usuario> getListadoUsuarios() {
@@ -124,12 +121,20 @@ public class UsuarioBean implements Serializable {
         this.filteredUsers = filteredUsers;
     }
 
-    public int getIdRolSeleted() {
-        return idRolSeleted;
+    public List<AsignaRol> getListadoPermisos() {
+        return listadoPermisos;
     }
 
-    public void setIdRolSeleted(int idRolSeleted) {
-        this.idRolSeleted = idRolSeleted;
+    public void setListadoPermisos(List<AsignaRol> listadoPermisos) {
+        this.listadoPermisos = listadoPermisos;
+    }
+
+    public List<AsignaRol> getFilteredAccess() {
+        return filteredAccess;
+    }
+
+    public void setFilteredAccess(List<AsignaRol> filteredAccess) {
+        this.filteredAccess = filteredAccess;
     }
 
 }

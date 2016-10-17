@@ -30,7 +30,8 @@ import java.util.TimeZone;
  */
 public class CitaDAO {
 
-    public void crearCita(Cita c, String cedulaUsuario) throws SQLException {
+    public boolean crearCita(Cita c, String cedulaUsuario) throws SQLException {
+        boolean done=false;
         Conexion cone = new Conexion();
         PreparedStatement pst;
         String sql = "INSERT INTO CITA (IDUSUARIO,IDPROSPECTO,IDCONTACTO,TITULO,FECHAINICIO,FECHAFIN,OBSERVACION,IDPRODUCTO,COMPLETADO,ESTADO) "
@@ -50,15 +51,19 @@ public class CitaDAO {
             pst.setBoolean(10, true);
             pst.executeUpdate();
             cone.getConnection().commit();
+            done=true;
         } catch (Exception e) {
             System.out.println("CitaDAO " + e.getMessage());
             cone.getConnection().rollback();
+            done=false;
         } finally {
             cone.desconectar();
         }
+        return done;
     }
 
-    public void editarCita(Cita c, int idProducto) throws SQLException {
+    public boolean editarCita(Cita c, int idProducto) throws SQLException {
+        boolean done = false;
         Conexion cone = new Conexion();
         PreparedStatement pst;
         String sql = "UPDATE CITA SET TITULO=?,FECHAINICIO=?,FECHAFIN=?,OBSERVACION=?,IDPRODUCTO=?,COMPLETADO=?,ESTADO=? WHERE IDCITA=? ";
@@ -75,12 +80,15 @@ public class CitaDAO {
             pst.setInt(8, c.getIdCita());
             pst.executeUpdate();
             cone.getConnection().commit();
+            done = true;
         } catch (Exception e) {
             System.out.println("CitaDAO " + e.getMessage());
             cone.getConnection().rollback();
+            done = false;
         } finally {
             cone.desconectar();
         }
+        return done;
     }
 
     public void deleteCita(Cita c) throws SQLException {
@@ -141,7 +149,7 @@ public class CitaDAO {
         return lista;
     }
 
-    public List<ReporteCitasVentas> listaCitasVentas(Usuario u,Prospecto p,boolean completado,Producto pro,Date desde,Date hasta) throws SQLException {
+    public List<ReporteCitasVentas> listaCitasVentas(Usuario u, Prospecto p, boolean completado, Producto pro, Date desde, Date hasta) throws SQLException {
         List<ReporteCitasVentas> lista = new ArrayList<>();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         SimpleDateFormat sdfParam = new SimpleDateFormat("dd/MM/yyyy");
@@ -160,17 +168,17 @@ public class CitaDAO {
         try {
             pst = con.getConnection().prepareStatement(sql);
             pst.setString(1, u.getCedula());
-            pst.setString(2,p.getCedula().trim().equals("")?null:p.getCedula());
+            pst.setString(2, p.getCedula().trim().equals("") ? null : p.getCedula());
             pst.setBoolean(3, completado);
-            if(pro.getIdprod()==0){
+            if (pro.getIdprod() == 0) {
                 pst.setNull(4, java.sql.Types.INTEGER);
-            }else{
-                pst.setInt(4,pro.getIdprod());
+            } else {
+                pst.setInt(4, pro.getIdprod());
             }
             pst.setString(5, sdfParam.format(desde));
             pst.setString(6, sdfParam.format(hasta));
             rs = pst.executeQuery();
-            while(rs.next()){
+            while (rs.next()) {
                 ReporteCitasVentas rcv = new ReporteCitasVentas();
                 rcv.setIdUsuario(rs.getString(1));
                 rcv.setApellidosUsuario(rs.getString(2));
@@ -180,7 +188,7 @@ public class CitaDAO {
                 rcv.setNombresProspecto(rs.getString(6));
                 rcv.setTitulo(rs.getString(7));
                 rcv.setFechaCita(rs.getDate(8));
-                String fechaContacto =sdf.format(new Date(rs.getTimestamp(9).getTime()));
+                String fechaContacto = sdf.format(new Date(rs.getTimestamp(9).getTime()));
                 rcv.setFechaContacto(sdf.parse(fechaContacto));
                 rcv.setObservacion(rs.getString(10));
                 rcv.setPrecio(rs.getDouble(11));
@@ -188,7 +196,7 @@ public class CitaDAO {
             }
         } catch (Exception e) {
             System.out.println("CitaDAO " + e.getMessage());
-        }finally{
+        } finally {
             con.desconectar();
             lista.size();
         }

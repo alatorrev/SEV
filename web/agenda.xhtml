@@ -20,7 +20,7 @@
                     <p:schedule widgetVar="calendario" id="schedule" value="#{agendaBean.modelSchedule}" timeZone="America/Guayaquil">
                         <p:ajax event="eventSelect" listener="#{agendaBean.onCitaSelected}" update="dlgCitaEdita" oncomplete="PF('wdlgCitaEdita').show();" />
                         <p:ajax event="dateSelect" listener="#{agendaBean.onNuevaCita}" update="dlgCitaNueva" oncomplete="PF('wdlgCitaNueva').show();" />
-                        <p:ajax event="eventMove" listener="#{agendaBean.onCitaMoved}" update="schedule"  />
+                        <p:ajax event="eventMove" listener="#{agendaBean.onCitaMoved}" update="schedule growl"  />
                        <!-- <p:ajax event="eventResize" listener="# {agendaBean.onCitaResized}" update="schedule" /> -->
                     </p:schedule>
                 </h:form>
@@ -72,8 +72,8 @@
                                     <h:outputText value="#{pro.descripcion}" />
                                 </p:column>
                             </p:selectOneMenu>
-                            <p:outputLabel value="Cancelar Cita"/>
-                            <p:selectBooleanCheckbox value="#{agendaBean.cita.estado}"/>
+                            <p:outputLabel value="Cancelar Cita" rendered="#{!agendaBean.cita.completado}"/>
+                            <p:selectBooleanCheckbox value="#{agendaBean.cita.estado}" rendered="#{!agendaBean.cita.completado}"/>
                         </h:panelGrid>
                         <p:commandButton value="Modificar" actionListener="#{agendaBean.guardarCita()}" update="frm:growl frm:schedule" oncomplete="PF('wdlgCitaEdita').hide();"/>
                     </h:form>              

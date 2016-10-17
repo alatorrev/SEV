@@ -24,7 +24,8 @@ import com.sev.entity.Usuario;
  */
 public class ReestablecerDAO implements Serializable {
 
-    public void editContra(ReestablecerContra r, Usuario u) throws SQLException {
+    public boolean editContra(ReestablecerContra r, Usuario u) throws SQLException {
+        boolean done=false;
         Conexion con = new Conexion();
         PreparedStatement pst;
         String query = "update usuario set clave=?,estadoclave=?"
@@ -37,11 +38,14 @@ public class ReestablecerDAO implements Serializable {
             pst.executeUpdate();
             BitacoraDAO daoBitacora = new BitacoraDAO();
             daoBitacora.crearRegistro("usuario", "Reestablece clave", u);
+            done=true;
         } catch (Exception e) {
             System.out.println("DAO REESTABLECER: " + e.getMessage());
+            done=false;
         } finally {
             con.desconectar();
         }
+        return done;
     }
 
     public List<ReestablecerContra> findAll() throws SQLException {

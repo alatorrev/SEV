@@ -12,16 +12,17 @@ import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
 /**
- * 
+ *
  * Universidad Politécnica Salesiana
- * @author Axel Latorre, Jorge Castañeda
- * Tutor: Ing. Vanessa Jurado
- * 
+ *
+ * @author Axel Latorre, Jorge Castañeda Tutor: Ing. Vanessa Jurado
+ *
  */
 @ManagedBean
 @ViewScoped
@@ -35,7 +36,7 @@ public class ReestablecerBean implements Serializable {
 
     public void authorized() {
     }
-    
+
     public ReestablecerBean() {
         try {
             sessionUsuario = (Usuario) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("Usuario");
@@ -64,8 +65,15 @@ public class ReestablecerBean implements Serializable {
     }
 
     public void commitEdit() throws SQLException {
-        daoReestablecer.editContra(reestablecer, sessionUsuario);
-        listadoUsuarios = daoReestablecer.findAll();
+        boolean flag = daoReestablecer.editContra(reestablecer, sessionUsuario);
+        if (flag) {
+            FacesContext context = FacesContext.getCurrentInstance();
+            context.addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Correcto", "Contraseña restablecida"));
+            listadoUsuarios = daoReestablecer.findAll();
+        } else {
+            FacesContext context = FacesContext.getCurrentInstance();
+            context.addMessage("", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Lo sentimos, ocurrió un problema"));
+        }
     }
 
     public List<ReestablecerContra> getListadoUsuarios() {

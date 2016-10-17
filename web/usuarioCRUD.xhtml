@@ -36,19 +36,24 @@
                                     </table>
                                 </p:outputPanel>
                             </f:facet>
-                            <p:column headerText="Cédula" filterBy="#{us.cedula}" filterStyle="display:none" filterMatchMode="contains">
+                            <p:column headerText="Cédula" style="width: 10%"
+                                      filterBy="#{us.cedula}" filterStyle="display:none" filterMatchMode="contains">
                                 <h:outputText value="#{us.cedula}"/>
                             </p:column>
-                            <p:column headerText="Nombres" filterBy="#{us.nombres}" filterStyle="display:none" filterMatchMode="contains">
+                            <p:column headerText="Nombres" style="width: 15%"
+                                      filterBy="#{us.nombres}" filterStyle="display:none" filterMatchMode="contains">
                                 <h:outputText value="#{us.nombres}"/>
                             </p:column>
-                            <p:column headerText="Apellidos" filterBy="#{us.apellidos}" filterStyle="display:none" filterMatchMode="contains">
+                            <p:column headerText="Apellidos" style="width: 20%"
+                                      filterBy="#{us.apellidos}" filterStyle="display:none" filterMatchMode="contains">
                                 <h:outputText value="#{us.apellidos}"/>
                             </p:column>
-                            <p:column headerText="Email" filterBy="#{us.email}" filterStyle="display:none" filterMatchMode="contains">
+                            <p:column headerText="Email" style="width: 20%"
+                                      filterBy="#{us.email}" filterStyle="display:none" filterMatchMode="contains">
                                 <h:outputText value="#{us.email}"/>
                             </p:column>
-                            <p:column headerText="Rol" filterBy="#{us.descripcionRol}" filterStyle="display:none" filterMatchMode="contains">
+                            <p:column headerText="Rol" style="width: 10%"
+                                      filterBy="#{us.descripcionRol}" filterStyle="display:none" filterMatchMode="contains">
                                 <h:outputText value="#{us.descripcionRol}"/>
                             </p:column>
                             <!-- <p:column headerText="Rol">
@@ -65,6 +70,10 @@
                                     </p:commandLink>
                                     <!-- <p:graphicImage name="images/ui-icon-trash.png" library="sentinel-layout"/>-->
                                 </i>
+                                <i class="icon-wrench">
+                                    <p:commandLink value="perfiles" actionListener="#{usuarioBean.showProfilesDialog(us)}"  
+                                                   oncomplete="PF('wdlgPermisos').show();" update="dlgPermisos" />
+                                </i>
                             </p:column>
                         </p:dataTable>
                     </h:form>
@@ -78,11 +87,6 @@
                                 <p:inputText value="#{usuarioBean.usuario.apellidos}"/>
                                 <p:outputLabel value="Email"/>
                                 <p:inputText value="#{usuarioBean.usuario.email}"/>
-                                <p:outputLabel value="Rol"/>
-                                <p:selectOneMenu id="roles" value="#{usuarioBean.idRolSeleted}">
-                                    <f:selectItem itemLabel="Seleccionar.." itemValue="0" />
-                                    <f:selectItems value="#{usuarioBean.selectorRoles}" var="rol" itemLabel="#{rol.descripcion}" itemValue="#{rol.idRol}" />
-                                </p:selectOneMenu>
                                 <p:commandButton ajax="true" value="Editar" actionListener="#{usuarioBean.commitEdit()}"  oncomplete="PF('wdlgDatos').hide();" update=":frm:uTable">
                                     <p:confirm header="Confirmación" message="Está seguro de realizar esta acción" icon="ui-icon-alert" />
                                 </p:commandButton>
@@ -101,18 +105,35 @@
                                 <p:inputText value="#{usuarioBean.usuario.apellidos}"/>
                                 <p:outputLabel value="Email"/>
                                 <p:inputText value="#{usuarioBean.usuario.email}"/>
-                                <p:outputLabel value="Rol"/>
-                                <p:selectOneMenu id="roles" value="#{usuarioBean.idRolSeleted}">
-                                    <f:selectItem itemLabel="Seleccionar.." itemValue="" />
-                                    <f:selectItems value="#{usuarioBean.selectorRoles}" var="rol" itemLabel="#{rol.descripcion}" itemValue="#{rol.idRol}" />
-                                </p:selectOneMenu>
                                 <p:commandButton ajax="true" actionListener="#{usuarioBean.commitCreate()}" value="Crear" oncomplete="PF('wdlgCrearUsuario').hide();" update=":frm:uTable" >
                                     <p:confirm header="Confirmación" message="Está seguro de realizar esta acción" icon="ui-icon-alert" />
                                 </p:commandButton>
                                 <p:commandButton value="Cancelar" actionListener="#{usuarioBean.onCancelDialog()}" immediate="true" oncomplete="PF('wdlgCrearUsuario').hide();"/>
                             </h:panelGrid>
                         </h:form>
+                    </p:dialog> 
+                    <p:dialog  id="dlgPermisos" header="Roles de Usuario: #{usuarioBean.usuario.apellidos} #{usuarioBean.usuario.nombres}" widgetVar="wdlgPermisos" modal="true" 
+                               closable="true" closeOnEscape="true" style="width:600px;height: 300px">
+                        <h:form id="idDlg">
+                            <p:dataTable id="resourceTable" value="#{usuarioBean.listadoPermisos}" var="recurso" widgetVar="recursoTable" rows="10" paginator="true"
+                                         paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
+                                         paginatorPosition="bottom" rowsPerPageTemplate="5,10,15" filteredValue="#{usuarioBean.filteredAccess}" lazy="false">
+                                <p:column headerText="Rol" filterBy="#{recurso.descripcionRol}" filterStyle="display:none" filterMatchMode="contains">
+                                    <p:outputLabel value="#{recurso.descripcionRol}"/>
+                                </p:column>
+                                <p:column headerText="Asignado">
+                                    <p:selectBooleanCheckbox value="#{recurso.estado}"/>
+                                </p:column>
+                            </p:dataTable>
+                            <p:commandButton ajax="true" update=":idDlg:resourceTable :frm:uTable" 
+                                             value="Guardar" actionListener="#{usuarioBean.commitProfiles()}"
+                                             oncomplete="PF('recursoTable').clearFilters();">
+                                <p:confirm header="Confirmación" message="Está seguro de realizar esta acción" icon="ui-icon-alert" />
+                            </p:commandButton>
+                            <p:commandButton value="Cancelar" oncomplete="PF('wdlgPermisos').hide();" actionListener="#{usuarioBean.onCancelDialog()}" update=":frm:uTable"/>
+                        </h:form>
                     </p:dialog>
+
                     <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" >
                         <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check fa fa-check Fs14 white" />
                         <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close fa fa-close Fs14 white" />

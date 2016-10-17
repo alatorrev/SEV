@@ -109,7 +109,14 @@ public class AgendaBean implements Serializable {
 
     public void onCitaMoved(ScheduleEntryMoveEvent e) throws SQLException {
         cita = (Cita) e.getScheduleEvent().getData();
-        daoCita.editarCita(cita, 0);
+        boolean flag = daoCita.editarCita(cita, 0);
+        if (flag) {
+            FacesContext context = FacesContext.getCurrentInstance();
+            context.addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Correcto", "Cita reagendada"));
+        } else {
+            FacesContext context = FacesContext.getCurrentInstance();
+            context.addMessage("", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Lo sentimos, ocurrió un problema"));
+        }
         buildScheduler();
     }
 
@@ -122,6 +129,7 @@ public class AgendaBean implements Serializable {
     public void onCitacompletada() throws SQLException {
         if (cita.getCompletado()) {
             listadoProducto = daoProducto.supportedProductbyDate(cita);
+            cita.setEstado(false);
         }
     }
 
@@ -132,7 +140,14 @@ public class AgendaBean implements Serializable {
                     FacesContext.getCurrentInstance().addMessage(null,
                             new FacesMessage(FacesMessage.SEVERITY_WARN, "Atención", "Si completa la cita, debe elegir un producto de referencia"));
                 } else {
-                    daoCita.editarCita(cita, cita.getCompletado() ? producto.getIdprod() : 0);
+                    boolean flag=daoCita.editarCita(cita, cita.getCompletado() ? producto.getIdprod() : 0);
+                    if (flag) {
+                        FacesContext.getCurrentInstance().addMessage(null,
+                                new FacesMessage(FacesMessage.SEVERITY_INFO, "Correcto", "Información del cita actualizada"));
+                    } else {
+                        FacesContext.getCurrentInstance().addMessage(null,
+                                new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Error al crear la cita"));
+                    }
                     buildScheduler();
                 }
             } catch (Exception e) {
@@ -154,7 +169,14 @@ public class AgendaBean implements Serializable {
                         cita.setIdProspecto(idProspectoSelected);
                         cita.setIdContacto(idContactoDetalle);
                     }
-                    daoCita.crearCita(cita, sessionUsuario.getCedula());
+                    boolean flag = daoCita.crearCita(cita, sessionUsuario.getCedula());
+                    if (flag) {
+                        FacesContext.getCurrentInstance().addMessage(null,
+                                new FacesMessage(FacesMessage.SEVERITY_INFO, "Correcto", "Cita agendada"));
+                    } else {
+                        FacesContext.getCurrentInstance().addMessage(null,
+                                new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Error al crear la cita"));
+                    }
                     buildScheduler();
                 } catch (Exception e) {
                     System.out.println(e.getMessage());
