@@ -161,7 +161,7 @@ public class CitaDAO {
                 + "C.TITULO,C.FECHAINICIO AS FECHACITA,DC.FECHACONTACTO,C.OBSERVACION,PD.PRECIO "
                 + "FROM CITA C INNER JOIN USUARIO U ON U.CEDULA=C.IDUSUARIO "
                 + "INNER JOIN PROSPECTO P ON C.IDPROSPECTO=P.CEDULA LEFT JOIN PRODUCTO PD "
-                + "ON PD.IDPROD=C.IDPRODUCTO INNER JOIN DETALLECONTACTO DC ON DC.IDCONTACTO=C.IDCONTACTO "
+                + "ON PD.IDPROD=C.IDPRODUCTO LEFT JOIN DETALLECONTACTO DC ON DC.IDCONTACTO=C.IDCONTACTO "
                 + "WHERE C.IDUSUARIO =ISNULL(?,C.IDUSUARIO) AND C.IDPROSPECTO=ISNULL(?,C.IDPROSPECTO) "
                 + "AND C.COMPLETADO= ISNULL(?,C.COMPLETADO) AND C.IDPRODUCTO= ISNULL(?,c.IDPRODUCTO) "
                 + "AND CAST(C.FECHAINICIO AS DATE) BETWEEN (?) and (?)";
@@ -188,8 +188,10 @@ public class CitaDAO {
                 rcv.setNombresProspecto(rs.getString(6));
                 rcv.setTitulo(rs.getString(7));
                 rcv.setFechaCita(rs.getDate(8));
+                if(rs.getTimestamp(9)!=null){
                 String fechaContacto = sdf.format(new Date(rs.getTimestamp(9).getTime()));
-                rcv.setFechaContacto(sdf.parse(fechaContacto));
+                    rcv.setFechaContacto(sdf.parse(fechaContacto));
+                }
                 rcv.setObservacion(rs.getString(10));
                 rcv.setPrecio(rs.getDouble(11));
                 lista.add(rcv);

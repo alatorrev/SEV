@@ -5,6 +5,7 @@
  */
 package com.sev.bean;
 
+import com.sev.conexion.Conexion;
 import com.sev.dao.CitaDAO;
 import com.sev.dao.ProductoDAO;
 import com.sev.dao.ProspectoDAO;
@@ -13,13 +14,23 @@ import com.sev.entity.Producto;
 import com.sev.entity.Prospecto;
 import com.sev.entity.ReporteCitasVentas;
 import com.sev.entity.Usuario;
+import java.io.IOException;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletResponse;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperExportManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
 import org.primefaces.event.SelectEvent;
 
 /**
@@ -41,14 +52,14 @@ public class ConsultaCitasBean {
     UsuarioDAO daoUsuario = new UsuarioDAO();
     ProspectoDAO daoProspecto = new ProspectoDAO();
     ProductoDAO daoProducto = new ProductoDAO();
-    CitaDAO daoCita= new CitaDAO();
+    CitaDAO daoCita = new CitaDAO();
     Usuario usuario = new Usuario();
     Prospecto prospecto = new Prospecto();
     Producto producto = new Producto();
-    
+
     public void authorized() {
     }
-    
+
     public ConsultaCitasBean() {
         try {
             sessionUsuario = (Usuario) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("Usuario");
@@ -61,21 +72,60 @@ public class ConsultaCitasBean {
             System.out.println(e.getMessage());
         }
     }
-    
-    public void consultarCitaVentas() throws SQLException{
-        listaReporte=daoCita.listaCitasVentas(usuario,prospecto,completado,producto,desde,hasta);
+
+    public void consultarCitaVentas() throws SQLException {
+        nullValidator(usuario, prospecto, producto);
+        listaReporte = daoCita.listaCitasVentas(usuario, prospecto, completado, producto, desde, hasta);
     }
-    
+
+    public void exportpdf() throws JRException, IOException {
+        nullValidator(usuario, prospecto, producto);
+        Conexion con = new Conexion();
+        SimpleDateFormat sdfParam = new SimpleDateFormat("dd/MM/yyyy");
+        Map<String, Object> parametros = new HashMap<String, Object>();
+        FacesContext context = FacesContext.getCurrentInstance();
+        ServletContext servleContext = (ServletContext) context.getExternalContext().getContext();
+        parametros.put("RutaImagenes", servleContext.getRealPath("/Reportes"));
+        parametros.put("idusuario", usuario.getCedula());
+        parametros.put("idprospecto", prospecto.getCedula().trim().equals("")?null:prospecto.getCedula());
+        parametros.put("idproducto", producto.getIdprod() == 0 ? null : producto.getIdprod());
+        parametros.put("productoDescripcion", producto.getIdprod() == 0 ? null : producto.getDescripcion());
+        parametros.put("completado", completado==true?1:0);
+        parametros.put("fechaini", sdfParam.format(desde));
+        parametros.put("fechafin", sdfParam.format(hasta));
+
+        String dirReporte = servleContext.getRealPath("/Reportes/CitasVentas.jasper");
+        HttpServletResponse response = (HttpServletResponse) context.getExternalContext().getResponse();
+        response.addHeader("Content-disposition", "attachment;filename=Reporte de Citas.pdf");
+        response.setContentType("application/pdf");
+
+        JasperPrint impres = JasperFillManager.fillReport(dirReporte, parametros, con.getConnection());
+        JasperExportManager.exportReportToPdfStream(impres, response.getOutputStream());
+        context.responseComplete();
+    }
+
+    public void nullValidator(Usuario u, Prospecto p, Producto pro) {
+        if (u == null) {
+            usuario = new Usuario();
+        }
+        if (p == null) {
+            prospecto = new Prospecto();
+        }
+        if (pro == null) {
+            producto = new Producto();
+        }
+    }
+
     public void limpiar() {
         usuario = new Usuario();
         prospecto = new Prospecto();
-        producto= new Producto();
+        producto = new Producto();
         setCompletado(false);
         listaReporte.clear();
         desde = new Date();
         hasta = new Date();
     }
-    
+
     public List<Usuario> completeUsuario(String pattern) throws SQLException {
         return daoUsuario.completeUsuarioMethod(pattern);
     }
@@ -93,7 +143,7 @@ public class ConsultaCitasBean {
         prospecto = (Prospecto) event.getObject();
         System.out.println(prospecto.getCedula());
     }
-    
+
     public List<Producto> completeProducto(String pattern) throws SQLException {
         return daoProducto.completeProductoMethod(pattern);
     }
@@ -158,5 +208,5 @@ public class ConsultaCitasBean {
     public void setProducto(Producto producto) {
         this.producto = producto;
     }
-    
+
 }

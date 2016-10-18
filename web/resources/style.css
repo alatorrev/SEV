@@ -120,3 +120,32 @@ body {
     width: 1000px;
     height: 350px;
 }
+
+/*.controles_consulta{
+    margin: auto;
+    width: 350px;
+    margin-top: 15px;
+    text-align: center;
+}*/
+
+/*.btn_consultar, .btn_exportarpdf, .btn_excel, .btn_limpiar{
+    padding: 5px;
+    padding-left: 10px;
+    padding-right: 10px;
+    background-color:#004A97;
+    color: white;
+    display: block;
+    float: left;
+    margin-right: 10px;
+    text-decoration: none;
+    font-weight: bold;
+    padding-left: 40px;
+}
+
+.btn_exportarpdf{
+    background:url('../resources/icons/pdf.png') no-repeat 0 0;
+    color: #666;
+    height: 32px;
+    font-weight: normal;
+    line-height: 22px;
+}*/

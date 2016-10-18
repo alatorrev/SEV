@@ -43,7 +43,7 @@
                             <p:outputLabel value="Fin"/>
                             <p:calendar value="#{agendaBean.cita.fechaFin}" pattern="dd/MM/yyyy HH:mm" />
                             <p:outputLabel value="Descripción"/>
-                            <p:inputTextarea value="#{agendaBean.cita.observacion}"/>
+                            <p:inputTextarea rows="5" cols="30" autoResize="false" value="#{agendaBean.cita.observacion}"/>
                         </h:panelGrid>
                         <p:commandButton value="Crear" actionListener="#{agendaBean.guardarCita()}" update="frm:growl frm:schedule" oncomplete="PF('wdlgCitaNueva').hide();"/>
                     </h:form>
@@ -59,7 +59,7 @@
                             <p:outputLabel value="Fin"/>
                             <p:calendar value="#{agendaBean.cita.fechaFin}" pattern="dd/MM/yyyy HH:mm" />
                             <p:outputLabel value="Descripción"/>
-                            <p:inputTextarea value="#{agendaBean.cita.observacion}"/>
+                            <p:inputTextarea rows="5" cols="30" autoResize="false" value="#{agendaBean.cita.observacion}"/>
                             <p:outputLabel value="Completar"/>
                             <p:selectBooleanCheckbox value="#{agendaBean.cita.completado}" >
                                 <p:ajax update="edit" listener="#{agendaBean.onCitacompletada()}"  />
