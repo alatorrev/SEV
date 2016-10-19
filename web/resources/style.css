@@ -121,6 +121,11 @@ body {
     height: 350px;
 }
 
+.likePrimefaceCommandLink{
+    color: #27AAE1 !important;
+    text-decoration: underline;
+    margin-right: 5px;
+}
 /*.controles_consulta{
     margin: auto;
     width: 350px;

@@ -25,14 +25,14 @@
                         <p:ajax event="itemSelect" listener="#{consultaHistorialcontactosBean.onItemSelectProspecto}"/>
                     </p:autoComplete>
                     <p:outputLabel value="Via Comunicación"/>
-                    <p:selectOneMenu value="#{consultaHistorialcontactosBean.idViaComunicacion}">
-                        <f:selectItem itemLabel="Seleccionar" itemValue="0"/>
-                        <f:selectItems value="#{consultaHistorialcontactosBean.listaViaComunicacion}" var="via" itemLabel="#{via.descripcion}" itemValue="#{via.idViaComunicacion}"/>
+                    <p:selectOneMenu value="#{consultaHistorialcontactosBean.viaComunicacion}" converter="converter">
+                        <f:selectItem itemLabel="Seleccionar" itemValue="#{null}"/>
+                        <f:selectItems value="#{consultaHistorialcontactosBean.listaViaComunicacion}" var="via" itemLabel="#{via.descripcion}" itemValue="#{via}"/>
                     </p:selectOneMenu>
                     <p:outputLabel value="Interes Prospecto"/>
-                    <p:selectOneMenu value="#{consultaHistorialcontactosBean.idInteresProspecto}">
-                        <f:selectItem itemLabel="Seleccionar" itemValue="0"/>
-                        <f:selectItems value="#{consultaHistorialcontactosBean.listaInteresProspecto}" var="interes" itemLabel="#{interes.descripcion}" itemValue="#{interes.idInteresProspecto}"/>
+                    <p:selectOneMenu value="#{consultaHistorialcontactosBean.interesProspecto}" converter="converter">
+                        <f:selectItem itemLabel="Seleccionar" itemValue="#{null}"/>
+                        <f:selectItems value="#{consultaHistorialcontactosBean.listaInteresProspecto}" var="interes" itemLabel="#{interes.descripcion}" itemValue="#{interes}"/>
                     </p:selectOneMenu>
                     <p:outputLabel value="Fecha Desde"/>
                     <p:calendar value="#{consultaHistorialcontactosBean.fechaInicio}" pattern="dd/MM/yyyy"/>
@@ -81,9 +81,17 @@
                     </h:outputLabel>
                 </p:column>
             </p:dataTable>
-            <p:commandLink value="consultar" action="#{consultaHistorialcontactosBean.consultarHistorial()}" update="tbl_report" />
-            <p:commandLink value="limpiar" action="#{consultaHistorialcontactosBean.limpiar()}" update="@form" />
-            <h:commandLink value="export" action="#{exportReportTest.exportpdf()}"/> 
+            <div style="text-align: center">
+                <i class="icon-search">
+                    <p:commandLink value="Consultar" actionListener="#{consultaHistorialcontactosBean.consultarHistorial()}" update="tbl_report" />
+                </i>
+                <i class="icon-file-pdf">
+                    <h:commandLink styleClass="likePrimefaceCommandLink" value="Exportar" actionListener="#{consultaHistorialcontactosBean.exportpdf()}"/>
+                </i>
+                <i class="icon-arrows-cw">
+                    <h:commandLink styleClass="likePrimefaceCommandLink" value="Limpiar" actionListener="#{consultaHistorialcontactosBean.limpiar()}" />
+                </i>
+            </div>
         </h:form>
 
     </ui:define>

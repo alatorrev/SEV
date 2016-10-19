@@ -88,18 +88,19 @@
                     <p:inputTextarea readonly="true" rows="5" cols="30" autoResize="false" value="#{report.observacion}"/>
                 </p:column>
             </p:dataTable>
-            <i class="icon-search">
-                <p:commandLink value="consultar" action="#{consultaCitasBean.consultarCitaVentas()}" update="tbl_report" />
-            </i>
-            <i class="icon-file-pdf">
-                <h:commandLink styleClass="btn_exportarpdf" actionListener="#{consultaCitasBean.exportpdf()}"  >  
-                    Exportar
-                </h:commandLink>
-            </i>
-            <i class="icon-up-hand">
-                <p:commandLink value="limpiar" action="#{consultaCitasBean.limpiar()}" update="@form" />
-            </i>
-
+            <div style="text-align: center">
+                <i class="icon-search">
+                    <h:commandLink value="Consultar" styleClass="likePrimefaceCommandLink" actionListener="#{consultaCitasBean.consultarCitaVentas()}"  />
+                </i>
+                <i class="icon-file-pdf">
+                    <h:commandLink styleClass="likePrimefaceCommandLink" actionListener="#{consultaCitasBean.exportpdf()}"  >  
+                        Exportar
+                    </h:commandLink>
+                </i>
+                <i class="icon-arrows-cw">
+                    <h:commandLink styleClass="likePrimefaceCommandLink" value="Limpiar" actionListener="#{consultaCitasBean.limpiar()}" />
+                </i>
+            </div>
 
         </h:form>
 

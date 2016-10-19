@@ -5,6 +5,7 @@
  */
 package com.sev.bean;
 
+import com.sev.conexion.Conexion;
 import com.sev.dao.ContactoDetalleDAO;
 import com.sev.dao.InteresDAO;
 import com.sev.dao.ProspectoDAO;
@@ -15,13 +16,23 @@ import com.sev.entity.Prospecto;
 import com.sev.entity.ReporteHistorialContactos;
 import com.sev.entity.Usuario;
 import com.sev.entity.ViaComunicacion;
+import java.io.IOException;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletResponse;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperExportManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
 import org.primefaces.event.SelectEvent;
 
 /**
@@ -42,8 +53,9 @@ public class ConsultaHistorialcontactosBean {
     ProspectoDAO daoProspecto = new ProspectoDAO();
     ViaDAO daoVia = new ViaDAO();
     InteresDAO daoIntetes = new InteresDAO();
-    int idViaComunicacion = 0, idInteresProspecto = 0;
     Usuario usuario = new Usuario();
+    ViaComunicacion viaComunicacion = new ViaComunicacion();
+    InteresProspecto interesProspecto = new InteresProspecto();
     private Usuario sessionUsuario;
     Date fechaInicio = new Date(), fechaFin = new Date();
     Prospecto prospecto = new Prospecto();
@@ -69,17 +81,62 @@ public class ConsultaHistorialcontactosBean {
 
     public void consultarHistorial() throws SQLException {
         ContactoDetalleDAO daocontactodetalle = new ContactoDetalleDAO();
-        listaReporte = daocontactodetalle.listaHistorialContactos(usuario, prospecto, idViaComunicacion, idInteresProspecto, fechaInicio, fechaFin);
+        nullValidator(usuario, prospecto, viaComunicacion, interesProspecto);
+        listaReporte = daocontactodetalle.listaHistorialContactos(usuario, prospecto, viaComunicacion.getIdViaComunicacion(), interesProspecto.getIdInteresProspecto(), fechaInicio, fechaFin);
+    }
+
+    public void exportpdf() throws JRException, IOException {
+        nullValidator(usuario, prospecto, viaComunicacion, interesProspecto);
+        Conexion con = new Conexion();
+        SimpleDateFormat sdfParam = new SimpleDateFormat("dd/MM/yyyy");
+        Map<String, Object> parametros = new HashMap<String, Object>();
+        FacesContext context = FacesContext.getCurrentInstance();
+        ServletContext servleContext = (ServletContext) context.getExternalContext().getContext();
+        parametros.put("RutaImagenes", servleContext.getRealPath("/Reportes"));
+        parametros.put("idusuario", usuario.getCedula());
+        parametros.put("idprospecto", prospecto.getCedula().trim().equals("")?null:prospecto.getCedula());
+        
+        parametros.put("idvia", viaComunicacion.getIdViaComunicacion()==0?null:viaComunicacion.getIdViaComunicacion());
+        parametros.put("viaDescripcion", viaComunicacion.getIdViaComunicacion()==0?null:viaComunicacion.getDescripcion());
+        parametros.put("idinteres", interesProspecto.getIdInteresProspecto()==0?null:interesProspecto.getIdInteresProspecto());
+        parametros.put("interesDescripcion", interesProspecto.getIdInteresProspecto()==0?null:interesProspecto.getDescripcion());
+        
+        parametros.put("fechaini", sdfParam.format(fechaInicio));
+        parametros.put("fechafin", sdfParam.format(fechaFin));
+        
+        String dirReporte = servleContext.getRealPath("/Reportes/HistoricoContactos.jasper");
+        HttpServletResponse response = (HttpServletResponse) context.getExternalContext().getResponse();
+        response.addHeader("Content-disposition", "attachment;filename=Reporte Historial de Contactos.pdf");
+        response.setContentType("application/pdf");
+
+        JasperPrint impres = JasperFillManager.fillReport(dirReporte, parametros, con.getConnection());
+        JasperExportManager.exportReportToPdfStream(impres, response.getOutputStream());
+        context.responseComplete();
     }
 
     public void limpiar() {
         usuario = new Usuario();
         prospecto = new Prospecto();
+        viaComunicacion = new ViaComunicacion();
+        interesProspecto = new InteresProspecto();
         listaReporte.clear();
-        idViaComunicacion = 0;
-        idInteresProspecto = 0;
         fechaInicio = new Date();
         fechaFin = new Date();
+    }
+
+    public void nullValidator(Usuario u, Prospecto p, ViaComunicacion via, InteresProspecto interes) {
+        if (u == null) {
+            usuario = new Usuario();
+        }
+        if (p == null) {
+            prospecto = new Prospecto();
+        }
+        if (via == null) {
+            viaComunicacion = new ViaComunicacion();
+        }
+        if (interes == null) {
+            interesProspecto = new InteresProspecto();
+        }
     }
 
     public List<Usuario> completeUsuario(String pattern) throws SQLException {
@@ -132,22 +189,6 @@ public class ConsultaHistorialcontactosBean {
         this.prospecto = prospecto;
     }
 
-    public int getIdViaComunicacion() {
-        return idViaComunicacion;
-    }
-
-    public void setIdViaComunicacion(int idViaComunicacion) {
-        this.idViaComunicacion = idViaComunicacion;
-    }
-
-    public int getIdInteresProspecto() {
-        return idInteresProspecto;
-    }
-
-    public void setIdInteresProspecto(int idInteresProspecto) {
-        this.idInteresProspecto = idInteresProspecto;
-    }
-
     public Date getFechaInicio() {
         return fechaInicio;
     }
@@ -170,6 +211,22 @@ public class ConsultaHistorialcontactosBean {
 
     public void setListaReporte(List<ReporteHistorialContactos> listaReporte) {
         this.listaReporte = listaReporte;
+    }
+
+    public ViaComunicacion getViaComunicacion() {
+        return viaComunicacion;
+    }
+
+    public void setViaComunicacion(ViaComunicacion viaComunicacion) {
+        this.viaComunicacion = viaComunicacion;
+    }
+
+    public InteresProspecto getInteresProspecto() {
+        return interesProspecto;
+    }
+
+    public void setInteresProspecto(InteresProspecto interesProspecto) {
+        this.interesProspecto = interesProspecto;
     }
 
 }
