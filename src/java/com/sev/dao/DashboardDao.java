@@ -56,4 +56,65 @@ public class DashboardDao {
         return lista;
     }
     
+    public List<Dashboard> SumaProductos() throws SQLException {
+        List<Dashboard> lista = null;
+        ResultSet rs;
+        Conexion con = new Conexion();
+        PreparedStatement pst;
+        try {
+            String query = "Select c.IDUSUARIO, u.NOMBRES, u.APELLIDOS, sum(p.PRECIO) as suma "
+                    + "from USUARIO u "
+                    + "inner join CITA c on u.CEDULA = c.IDUSUARIO "
+                    + "left join PRODUCTO p on c.IDPRODUCTO = p.IDPROD and p.estado = 1 "
+                    + "where u.ACTIVO = 1 and c.COMPLETADO = 1 and MONTH(c.FECHAFIN) = month(GETDATE()) "
+                    + "group by c.IDUSUARIO, u.NOMBRES, u.APELLIDOS ";
+            pst = con.getConnection().prepareStatement(query);
+            rs = pst.executeQuery();
+            lista = new ArrayList();
+            while (rs.next()) {
+                Dashboard dashboard = new Dashboard();
+                dashboard.setIdusuario(rs.getString("IDUSUARIO"));
+                dashboard.setNombres(rs.getString("NOMBRES"));
+                dashboard.setApellidos(rs.getString("APELLIDOS"));
+                dashboard.setSuma(rs.getDouble("suma"));
+                lista.add(dashboard);
+            }
+            rs.close();
+        } catch (Exception e) {
+            System.out.println("DAO Dashboard 2: " + e.getMessage());
+            con.getConnection().rollback();
+        } finally {
+            con.desconectar();
+        }
+        return lista;
+    }
+    
+    public List<Dashboard> NuevosClientes() throws SQLException {
+        List<Dashboard> lista = null;
+        ResultSet rs;
+        Conexion con = new Conexion();
+        PreparedStatement pst;
+        try {
+            String query = "Select month(getdate()) as mes, count(c.IDPROSPECTO) as NuevosProspectos "
+                    + "from cita c, PROSPECTO p "
+                    + "where c.COMPLETADO = 1 and c.IDPRODUCTO != 0 and c.IDPROSPECTO = p.CEDULA and month(c.FECHAFIN) = month(GETDATE()) ";
+            pst = con.getConnection().prepareStatement(query);
+            rs = pst.executeQuery();
+            lista = new ArrayList();
+            while (rs.next()) {
+                Dashboard dashboard = new Dashboard();
+                dashboard.setFecha(rs.getString("mes"));
+                dashboard.setCantidad(rs.getInt("NuevosProspectos"));
+                lista.add(dashboard);
+            }
+            rs.close();
+        } catch (Exception e) {
+            System.out.println("DAO Dashboard 3: " + e.getMessage());
+            con.getConnection().rollback();
+        } finally {
+            con.desconectar();
+        }
+        return lista;
+    }
+    
 }

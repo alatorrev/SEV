@@ -15,7 +15,11 @@ public class Dashboard implements Serializable{
     String cedula;
     String nombres;
     String apellidos;
+    String idusuario;
     int cantidad;
+    double suma;
+    String fecha;
+    
 
     public String getCedula() {
         return cedula;
@@ -48,6 +52,31 @@ public class Dashboard implements Serializable{
     public void setCantidad(int cantidad) {
         this.cantidad = cantidad;
     }
+
+    public String getIdusuario() {
+        return idusuario;
+    }
+
+    public void setIdusuario(String idusuario) {
+        this.idusuario = idusuario;
+    }
+
+    public double getSuma() {
+        return suma;
+    }
+
+    public void setSuma(double suma) {
+        this.suma = suma;
+    }
+
+    public String getFecha() {
+        return fecha;
+    }
+
+    public void setFecha(String fecha) {
+        this.fecha = fecha;
+    }
+
     
     
 }
