@@ -116,8 +116,8 @@ body {
 
 .center-block {
     display: block;
-    margin: 0 auto;
-    width: 1000px;
+    margin: 30px;
+    width: 500px;
     height: 350px;
 }
 
