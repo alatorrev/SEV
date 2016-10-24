@@ -26,7 +26,9 @@ public class ReporteHistorialContactos implements Serializable{
     String descripcionVia;
     int idInteres;
     String descripcioInteres;
+    String observacion;
     Date fechaContacto;
+    String formatFechacontacto;
 
     public String getIdUsuario() {
         return idUsuario;
@@ -114,6 +116,22 @@ public class ReporteHistorialContactos implements Serializable{
 
     public void setFechaContacto(Date fechaContacto) {
         this.fechaContacto = fechaContacto;
+    }
+
+    public String getObservacion() {
+        return observacion;
+    }
+
+    public void setObservacion(String observacion) {
+        this.observacion = observacion;
+    }
+
+    public String getFormatFechacontacto() {
+        return formatFechacontacto;
+    }
+
+    public void setFormatFechacontacto(String formatFechacontacto) {
+        this.formatFechacontacto = formatFechacontacto;
     }
     
 }

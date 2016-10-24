@@ -187,7 +187,7 @@ public class CitaDAO {
                 rcv.setApellidosProspecto(rs.getString(5));
                 rcv.setNombresProspecto(rs.getString(6));
                 rcv.setTitulo(rs.getString(7));
-                rcv.setFechaCita(rs.getDate(8));
+                rcv.setFechaCita(sdf.parse(sdf.format(rs.getTimestamp(8).getTime())));
                 if(rs.getTimestamp(9)!=null){
                 String fechaContacto = sdf.format(new Date(rs.getTimestamp(9).getTime()));
                     rcv.setFechaContacto(sdf.parse(fechaContacto));

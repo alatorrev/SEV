@@ -11,22 +11,25 @@ import com.sev.dao.ProspectoDAO;
 import com.sev.dao.ViaDAO;
 import com.sev.entity.InteresProspecto;
 import com.sev.entity.Prospecto;
+import com.sev.entity.ReporteHistorialContactos;
 import com.sev.entity.Usuario;
 import com.sev.entity.ViaComunicacion;
 import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
+import org.primefaces.context.RequestContext;
 
 /**
- * 
+ *
  * Universidad Politécnica Salesiana
- * @author Axel Latorre, Jorge Castañeda
- * Tutor: Ing. Vanessa Jurado
- * 
+ *
+ * @author Axel Latorre, Jorge Castañeda Tutor: Ing. Vanessa Jurado
+ *
  */
 @ManagedBean
 @ViewScoped
@@ -42,10 +45,11 @@ public class ContactarProspectoBean implements Serializable {
     private List<ViaComunicacion> viaComunicacionList = new ArrayList<>();
     private String cedulaProspecto, observaciones;
     private int idInteresSelected, idViaComunicacionSelected, keyGenerated;
+    private List<ReporteHistorialContactos> listaActividadesRecientes = new ArrayList();
 
     public void authorized() {
     }
-    
+
     public ContactarProspectoBean() {
         try {
             sessionUsuario = (Usuario) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("Usuario");
@@ -56,6 +60,7 @@ public class ContactarProspectoBean implements Serializable {
             } else {
                 cedulaProspecto = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("cedulaProspecto");
                 prospecto = daoProspecto.readProspectoContact(cedulaProspecto, sessionUsuario.getCedula());
+                listaActividadesRecientes=daoContactoDetalle.latestProspectoWork(sessionUsuario.getCedula(), cedulaProspecto);
                 idInteresSelected = prospecto.getIdInteres();
                 interesProspectoList = daoInteres.findAll();
                 viaComunicacionList = viaDao.findAll();
@@ -67,19 +72,32 @@ public class ContactarProspectoBean implements Serializable {
     }
 
     public void guardarContactoDetalle() throws SQLException {
-        keyGenerated = daoContactoDetalle.crearContactoDetalle(sessionUsuario,prospecto, idViaComunicacionSelected, idInteresSelected, observaciones);
+        if (idViaComunicacionSelected == 0 || idInteresSelected == 0) {
+            if (idViaComunicacionSelected == 0) {
+                FacesContext context = FacesContext.getCurrentInstance();
+                context.addMessage("", new FacesMessage(FacesMessage.SEVERITY_WARN, "Atención", "Es necesario elegir una vía de comunicación"));
+            }
+            if (idInteresSelected == 0) {
+                FacesContext context = FacesContext.getCurrentInstance();
+                context.addMessage("", new FacesMessage(FacesMessage.SEVERITY_WARN, "Atención", "Es necesario elegir un interés al prospecto"));
+            }
+        } else {
+            keyGenerated = daoContactoDetalle.crearContactoDetalle(sessionUsuario, prospecto, idViaComunicacionSelected, idInteresSelected, observaciones);
+            RequestContext context = RequestContext.getCurrentInstance();
+            context.execute("PF('wdlgAgenda').show();");
+        }
     }
-    
-    public void declineCitaDialog(){
+
+    public void declineCitaDialog() {
         try {
             String urlBase = FacesContext.getCurrentInstance().getExternalContext().getInitParameter("Url");
-            String url="/faces/workingList.xhtml";
-            FacesContext.getCurrentInstance().getExternalContext().redirect(urlBase+url);
+            String url = "/faces/workingList.xhtml";
+            FacesContext.getCurrentInstance().getExternalContext().redirect(urlBase + url);
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
     }
-    
+
     public void verValues() {
         System.out.println(cedulaProspecto);
     }
@@ -146,6 +164,14 @@ public class ContactarProspectoBean implements Serializable {
 
     public void setKeyGenerated(int keyGenerated) {
         this.keyGenerated = keyGenerated;
+    }
+
+    public List<ReporteHistorialContactos> getListaActividadesRecientes() {
+        return listaActividadesRecientes;
+    }
+
+    public void setListaActividadesRecientes(List<ReporteHistorialContactos> listaActividadesRecientes) {
+        this.listaActividadesRecientes = listaActividadesRecientes;
     }
 
 }

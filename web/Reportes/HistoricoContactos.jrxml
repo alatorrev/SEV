@@ -14,6 +14,7 @@
 	<parameter name="viaDescripcion" class="java.lang.String"/>
 	<parameter name="idinteres" class="java.lang.Integer"/>
 	<parameter name="interesDescripcion" class="java.lang.String"/>
+	<parameter name="userName" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[select U.CEDULA AS UCEDULA,U.APELLIDOS AS UAPELLIDOS,u.NOMBRES AS UNOMBRES,
 P.CEDULA AS PCEDULA,P.APELLIDOS AS PAPELLIDOS,P.NOMBRES AS PNOMBRES,
@@ -39,6 +40,10 @@ AND CAST(DC.FECHACONTACTO AS DATE) BETWEEN ($P{fechaini}) and ($P{fechafin})]]>
 	<field name="IDINTPROS" class="java.lang.Integer"/>
 	<field name="INTERESDESCRIPCION" class="java.lang.String"/>
 	<field name="FECHACONTACTO" class="java.sql.Timestamp"/>
+	<variable name="V_CURRENT_PAGE_NUMBER" class="java.lang.Integer" resetType="Page">
+		<variableExpression><![CDATA[1]]></variableExpression>
+		<initialValueExpression><![CDATA[$V{PAGE_NUMBER}]]></initialValueExpression>
+	</variable>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -145,6 +150,14 @@ AND CAST(DC.FECHACONTACTO AS DATE) BETWEEN ($P{fechaini}) and ($P{fechafin})]]>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{viaDescripcion}==null?"Todos":$P{viaDescripcion}]]></textFieldExpression>
 			</textField>
+			<staticText>
+				<reportElement mode="Transparent" x="262" y="4" width="468" height="48" forecolor="#000000" backcolor="#FFFFFF" uuid="1a631003-5011-42e2-9a34-70b26f15fa04"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle" rotation="None" markup="none">
+					<font fontName="SansSerif" size="18" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[Reporte de Prospectos Contactados]]></text>
+			</staticText>
 		</band>
 	</title>
 	<pageHeader>
@@ -298,6 +311,24 @@ AND CAST(DC.FECHACONTACTO AS DATE) BETWEEN ($P{fechaini}) and ($P{fechafin})]]>
 		<band height="45" splitType="Stretch"/>
 	</columnFooter>
 	<pageFooter>
-		<band height="54" splitType="Stretch"/>
+		<band height="54" splitType="Stretch">
+			<textField>
+				<reportElement x="610" y="34" width="80" height="20" uuid="1dd0a0d2-e292-4734-80a2-7d0f0348953b"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA["Page "+$V{V_CURRENT_PAGE_NUMBER}+" of"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement x="690" y="34" width="40" height="20" uuid="78ea80e5-b45b-4ea0-a09c-82ab7e5efdbe"/>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="false">
+				<reportElement mode="Transparent" x="0" y="34" width="328" height="20" forecolor="#000000" backcolor="#FFFFFF" uuid="ac5277d3-1457-439e-bb2e-f36f6ddf96eb"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" markup="none">
+					<font fontName="SansSerif" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{userName}]]></textFieldExpression>
+			</textField>
+		</band>
 	</pageFooter>
 </jasperReport>

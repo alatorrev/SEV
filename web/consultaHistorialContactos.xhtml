@@ -77,13 +77,13 @@
                 </p:column>
                 <p:column>
                     <h:outputLabel value="#{report.fechaContacto}">
-                        <f:convertDateTime type="date" pattern="dd/MM/yyyy HH:mm:ss"/>
+                        <f:convertDateTime type="date" pattern="dd/MM/yyyy HH:mm:ss" timeZone="America/Guayaquil"/>
                     </h:outputLabel>
                 </p:column>
             </p:dataTable>
             <div style="text-align: center">
                 <i class="icon-search">
-                    <p:commandLink value="Consultar" actionListener="#{consultaHistorialcontactosBean.consultarHistorial()}" update="tbl_report" />
+                    <h:commandLink value="Consultar" actionListener="#{consultaHistorialcontactosBean.consultarHistorial()}"  />
                 </i>
                 <i class="icon-file-pdf">
                     <h:commandLink styleClass="likePrimefaceCommandLink" value="Exportar" actionListener="#{consultaHistorialcontactosBean.exportpdf()}"/>

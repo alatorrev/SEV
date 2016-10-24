@@ -29,7 +29,7 @@ import java.util.logging.Logger;
  */
 public class ContactoDetalleDAO {
 
-    public int crearContactoDetalle(Usuario u,Prospecto p, int via, int interes, String observacion) {
+    public int crearContactoDetalle(Usuario u, Prospecto p, int via, int interes, String observacion) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         Conexion con = new Conexion();
         ResultSet rs;
@@ -50,11 +50,11 @@ public class ContactoDetalleDAO {
                 autoIncrementidContactoDetalle = rs.getInt(1);
                 System.out.println(autoIncrementidContactoDetalle);
             }
-            
-            String sqlUpdateProspecto="update prospecto set idcancap=?,nombres=?,apellidos=?,celular=?,casa=?,correo=?,"
+
+            String sqlUpdateProspecto = "update prospecto set idcancap=?,nombres=?,apellidos=?,celular=?,casa=?,correo=?,"
                     + "establecimiento=?,fecha_modif=?,idintpros=?"
-                + " where cedula=?";
-            pst=con.getConnection().prepareStatement(sqlUpdateProspecto);
+                    + " where cedula=?";
+            pst = con.getConnection().prepareStatement(sqlUpdateProspecto);
             pst.setInt(1, p.getIdcanal());
             pst.setString(2, p.getNombres());
             pst.setString(3, p.getApellidos());
@@ -63,7 +63,7 @@ public class ContactoDetalleDAO {
             pst.setString(6, p.getEmail());
             pst.setString(7, p.getEstablecimientoProveniente());
             pst.setString(8, sdf.format(new Date()));
-            pst.setInt(9,interes);
+            pst.setInt(9, interes);
             pst.setString(10, p.getCedula());
             pst.executeUpdate();
             con.getConnection().commit();
@@ -82,15 +82,15 @@ public class ContactoDetalleDAO {
         }
         return autoIncrementidContactoDetalle;
     }
-    
-    public List<ReporteHistorialContactos> listaHistorialContactos(Usuario u,Prospecto p,int via,int interes,Date desde,Date hasta) throws SQLException{
+
+    public List<ReporteHistorialContactos> listaHistorialContactos(Usuario u, Prospecto p, int via, int interes, Date desde, Date hasta) throws SQLException {
         Conexion con = new Conexion();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         SimpleDateFormat sdfParam = new SimpleDateFormat("dd/MM/yyyy");
         List<ReporteHistorialContactos> lista = new ArrayList<>();
         PreparedStatement pst;
         ResultSet rs;
-        String sql="select U.CEDULA AS UCEDULA,U.APELLIDOS AS UAPELLIDOS,u.NOMBRES AS UNOMBRES,"
+        String sql = "select U.CEDULA AS UCEDULA,U.APELLIDOS AS UAPELLIDOS,u.NOMBRES AS UNOMBRES,"
                 + "P.CEDULA AS PCEDULA,P.APELLIDOS AS PAPELLIDOS,P.NOMBRES AS PNOMBRES,"
                 + "V.IDVIA,V.DESCRIPCION,I.IDINTPROS,I.DESCRIPCION,DC.FECHACONTACTO "
                 + "from DETALLECONTACTO DC INNER JOIN VIACOMUNICACION V "
@@ -101,23 +101,23 @@ public class ContactoDetalleDAO {
                 + "DC.IDVIA = ISNULL(?,DC.IDVIA) AND DC.IDINTPROS = ISNULL(?,DC.IDINTPROS) AND "
                 + "CAST(DC.FECHACONTACTO AS DATE) BETWEEN (?) and (?)";
         try {
-            pst=con.getConnection().prepareStatement(sql);
+            pst = con.getConnection().prepareStatement(sql);
             pst.setString(1, u.getCedula());
-            pst.setString(2,p.getCedula().trim().equals("")?null:p.getCedula());
-            if(via==0){
+            pst.setString(2, p.getCedula().trim().equals("") ? null : p.getCedula());
+            if (via == 0) {
                 pst.setNull(3, java.sql.Types.INTEGER);
-            }else{
-                pst.setInt(3,via);
+            } else {
+                pst.setInt(3, via);
             }
-            if(interes==0){
+            if (interes == 0) {
                 pst.setNull(4, java.sql.Types.INTEGER);
-            }else{
-                pst.setInt(4,interes);
+            } else {
+                pst.setInt(4, interes);
             }
             pst.setString(5, sdfParam.format(desde));
             pst.setString(6, sdfParam.format(hasta));
-            rs=pst.executeQuery();
-            while(rs.next()){
+            rs = pst.executeQuery();
+            while (rs.next()) {
                 ReporteHistorialContactos rhc = new ReporteHistorialContactos();
                 rhc.setIdUsuario(rs.getString(1));
                 rhc.setApellidosUsuario(rs.getString(2));
@@ -129,15 +129,49 @@ public class ContactoDetalleDAO {
                 rhc.setDescripcionVia(rs.getString(8));
                 rhc.setIdInteres(rs.getInt(9));
                 rhc.setDescripcioInteres(rs.getString(10));
-                String fechaContacto =sdf.format(new Date(rs.getTimestamp(11).getTime()));
+                String fechaContacto = sdf.format(new Date(rs.getTimestamp(11).getTime()));
                 rhc.setFechaContacto(sdf.parse(fechaContacto));
                 lista.add(rhc);
             }
         } catch (Exception e) {
-            System.out.println("DAO CONTACTODETALLE: "+e.getMessage());
-        }finally{
+            System.out.println("DAO CONTACTODETALLE: " + e.getMessage());
+        } finally {
             con.desconectar();
             System.out.println(lista.size());
+        }
+        return lista;
+    }
+
+    public List<ReporteHistorialContactos> latestProspectoWork(String idEjecutivo, String idProspecto) throws SQLException {
+        List<ReporteHistorialContactos> lista = new ArrayList<>();
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+        Conexion con = new Conexion();
+        PreparedStatement pst;
+        ResultSet rs;
+        String sql = "SELECT TOP 5 DC.FECHACONTACTO,I.DESCRIPCION AS INTERESDESCRIPCION,"
+                + "V.DESCRIPCION AS VIADESCRIPCION,DC.OBSERVACION "
+                + "from DETALLECONTACTO DC INNER JOIN VIACOMUNICACION V "
+                + "ON V.IDVIA= DC.IDVIA INNER JOIN INTERESPROSPECTO I ON I.IDINTPROS=DC.IDINTPROS "
+                + "WHERE DC.IDUSUARIO=? and DC.IDPROSPECTO=? "
+                + "ORDER BY FECHACONTACTO DESC";
+        try {
+            pst = con.getConnection().prepareStatement(sql);
+            pst.setString(1, idEjecutivo);
+            pst.setString(2, idProspecto);
+            rs = pst.executeQuery();
+            while(rs.next()){
+                ReporteHistorialContactos rhc = new ReporteHistorialContactos();
+                rhc.setFechaContacto(rs.getDate(1));
+                rhc.setDescripcioInteres(rs.getString(2));
+                rhc.setDescripcionVia(rs.getString(3));
+                rhc.setObservacion(rs.getString(4));
+                rhc.setFormatFechacontacto(sdf.format(rs.getTimestamp(1)));
+                lista.add(rhc);
+            }
+        } catch (Exception e) {
+            System.out.println("DAO CONTACTODETALLE: " + e.getMessage());
+        } finally {
+            con.desconectar();
         }
         return lista;
     }

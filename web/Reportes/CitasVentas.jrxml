@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="CitasVentas" pageWidth="870" pageHeight="595" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="831" leftMargin="19" rightMargin="20" topMargin="20" bottomMargin="20" uuid="b3b1c8fa-6cab-49c2-9f7a-8429a91215b7">
 	<property name="ireport.zoom" value="1.1289478601075547"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="30"/>
+	<property name="ireport.y" value="0"/>
 	<parameter name="RutaImagenes" class="java.lang.String"/>
 	<parameter name="fechaini" class="java.lang.String"/>
 	<parameter name="fechafin" class="java.lang.String"/>
@@ -13,6 +13,7 @@
 	<parameter name="idproducto" class="java.lang.String"/>
 	<parameter name="completado" class="java.lang.Integer"/>
 	<parameter name="productoDescripcion" class="java.lang.String"/>
+	<parameter name="userName" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[SELECT U.CEDULA AS UCEDULA,U.APELLIDOS AS UAPELLIDOS,u.NOMBRES AS UNOMBRES,
 P.CEDULA AS PCEDULA,P.APELLIDOS AS PAPELLIDOS,P.NOMBRES AS PNOMBRES,
@@ -37,6 +38,10 @@ AND CAST(C.FECHAINICIO AS DATE) BETWEEN ($P{fechaini}) and ($P{fechafin})]]>
 	<field name="FECHACONTACTO" class="java.sql.Timestamp"/>
 	<field name="OBSERVACION" class="java.lang.String"/>
 	<field name="PRECIO" class="java.lang.Double"/>
+	<variable name="V_CURRENT_PAGE_NUMBER" class="java.lang.Integer" resetType="Page">
+		<variableExpression><![CDATA[1]]></variableExpression>
+		<initialValueExpression><![CDATA[$V{PAGE_NUMBER}]]></initialValueExpression>
+	</variable>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -93,7 +98,7 @@ AND CAST(C.FECHAINICIO AS DATE) BETWEEN ($P{fechaini}) and ($P{fechafin})]]>
 					<font fontName="SansSerif" size="8" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
-				<text><![CDATA[Completado:]]></text>
+				<text><![CDATA[Tipo de Cita:]]></text>
 			</staticText>
 			<textField pattern="dd/MM/yyyy" isBlankWhenNull="false">
 				<reportElement mode="Transparent" x="89" y="68" width="100" height="20" forecolor="#000000" backcolor="#FFFFFF" uuid="8304d24f-ef07-4653-bd41-0c0f8792aa87"/>
@@ -143,6 +148,14 @@ AND CAST(C.FECHAINICIO AS DATE) BETWEEN ($P{fechaini}) and ($P{fechafin})]]>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{completado}==1?"Citas Completadas":"Citas Pendientes"]]></textFieldExpression>
 			</textField>
+			<staticText>
+				<reportElement mode="Transparent" x="262" y="4" width="568" height="48" forecolor="#000000" backcolor="#FFFFFF" uuid="038e469d-cb64-4ef6-9df0-01bf0a50a267"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle" rotation="None" markup="none">
+					<font fontName="SansSerif" size="18" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[Reporte Ingresos Generados por Citas de prospectos]]></text>
+			</staticText>
 		</band>
 	</title>
 	<pageHeader>
@@ -314,6 +327,24 @@ AND CAST(C.FECHAINICIO AS DATE) BETWEEN ($P{fechaini}) and ($P{fechafin})]]>
 		<band height="45" splitType="Stretch"/>
 	</columnFooter>
 	<pageFooter>
-		<band height="54" splitType="Stretch"/>
+		<band height="54" splitType="Stretch">
+			<textField>
+				<reportElement x="703" y="33" width="80" height="20" uuid="e50a0da9-845f-4a06-a06b-e3aa91ca5f5a"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA["Page "+$V{V_CURRENT_PAGE_NUMBER}+" of"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement x="783" y="33" width="40" height="20" uuid="87be2a69-fc26-4a0f-a8cb-bf430430cc9a"/>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="false">
+				<reportElement mode="Transparent" x="0" y="33" width="328" height="20" forecolor="#000000" backcolor="#FFFFFF" uuid="be0370b4-5795-46bd-8d73-9e4e9a5c340a"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" markup="none">
+					<font fontName="SansSerif" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{userName}]]></textFieldExpression>
+			</textField>
+		</band>
 	</pageFooter>
 </jasperReport>

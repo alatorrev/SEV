@@ -15,7 +15,8 @@
         <div class="Container100 ui-fluid">
             <div class="ContainerIndent">
                 <p:panel>
-                    <h:form id="frm">
+                    <h:form id="frm" >
+                        <p:growl id="growl" showDetail="true"/>
                         <p:panel header="Datos del Prospecto">
                             <h:panelGrid columns="6">
                                 <p:outputLabel value="Cédula"/>
@@ -37,29 +38,47 @@
                             </h:panelGrid>
                         </p:panel>
                         <p:spacer height="10"/>
-                        <p:panel header="Intereses Prospecto">
-                            <h:panelGrid columns="4">
-                                <p:outputLabel value="Estado"/>
-                                <p:selectOneMenu value="#{contactarProspectoBean.idInteresSelected}">
-                                    <f:selectItem itemLabel="Seleccionar..." itemValue="0"/>
-                                    <f:selectItems value="#{contactarProspectoBean.interesProspectoList}" var="interes" 
-                                                   itemLabel="#{interes.descripcion}" itemValue="#{interes.idInteresProspecto}"/>
-                                </p:selectOneMenu>
-                                <p:outputLabel value="Vía de Comunicación"/>
-                                <p:selectOneMenu value="#{contactarProspectoBean.idViaComunicacionSelected}">
-                                    <f:selectItem itemLabel="Seleccionar..." itemValue="0"/>
-                                    <f:selectItems value="#{contactarProspectoBean.viaComunicacionList}" var="via" 
-                                                   itemLabel="#{via.descripcion}" itemValue="#{via.idViaComunicacion}"/>
-                                </p:selectOneMenu>
+                        <h:panelGrid columns="2" style="width: 100%">
+                            <p:panel header="Intereses Prospecto" style="width: 100%; height: 300px; position: relative;">
+                                <h:panelGrid columns="2">
+                                    <p:outputLabel value="Estado"/>
+                                    <p:selectOneMenu value="#{contactarProspectoBean.idInteresSelected}">
+                                        <f:selectItem itemLabel="Seleccionar..." itemValue="0"/>
+                                        <f:selectItems value="#{contactarProspectoBean.interesProspectoList}" var="interes" 
+                                                       itemLabel="#{interes.descripcion}" itemValue="#{interes.idInteresProspecto}"/>
+                                    </p:selectOneMenu>
+                                    <p:outputLabel value="Vía de Comunicación"/>
+                                    <p:selectOneMenu value="#{contactarProspectoBean.idViaComunicacionSelected}">
+                                        <f:selectItem itemLabel="Seleccionar..." itemValue="0"/>
+                                        <f:selectItems value="#{contactarProspectoBean.viaComunicacionList}" var="via" 
+                                                       itemLabel="#{via.descripcion}" itemValue="#{via.idViaComunicacion}"/>
+                                    </p:selectOneMenu>
 
-                                <p:outputLabel value="Observación"/>
-                                <p:inputTextarea value="#{contactarProspectoBean.observaciones}" rows="3" cols="50" counter="display" maxlength="300" counterTemplate="{0} characters remaining." autoResize="false" />
-                                <h:inputHidden/><h:inputHidden/><h:inputHidden/>
-                                <h:outputLabel id="display" />
-                            </h:panelGrid>
-                        </p:panel>
+                                    <p:outputLabel value="Observación"/>
+                                    <p:inputTextarea value="#{contactarProspectoBean.observaciones}" rows="3" cols="50" counter="display" maxlength="300" counterTemplate="{0} characters remaining." autoResize="false" />
+                                    <h:inputHidden/><h:inputHidden/><h:inputHidden/>
+                                    <h:outputLabel id="display" />
+                                </h:panelGrid>
+                            </p:panel>
+                            <p:panel toggleable="true" header="Actividad Reciente" style="width: 100%; height: 300px; position: relative;">
+                                <p:accordionPanel value="#{contactarProspectoBean.listaActividadesRecientes}" var="act" 
+                                                  widgetVar="accordion">
+                                    <p:tab title="Contactado el #{act.formatFechacontacto}" >
+                                        <h:panelGrid columns="2">
+                                            <h:outputLabel value="Via de Comunicación:" style="font-weight: bold!important"/>
+                                            <h:outputLabel value="#{act.descripcionVia}"/>
+                                            <h:outputLabel value="Interes Prospecto:" style="font-weight: bold!important"/>
+                                            <h:outputLabel value="#{act.descripcioInteres}"/>
+                                            <h:outputLabel value="Observación:" style="font-weight: bold!important"/>
+                                            <p:inputTextarea rows="5" cols="30" autoResize="false" readonly="true" value="#{act.observacion}"/>
+                                        </h:panelGrid>
+                                    </p:tab>
+                                </p:accordionPanel>
+                            </p:panel>
+                        </h:panelGrid>
+                        <p:spacer height="10"/>
                         <p:commandButton value="Guardar" actionListener="#{contactarProspectoBean.guardarContactoDetalle()}"
-                                         oncomplete="PF('wdlgAgenda').show();" update="dlgAgenda">
+                                         update="dlgAgenda growl">
                             <p:confirm header="Confirmación" message="Está seguro de realizar esta acción" icon="ui-icon-alert" />
                         </p:commandButton>
 
@@ -83,6 +102,11 @@
                 </p:panel>
             </div>
         </div>
+        <script type="text/javascript">
+                function desactivateTab() {
+                    PF('accordion').unselect(0);
+                }
+        </script> 
     </ui:define>
 
 </ui:composition>

@@ -89,10 +89,12 @@ public class ConsultaHistorialcontactosBean {
         nullValidator(usuario, prospecto, viaComunicacion, interesProspecto);
         Conexion con = new Conexion();
         SimpleDateFormat sdfParam = new SimpleDateFormat("dd/MM/yyyy");
+        SimpleDateFormat sdfh = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
         Map<String, Object> parametros = new HashMap<String, Object>();
         FacesContext context = FacesContext.getCurrentInstance();
         ServletContext servleContext = (ServletContext) context.getExternalContext().getContext();
         parametros.put("RutaImagenes", servleContext.getRealPath("/Reportes"));
+        parametros.put("userName", sessionUsuario.getApellidos()+" "+sessionUsuario.getNombres()+" "+sdfh.format(new Date()));
         parametros.put("idusuario", usuario.getCedula());
         parametros.put("idprospecto", prospecto.getCedula().trim().equals("")?null:prospecto.getCedula());
         
