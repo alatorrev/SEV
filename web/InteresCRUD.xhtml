@@ -67,7 +67,7 @@
                     <p:dialog id="dlgDatos" header="Editar Interes de Prospecto" widgetVar="wdlgDatos" modal="true" responsive="true">
                         <h:form>
                             <h:panelGrid columns="2">
-                                <p:outputLabel value="Canal"/>
+                                <p:outputLabel value="Interés"/>
                                 <p:inputText value="#{interesBean.interes.descripcion}"/>
                                 <p:commandButton ajax="true" value="Editar" actionListener="#{interesBean.commitEdit()}"  oncomplete="PF('wdlgDatos').hide();" update=":frm:uTable">
                                     <p:confirm header="Confirmación" message="Está seguro de realizar esta acción" icon="ui-icon-alert" />
@@ -87,7 +87,7 @@
                                 <p:commandButton ajax="true" actionListener="#{interesBean.commitCreate()}" value="Crear" oncomplete="PF('wdlgCrearInteres').hide();" update=":frm:uTable" >
                                     <p:confirm header="Confirmación" message="Está seguro de realizar esta acción" icon="ui-icon-alert" />
                                 </p:commandButton>
-                                <p:commandButton value="Cancelar" actionListener="#{interesBean.onCancelDialog()}" immediate="true" oncomplete="PF('wdlgCrearRol').hide();"/>
+                                <p:commandButton value="Cancelar" actionListener="#{interesBean.onCancelDialog()}" immediate="true" oncomplete="PF('wdlgCrearInteres').hide();"/>
                             </h:panelGrid>
                         </h:form>
                     </p:dialog>
