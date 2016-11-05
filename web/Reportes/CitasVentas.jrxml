@@ -343,7 +343,7 @@ AND CAST(C.FECHAINICIO AS DATE) BETWEEN ($P{fechaini}) and ($P{fechafin})]]>
 					<font fontName="SansSerif" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{userName}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{userName}.toUpperCase()]]></textFieldExpression>
 			</textField>
 		</band>
 	</pageFooter>

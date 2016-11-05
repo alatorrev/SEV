@@ -21,7 +21,7 @@
                         <p:ajax event="eventSelect" listener="#{agendaBean.onCitaSelected}" update="dlgCitaEdita" oncomplete="PF('wdlgCitaEdita').show();" />
                         <p:ajax event="dateSelect" listener="#{agendaBean.onNuevaCita}" update="dlgCitaNueva" oncomplete="PF('wdlgCitaNueva').show();" />
                         <p:ajax event="eventMove" listener="#{agendaBean.onCitaMoved}" update="schedule growl"  />
-                       <!-- <p:ajax event="eventResize" listener="# {agendaBean.onCitaResized}" update="schedule" /> -->
+                        <!-- <p:ajax event="eventResize" listener="# {agendaBean.onCitaResized}" update="schedule" /> -->
                     </p:schedule>
                 </h:form>
                 <p:dialog id="dlgCitaNueva" header="Registrar Cita" widgetVar="wdlgCitaNueva" modal="true" responsive="true">
@@ -31,17 +31,36 @@
                             <p:inputText value="#{agendaBean.cita.titulo}"/>
                             <p:outputLabel value="Prospecto" rendered="#{agendaBean.idProspecto==null}"/>
                             <p:selectOneMenu id="prospecto" value="#{agendaBean.idProspectoSelected}" rendered="#{agendaBean.idProspecto==null}" panelStyle="width:180px"
-                                             effect="fade" var="p" style="width:140px" filter="true" filterMatchMode="startsWith">
+                                             converter="converter" effect="fade" var="p" style="width:140px" filter="true" filterMatchMode="startsWith">
                                 <f:selectItem itemLabel="Seleccionar..." itemValue="0"/>
-                                <f:selectItems value="#{agendaBean.listaProspectos}" var="prospecto" itemLabel="#{prospecto.cedula}" itemValue="#{prospecto.cedula}" />
-                                <p:column>
-                                    <h:outputText value="#{p.cedula}" />
+                                <f:selectItems value="#{agendaBean.listaProspectos}" var="prospecto" itemLabel="#{prospecto.apellidos} #{prospecto.nombres}" itemValue="#{prospecto.cedula}" />
+                            </p:selectOneMenu>
+                            <p:outputLabel value="Hora de inicio"/>
+                            <p:inputText value="#{agendaBean.cita.fechaInicio}" readonly="true" >
+                                <f:convertDateTime type="date" pattern="dd/MM/yyyy" timeZone="America/Guayaquil"/>
+                            </p:inputText>
+                            <h:inputHidden/>
+                            <p:selectOneMenu id="hi" value="#{agendaBean.hioSelected}">
+                                <f:selectItems value="#{agendaBean.listadoFechasInicial}" var="hio" itemLabel="#{hio}" itemValue="#{hio}" />
+                                <p:ajax listener="#{agendaBean.updateEndingTimeHour()}" update="hf"/>
+                                <p:column style="width:10%">
+                                    <h:outputText value="#{hio}" />
                                 </p:column>
                             </p:selectOneMenu>
-                            <p:outputLabel value="Inicio"/>
-                            <p:calendar value="#{agendaBean.cita.fechaInicio}" pattern="dd/MM/yyyy HH:mm" />
-                            <p:outputLabel value="Fin"/>
-                            <p:calendar value="#{agendaBean.cita.fechaFin}" pattern="dd/MM/yyyy HH:mm" />
+                            <p:outputLabel value="Hora de finalización"/>
+                            <p:inputText value="#{agendaBean.cita.fechaFin}" readonly="true">
+                                <f:convertDateTime type="date" pattern="dd/MM/yyyy" timeZone="America/Guayaquil"/>
+                            </p:inputText>
+                            <h:inputHidden/>
+                            <p:selectOneMenu id="hf" value="#{agendaBean.horarioCitas}" converter="converter" var="t">
+                                <f:selectItems value="#{agendaBean.listadoFechaFinal}" var="hfo" itemLabel="#{hfo.hora}" itemValue="#{hfo}" />
+                                <p:column>
+                                    <h:outputText value="#{t.hora}" />
+                                </p:column>
+                                <p:column>
+                                    <h:outputText value="#{t.tiempoEnCita}" />
+                                </p:column>
+                            </p:selectOneMenu>
                             <p:outputLabel value="Descripción"/>
                             <p:inputTextarea rows="5" cols="30" autoResize="false" value="#{agendaBean.cita.observacion}"/>
                         </h:panelGrid>
@@ -54,10 +73,34 @@
                         <h:panelGrid columns="2">
                             <p:outputLabel value="Título"/>
                             <p:inputText value="#{agendaBean.cita.titulo}"/>
-                            <p:outputLabel value="Inicio"/>
-                            <p:calendar value="#{agendaBean.cita.fechaInicio}" pattern="dd/MM/yyyy HH:mm" />
-                            <p:outputLabel value="Fin"/>
-                            <p:calendar value="#{agendaBean.cita.fechaFin}" pattern="dd/MM/yyyy HH:mm" />
+                            
+                            <p:outputLabel value="Hora de inicio"/>
+                            <p:inputText value="#{agendaBean.cita.fechaInicio}" readonly="true" >
+                                <f:convertDateTime type="date" pattern="dd/MM/yyyy" timeZone="America/Guayaquil"/>
+                            </p:inputText>
+                            <h:inputHidden/>
+                            <p:selectOneMenu id="hi" value="#{agendaBean.hioSelected}">
+                                <f:selectItems value="#{agendaBean.listadoFechasInicial}" var="hio" itemLabel="#{hio}" itemValue="#{hio}" />
+                                <p:ajax listener="#{agendaBean.updateEndingTimeHour()}" update="hf"/>
+                                <p:column style="width:10%">
+                                    <h:outputText value="#{hio}" />
+                                </p:column>
+                            </p:selectOneMenu>
+                            
+                            <p:outputLabel value="Hora de finalización"/>
+                            <p:inputText value="#{agendaBean.cita.fechaFin}" readonly="true">
+                                <f:convertDateTime type="date" pattern="dd/MM/yyyy" timeZone="America/Guayaquil"/>
+                            </p:inputText>
+                            <h:inputHidden/>
+                            <p:selectOneMenu id="hf" value="#{agendaBean.horarioCitas}" converter="converter" var="t">
+                                <f:selectItems value="#{agendaBean.listadoFechaFinal}" var="hfo" itemLabel="#{hfo.hora}" itemValue="#{hfo}" />
+                                <p:column>
+                                    <h:outputText value="#{t.hora}" />
+                                </p:column>
+                                <p:column>
+                                    <h:outputText value="#{t.tiempoEnCita}" />
+                                </p:column>
+                            </p:selectOneMenu>
                             <p:outputLabel value="Descripción"/>
                             <p:inputTextarea rows="5" cols="30" autoResize="false" value="#{agendaBean.cita.observacion}"/>
                             <p:outputLabel value="Completar"/>

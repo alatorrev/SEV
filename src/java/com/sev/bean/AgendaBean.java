@@ -9,14 +9,18 @@ import com.sev.dao.CitaDAO;
 import com.sev.dao.ProductoDAO;
 import com.sev.dao.ProspectoDAO;
 import com.sev.entity.Cita;
+import com.sev.entity.HorarioCitas;
 import com.sev.entity.Producto;
 import com.sev.entity.Prospecto;
 import com.sev.entity.Usuario;
 import java.io.Serializable;
 import java.sql.SQLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
@@ -42,7 +46,8 @@ public class AgendaBean implements Serializable {
 
     private Usuario sessionUsuario;
     private int idContactoDetalle = 0;
-    private String idProspecto;
+    private String idProspecto, hioSelected;
+    private HorarioCitas horarioCitas = new HorarioCitas();
     private String idProspectoSelected;
     private Prospecto prospecto = new Prospecto();
     private Producto producto = new Producto();
@@ -54,6 +59,8 @@ public class AgendaBean implements Serializable {
     private Cita cita = new Cita();
     private List<Cita> listadoCitas = new ArrayList<>();
     private List<Producto> listadoProducto = new ArrayList<>();
+    private List<String> listadoFechasInicial = new ArrayList<>();
+    private List<HorarioCitas> listadoFechaFinal = new ArrayList();
 
     public void authorized() {
     }
@@ -95,16 +102,45 @@ public class AgendaBean implements Serializable {
         }
     }
 
-    public void onCitaSelected(SelectEvent e) {
+    public void onCitaSelected(SelectEvent e) throws ParseException {
+        SimpleDateFormat hf = new SimpleDateFormat("HH:mm");
+        Calendar now = Calendar.getInstance();
+        now.set(Calendar.HOUR, 0);
+        now.set(Calendar.MINUTE, 0);
+        now.set(Calendar.SECOND, 0);
+        now.set(Calendar.HOUR_OF_DAY, 0);
+
         ScheduleEvent evento = (ScheduleEvent) e.getObject();
         cita = (Cita) evento.getData();
+        listadoFechasInicial = listadoHorasInicio(now.getTime());
+        hioSelected = hf.format(cita.getFechaInicio());
+        Date temp = new Date();
+        temp.setTime(cita.getFechaInicio().getTime());
+        listadoFechaFinal = listadoHorasFinalizacion(temp);
+        horarioCitas = buscarFechaFinalización(cita.getFechaFin());
+
     }
 
-    public void onNuevaCita(SelectEvent e) {
+    public HorarioCitas buscarFechaFinalización(Date citaEnd) {
+        SimpleDateFormat df = new SimpleDateFormat("HH:mm");
+        Iterator iterador = listadoFechaFinal.iterator();
+        while (iterador.hasNext()) {
+            HorarioCitas hc = (HorarioCitas) iterador.next();
+            if (hc.getHora().equals(df.format(citaEnd))) {
+                return hc;
+            }
+        }
+        return new HorarioCitas();
+    }
+
+    public void onNuevaCita(SelectEvent e) throws ParseException {
         ScheduleEvent evento = new DefaultScheduleEvent("", (Date) e.getObject(), (Date) e.getObject());
         cita = new Cita();
         cita.setFechaInicio(new java.sql.Date(evento.getStartDate().getTime()));
         cita.setFechaFin(new java.sql.Date(evento.getEndDate().getTime()));
+        listadoFechasInicial = listadoHorasInicio(new java.sql.Date(evento.getStartDate().getTime()));
+        hioSelected = "";
+        listadoFechaFinal = listadoHorasFinalizacion(new java.sql.Date(evento.getStartDate().getTime()));
     }
 
     public void onCitaMoved(ScheduleEntryMoveEvent e) throws SQLException {
@@ -133,34 +169,32 @@ public class AgendaBean implements Serializable {
         }
     }
 
-    public void guardarCita() {
+    public void guardarCita() throws ParseException {
         if (cita.getIdCita() != 0) {
-            try {
-                if (cita.getCompletado() && producto.getIdprod() == 0) {
-                    FacesContext.getCurrentInstance().addMessage(null,
-                            new FacesMessage(FacesMessage.SEVERITY_WARN, "Atención", "Si completa la cita, debe elegir un producto de referencia"));
-                } else {
-                    boolean flag=daoCita.editarCita(cita, cita.getCompletado() ? producto.getIdprod() : 0);
-                    if (flag) {
-                        FacesContext.getCurrentInstance().addMessage(null,
-                                new FacesMessage(FacesMessage.SEVERITY_INFO, "Correcto", "Información del cita actualizada"));
-                    } else {
-                        FacesContext.getCurrentInstance().addMessage(null,
-                                new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Error al crear la cita"));
-                    }
-                    buildScheduler();
-                }
-            } catch (Exception e) {
-                System.out.println(e.getMessage());
-                FacesContext.getCurrentInstance().addMessage(null,
-                        new FacesMessage(FacesMessage.SEVERITY_ERROR, "Atención", "Error al crear la cita"));
-            }
+            saveIfEdit();
         } else {
-            Calendar calInicio = Calendar.getInstance();
-            calInicio.setTime(cita.getFechaInicio());
-            Calendar calFin = Calendar.getInstance();
-            calFin.setTime(cita.getFechaFin());
-            if (calInicio.get(Calendar.DAY_OF_MONTH) == calFin.get(Calendar.DAY_OF_MONTH)) {
+            saveIfNew();
+        }
+    }
+
+    public void updateEndingTimeHour() throws ParseException {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+        SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+        setListadoFechaFinal(listadoHorasFinalizacion(sdf.parse(df.format(getCita().getFechaInicio()) + " " + hioSelected)));
+        setHorarioCitas(getListadoFechaFinal().get(1));
+    }
+
+    public void saveIfNew() throws ParseException {
+        SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+        cita.setFechaInicio(sdf.parse(df.format(getCita().getFechaInicio()) + " " + hioSelected));
+        cita.setFechaFin(sdf.parse(df.format(getCita().getFechaFin()) + " " + getHorarioCitas().getHora()));
+        Calendar calInicio = Calendar.getInstance();
+        calInicio.setTime(cita.getFechaInicio());
+        Calendar calFin = Calendar.getInstance();
+        calFin.setTime(cita.getFechaFin());
+        if (calInicio.get(Calendar.DAY_OF_MONTH) == calFin.get(Calendar.DAY_OF_MONTH)) {
+            if (cita.getFechaInicio().getTime() < cita.getFechaFin().getTime()) {
                 try {
                     if (idProspecto != null) {
                         cita.setIdProspecto(idProspecto);
@@ -185,9 +219,91 @@ public class AgendaBean implements Serializable {
                 }
             } else {
                 FacesContext.getCurrentInstance().addMessage(null,
-                        new FacesMessage(FacesMessage.SEVERITY_ERROR, "Atención", "La fecha inicial debe ser igual a la final"));
+                        new FacesMessage(FacesMessage.SEVERITY_ERROR, "Atención", "La hora inicial debe ser menor a la final"));
             }
+        } else {
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Atención", "La fecha inicial debe ser igual a la final"));
         }
+    }
+
+    public void saveIfEdit() throws ParseException {
+        SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+        cita.setFechaInicio(sdf.parse(df.format(getCita().getFechaInicio()) + " " + hioSelected));
+        cita.setFechaFin(sdf.parse(df.format(getCita().getFechaFin()) + " " + getHorarioCitas().getHora()));
+        Calendar calInicio = Calendar.getInstance();
+        calInicio.setTime(cita.getFechaInicio());
+        Calendar calFin = Calendar.getInstance();
+        calFin.setTime(cita.getFechaFin());
+        if (calInicio.get(Calendar.DAY_OF_MONTH) == calFin.get(Calendar.DAY_OF_MONTH)) {
+            if (cita.getFechaInicio().getTime() < cita.getFechaFin().getTime()) {
+                try {
+                    if (cita.getCompletado() && producto.getIdprod() == 0) {
+                        FacesContext.getCurrentInstance().addMessage(null,
+                                new FacesMessage(FacesMessage.SEVERITY_WARN, "Atención", "Si completa la cita, debe elegir un producto de referencia"));
+                    } else {
+                        boolean flag = daoCita.editarCita(cita, cita.getCompletado() ? producto.getIdprod() : 0);
+                        if (flag) {
+                            FacesContext.getCurrentInstance().addMessage(null,
+                                    new FacesMessage(FacesMessage.SEVERITY_INFO, "Correcto", "Información del cita actualizada"));
+                        } else {
+                            FacesContext.getCurrentInstance().addMessage(null,
+                                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Error al crear la cita"));
+                        }
+                        buildScheduler();
+                    }
+                } catch (Exception e) {
+                    System.out.println(e.getMessage());
+                    FacesContext.getCurrentInstance().addMessage(null,
+                            new FacesMessage(FacesMessage.SEVERITY_ERROR, "Atención", "Error al crear la cita"));
+                }
+            } else {
+                FacesContext.getCurrentInstance().addMessage(null,
+                        new FacesMessage(FacesMessage.SEVERITY_ERROR, "Atención", "La hora inicial debe ser menor a la final"));
+            }
+        } else {
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Atención", "La fecha inicial debe ser igual a la final"));
+        }
+    }
+
+    public static List<String> listadoHorasInicio(Date fechareferencia) throws ParseException {
+        List<String> listado = new ArrayList<>();
+        SimpleDateFormat formatoHoras = new SimpleDateFormat("HH:mm");
+        Calendar calInicio = Calendar.getInstance();
+        calInicio.setTime(fechareferencia);
+        Calendar calStop = Calendar.getInstance();
+        calStop.setTimeInMillis(fechareferencia.getTime() + (24 * 3600 * 1000));//sumo 1 día
+
+        while (calInicio.get(Calendar.DAY_OF_MONTH) != calStop.get(Calendar.DAY_OF_MONTH)) {
+            listado.add(formatoHoras.format(fechareferencia));
+            fechareferencia.setTime(fechareferencia.getTime() + (1000 * 60 * 30));//sumo 30 minutos
+            calInicio.setTime(fechareferencia);
+        }
+        return listado;
+    }
+
+    public static List<HorarioCitas> listadoHorasFinalizacion(Date fechareferencia) throws ParseException {
+        List<HorarioCitas> listado = new ArrayList<>();
+        SimpleDateFormat formatoHoras = new SimpleDateFormat("HH:mm");
+        Date temp = new Date();
+        temp.setTime(fechareferencia.getTime());
+        Calendar calInicio = Calendar.getInstance();
+        calInicio.setTime(fechareferencia);
+        Calendar calStop = Calendar.getInstance();
+        calStop.setTimeInMillis(fechareferencia.getTime() + (24 * 3600 * 1000));//sumo 1 día
+
+        while (calInicio.get(Calendar.DAY_OF_MONTH) != calStop.get(Calendar.DAY_OF_MONTH)) {
+            long resultado = fechareferencia.getTime() - temp.getTime();
+            HorarioCitas hc = new HorarioCitas();
+            hc.setHora(formatoHoras.format(fechareferencia));
+            hc.setTiempoEnCita("(" + ((double) (resultado / (double) (1000 * 3600))) + " horas)");
+            listado.add(hc);
+            fechareferencia.setTime(fechareferencia.getTime() + (1000 * 60 * 30));//sumo 30 minutos
+            calInicio.setTime(fechareferencia);
+        }
+        return listado;
     }
 
     public int getIdContactoDetalle() {
@@ -276,6 +392,38 @@ public class AgendaBean implements Serializable {
 
     public void setProducto(Producto producto) {
         this.producto = producto;
+    }
+
+    public List<String> getListadoFechasInicial() {
+        return listadoFechasInicial;
+    }
+
+    public void setListadoFechasInicial(List<String> listadoFechasInicial) {
+        this.listadoFechasInicial = listadoFechasInicial;
+    }
+
+    public String getHioSelected() {
+        return hioSelected;
+    }
+
+    public void setHioSelected(String hioSelected) {
+        this.hioSelected = hioSelected;
+    }
+
+    public HorarioCitas getHorarioCitas() {
+        return horarioCitas;
+    }
+
+    public void setHorarioCitas(HorarioCitas horarioCitas) {
+        this.horarioCitas = horarioCitas;
+    }
+
+    public List<HorarioCitas> getListadoFechaFinal() {
+        return listadoFechaFinal;
+    }
+
+    public void setListadoFechaFinal(List<HorarioCitas> listadoFechaFinal) {
+        this.listadoFechaFinal = listadoFechaFinal;
     }
 
 }

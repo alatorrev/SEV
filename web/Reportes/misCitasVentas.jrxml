@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="HistoricoContactos" pageWidth="769" pageHeight="595" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="730" leftMargin="19" rightMargin="20" topMargin="20" bottomMargin="20" uuid="b3b1c8fa-6cab-49c2-9f7a-8429a91215b7">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="misCitasVentas" pageWidth="870" pageHeight="595" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="831" leftMargin="19" rightMargin="20" topMargin="20" bottomMargin="20" uuid="b3b1c8fa-6cab-49c2-9f7a-8429a91215b7">
 	<property name="ireport.zoom" value="1.1289478601075547"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
@@ -10,24 +10,22 @@
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
 	<parameter name="idprospecto" class="java.lang.String"/>
-	<parameter name="idvia" class="java.lang.Integer"/>
-	<parameter name="viaDescripcion" class="java.lang.String"/>
-	<parameter name="idinteres" class="java.lang.Integer"/>
-	<parameter name="interesDescripcion" class="java.lang.String"/>
+	<parameter name="idproducto" class="java.lang.String"/>
+	<parameter name="completado" class="java.lang.Integer"/>
+	<parameter name="productoDescripcion" class="java.lang.String"/>
 	<parameter name="userName" class="java.lang.String"/>
 	<queryString>
-		<![CDATA[select U.CEDULA AS UCEDULA,U.APELLIDOS AS UAPELLIDOS,u.NOMBRES AS UNOMBRES,
+		<![CDATA[SELECT U.CEDULA AS UCEDULA,U.APELLIDOS AS UAPELLIDOS,u.NOMBRES AS UNOMBRES,
 P.CEDULA AS PCEDULA,P.APELLIDOS AS PAPELLIDOS,P.NOMBRES AS PNOMBRES,
-V.IDVIA,V.DESCRIPCION AS VIADESCRIPCION,I.IDINTPROS,I.DESCRIPCION AS INTERESDESCRIPCION,DC.FECHACONTACTO
-from DETALLECONTACTO DC INNER JOIN VIACOMUNICACION V ON DC.IDVIA=V.IDVIA
-INNER JOIN INTERESPROSPECTO I ON I.IDINTPROS=DC.IDINTPROS
-INNER JOIN PROSPECTO P ON DC.IDPROSPECTO=P.CEDULA
-INNER JOIN USUARIO U ON U.CEDULA=DC.IDUSUARIO
-where DC.IDUSUARIO =ISNULL($P{idusuario},DC.IDUSUARIO)
-AND DC.IDPROSPECTO=ISNULL($P{idprospecto},DC.IDPROSPECTO)
-AND DC.IDVIA = ISNULL($P{idvia},DC.IDVIA)
-AND DC.IDINTPROS = ISNULL($P{idinteres},DC.IDINTPROS)
-AND CAST(DC.FECHACONTACTO AS DATE) BETWEEN ($P{fechaini}) and ($P{fechafin})]]>
+C.TITULO,C.FECHAINICIO AS FECHACITA,DC.FECHACONTACTO,C.OBSERVACION,PD.PRECIO
+FROM CITA C INNER JOIN USUARIO U ON U.CEDULA=C.IDUSUARIO
+INNER JOIN PROSPECTO P ON C.IDPROSPECTO=P.CEDULA LEFT JOIN PRODUCTO PD
+ON PD.IDPROD=C.IDPRODUCTO LEFT JOIN DETALLECONTACTO DC ON DC.IDCONTACTO=C.IDCONTACTO
+WHERE C.IDUSUARIO =ISNULL($P{idusuario},C.IDUSUARIO)
+AND C.IDPROSPECTO=ISNULL($P{idprospecto},C.IDPROSPECTO)
+AND C.COMPLETADO= ISNULL($P{completado},C.COMPLETADO)
+AND C.IDPRODUCTO= ISNULL($P{idproducto},c.IDPRODUCTO)
+AND CAST(C.FECHAINICIO AS DATE) BETWEEN ($P{fechaini}) and ($P{fechafin})]]>
 	</queryString>
 	<field name="UCEDULA" class="java.lang.String"/>
 	<field name="UAPELLIDOS" class="java.lang.String"/>
@@ -35,11 +33,11 @@ AND CAST(DC.FECHACONTACTO AS DATE) BETWEEN ($P{fechaini}) and ($P{fechafin})]]>
 	<field name="PCEDULA" class="java.lang.String"/>
 	<field name="PAPELLIDOS" class="java.lang.String"/>
 	<field name="PNOMBRES" class="java.lang.String"/>
-	<field name="IDVIA" class="java.lang.Integer"/>
-	<field name="VIADESCRIPCION" class="java.lang.String"/>
-	<field name="IDINTPROS" class="java.lang.Integer"/>
-	<field name="INTERESDESCRIPCION" class="java.lang.String"/>
+	<field name="TITULO" class="java.lang.String"/>
+	<field name="FECHACITA" class="java.sql.Timestamp"/>
 	<field name="FECHACONTACTO" class="java.sql.Timestamp"/>
+	<field name="OBSERVACION" class="java.lang.String"/>
+	<field name="PRECIO" class="java.lang.Double"/>
 	<variable name="V_CURRENT_PAGE_NUMBER" class="java.lang.Integer" resetType="Page">
 		<variableExpression><![CDATA[1]]></variableExpression>
 		<initialValueExpression><![CDATA[$V{PAGE_NUMBER}]]></initialValueExpression>
@@ -87,20 +85,20 @@ AND CAST(DC.FECHACONTACTO AS DATE) BETWEEN ($P{fechaini}) and ($P{fechafin})]]>
 				<text><![CDATA[Prospecto:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Transparent" x="504" y="88" width="85" height="20" forecolor="#263876" backcolor="#FFFFFF" uuid="53778b47-b54f-4ad3-a85f-2be44e503d33"/>
+				<reportElement mode="Transparent" x="504" y="88" width="59" height="20" forecolor="#263876" backcolor="#FFFFFF" uuid="53778b47-b54f-4ad3-a85f-2be44e503d33"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" markup="none">
 					<font fontName="SansSerif" size="8" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
-				<text><![CDATA[Interes Prospecto:]]></text>
+				<text><![CDATA[Producto:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Transparent" x="504" y="68" width="85" height="20" forecolor="#263876" backcolor="#FFFFFF" uuid="0d6f7511-ac0a-4dee-9fdd-cefc9bfd48ea"/>
+				<reportElement mode="Transparent" x="504" y="68" width="59" height="20" forecolor="#263876" backcolor="#FFFFFF" uuid="0d6f7511-ac0a-4dee-9fdd-cefc9bfd48ea"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" markup="none">
 					<font fontName="SansSerif" size="8" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
-				<text><![CDATA[Vía Comunicación:]]></text>
+				<text><![CDATA[Tipo de Cita:]]></text>
 			</staticText>
 			<textField pattern="dd/MM/yyyy" isBlankWhenNull="false">
 				<reportElement mode="Transparent" x="89" y="68" width="100" height="20" forecolor="#000000" backcolor="#FFFFFF" uuid="8304d24f-ef07-4653-bd41-0c0f8792aa87"/>
@@ -135,28 +133,28 @@ AND CAST(DC.FECHACONTACTO AS DATE) BETWEEN ($P{fechaini}) and ($P{fechafin})]]>
 				<textFieldExpression><![CDATA[$P{idprospecto}==null?"Todos":$P{idprospecto}]]></textFieldExpression>
 			</textField>
 			<textField pattern="dd/MM/yyyy" isBlankWhenNull="false">
-				<reportElement mode="Transparent" x="590" y="88" width="100" height="20" forecolor="#000000" backcolor="#FFFFFF" uuid="f22de4a9-ccbd-4a4a-93a9-b88dd456f6b1"/>
+				<reportElement mode="Transparent" x="563" y="88" width="100" height="20" forecolor="#000000" backcolor="#FFFFFF" uuid="f22de4a9-ccbd-4a4a-93a9-b88dd456f6b1"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" markup="none">
 					<font fontName="SansSerif" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{interesDescripcion}==null?"Todos":$P{interesDescripcion}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{productoDescripcion}==null?"Todos":$P{productoDescripcion}]]></textFieldExpression>
 			</textField>
 			<textField pattern="dd/MM/yyyy" isBlankWhenNull="false">
-				<reportElement mode="Transparent" x="590" y="68" width="100" height="20" forecolor="#000000" backcolor="#FFFFFF" uuid="87b77110-4c82-4463-88fa-c7a647af92d4"/>
+				<reportElement mode="Transparent" x="563" y="67" width="100" height="20" forecolor="#000000" backcolor="#FFFFFF" uuid="87b77110-4c82-4463-88fa-c7a647af92d4"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" markup="none">
 					<font fontName="SansSerif" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{viaDescripcion}==null?"Todos":$P{viaDescripcion}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{completado}==1?"Citas Completadas":"Citas Pendientes"]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement mode="Transparent" x="262" y="4" width="468" height="48" forecolor="#000000" backcolor="#FFFFFF" uuid="1a631003-5011-42e2-9a34-70b26f15fa04"/>
+				<reportElement mode="Transparent" x="262" y="4" width="568" height="48" forecolor="#000000" backcolor="#FFFFFF" uuid="038e469d-cb64-4ef6-9df0-01bf0a50a267"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle" rotation="None" markup="none">
 					<font fontName="SansSerif" size="18" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
-				<text><![CDATA[Reporte de Prospectos Contactados]]></text>
+				<text><![CDATA[Reporte Ingresos Generados por Citas de prospectos]]></text>
 			</staticText>
 		</band>
 	</title>
@@ -198,28 +196,36 @@ AND CAST(DC.FECHACONTACTO AS DATE) BETWEEN ($P{fechaini}) and ($P{fechafin})]]>
 				<text><![CDATA[NOMBRES]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Opaque" x="400" y="20" width="100" height="20" forecolor="#333333" backcolor="#4087D5" uuid="9a175b51-b11b-4c72-a786-84652c6b21d7"/>
+				<reportElement mode="Opaque" x="400" y="20" width="100" height="20" forecolor="#333333" backcolor="#4087D5" uuid="637ebce3-2c9b-4850-ba5c-10b0bc3b6457"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" markup="none">
 					<font fontName="SansSerif" size="8" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
-				<text><![CDATA[Vía Comunicación]]></text>
+				<text><![CDATA[TITULO]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Opaque" x="500" y="20" width="90" height="20" forecolor="#333333" backcolor="#4087D5" uuid="9f2fc5c8-c8e7-464d-881e-b631cc1bc662"/>
-				<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" markup="none">
-					<font fontName="SansSerif" size="8" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
-					<paragraph lineSpacing="Single"/>
-				</textElement>
-				<text><![CDATA[Interés Prospecto]]></text>
-			</staticText>
-			<staticText>
-				<reportElement mode="Opaque" x="590" y="20" width="140" height="20" forecolor="#333333" backcolor="#4087D5" uuid="99d3218c-878d-4899-a8b5-c482757f1816"/>
+				<reportElement mode="Opaque" x="500" y="20" width="100" height="20" forecolor="#333333" backcolor="#4087D5" uuid="9a175b51-b11b-4c72-a786-84652c6b21d7"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" markup="none">
 					<font fontName="SansSerif" size="8" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[FECHACONTACTO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="600" y="20" width="90" height="20" forecolor="#333333" backcolor="#4087D5" uuid="9f2fc5c8-c8e7-464d-881e-b631cc1bc662"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" markup="none">
+					<font fontName="SansSerif" size="8" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[PRECIO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="690" y="20" width="140" height="20" forecolor="#333333" backcolor="#4087D5" uuid="99d3218c-878d-4899-a8b5-c482757f1816"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" markup="none">
+					<font fontName="SansSerif" size="8" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[OBSERVACION]]></text>
 			</staticText>
 			<staticText>
 				<reportElement mode="Opaque" x="0" y="0" width="200" height="20" forecolor="#333333" backcolor="#4087D5" uuid="42baa9e8-a202-4b47-ae70-f9288e3b28f6"/>
@@ -238,12 +244,12 @@ AND CAST(DC.FECHACONTACTO AS DATE) BETWEEN ($P{fechaini}) and ($P{fechafin})]]>
 				<text><![CDATA[PROSPECTO]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Opaque" x="400" y="0" width="330" height="20" forecolor="#333333" backcolor="#4087D5" uuid="04484d9b-f755-46e4-8473-822b743ed2eb"/>
+				<reportElement mode="Opaque" x="400" y="0" width="430" height="20" forecolor="#333333" backcolor="#4087D5" uuid="04484d9b-f755-46e4-8473-822b743ed2eb"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" markup="none">
 					<font fontName="SansSerif" size="8" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
-				<text><![CDATA[INFORMACIÓN DEL CONTACTO]]></text>
+				<text><![CDATA[INFORMACIÓN DEL LA CITA]]></text>
 			</staticText>
 		</band>
 	</columnHeader>
@@ -281,29 +287,39 @@ AND CAST(DC.FECHACONTACTO AS DATE) BETWEEN ($P{fechaini}) and ($P{fechafin})]]>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{PNOMBRES}]]></textFieldExpression>
 			</textField>
-			<textField pattern="dd/MM/yyyy" isBlankWhenNull="false">
-				<reportElement mode="Transparent" x="400" y="0" width="100" height="20" forecolor="#000000" backcolor="#FFFFFF" uuid="17870fef-a156-45f0-a0cc-dd2d75421b87"/>
+			<textField pattern="" isBlankWhenNull="false">
+				<reportElement mode="Transparent" x="400" y="0" width="100" height="20" forecolor="#000000" backcolor="#FFFFFF" uuid="7b60463f-c1b9-4270-916e-684c72347754"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" markup="none">
 					<font fontName="SansSerif" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{VIADESCRIPCION}==null?"NO DESCRIPCION":$F{VIADESCRIPCION}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{TITULO}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy" isBlankWhenNull="false">
+				<reportElement mode="Transparent" x="500" y="0" width="100" height="20" forecolor="#000000" backcolor="#FFFFFF" uuid="17870fef-a156-45f0-a0cc-dd2d75421b87"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" markup="none">
+					<font fontName="SansSerif" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{FECHACONTACTO}==null?"SIN CONTACTO":$F{FECHACONTACTO}]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0.00" isBlankWhenNull="false">
-				<reportElement mode="Transparent" x="500" y="0" width="90" height="20" forecolor="#000000" backcolor="#FFFFFF" uuid="afb640eb-a1b5-49e2-8a59-a5d12f4a7f4d"/>
+				<reportElement mode="Transparent" x="600" y="0" width="90" height="20" forecolor="#000000" backcolor="#FFFFFF" uuid="afb640eb-a1b5-49e2-8a59-a5d12f4a7f4d"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" markup="none">
 					<font fontName="SansSerif" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{INTERESDESCRIPCION}==null?"NO DESCRIPCION":$F{INTERESDESCRIPCION}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{PRECIO}==null
+?new java.text.DecimalFormat("#,##0.00").format(Double.valueOf("0.0"))
+:$F{PRECIO}]]></textFieldExpression>
 			</textField>
-			<textField pattern="dd/MM/yyyy HH:mm:ss" isBlankWhenNull="false">
-				<reportElement stretchType="RelativeToBandHeight" mode="Transparent" x="590" y="0" width="140" height="20" forecolor="#000000" backcolor="#FFFFFF" uuid="71ac7294-19dd-4441-8e8e-805a4cca74d9"/>
-				<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" markup="none">
+			<textField pattern="" isBlankWhenNull="false">
+				<reportElement stretchType="RelativeToBandHeight" mode="Transparent" x="690" y="0" width="140" height="38" forecolor="#000000" backcolor="#FFFFFF" uuid="71ac7294-19dd-4441-8e8e-805a4cca74d9"/>
+				<textElement textAlignment="Left" verticalAlignment="Top" rotation="None" markup="none">
 					<font fontName="SansSerif" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{FECHACONTACTO}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{OBSERVACION}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
@@ -313,16 +329,16 @@ AND CAST(DC.FECHACONTACTO AS DATE) BETWEEN ($P{fechaini}) and ($P{fechafin})]]>
 	<pageFooter>
 		<band height="54" splitType="Stretch">
 			<textField>
-				<reportElement x="610" y="34" width="80" height="20" uuid="1dd0a0d2-e292-4734-80a2-7d0f0348953b"/>
+				<reportElement x="703" y="33" width="80" height="20" uuid="e50a0da9-845f-4a06-a06b-e3aa91ca5f5a"/>
 				<textElement textAlignment="Right"/>
 				<textFieldExpression><![CDATA["Page "+$V{V_CURRENT_PAGE_NUMBER}+" of"]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Report">
-				<reportElement x="690" y="34" width="40" height="20" uuid="78ea80e5-b45b-4ea0-a09c-82ab7e5efdbe"/>
+				<reportElement x="783" y="33" width="40" height="20" uuid="87be2a69-fc26-4a0f-a8cb-bf430430cc9a"/>
 				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
 			</textField>
 			<textField pattern="" isBlankWhenNull="false">
-				<reportElement mode="Transparent" x="0" y="34" width="328" height="20" forecolor="#000000" backcolor="#FFFFFF" uuid="ac5277d3-1457-439e-bb2e-f36f6ddf96eb"/>
+				<reportElement mode="Transparent" x="0" y="33" width="328" height="20" forecolor="#000000" backcolor="#FFFFFF" uuid="be0370b4-5795-46bd-8d73-9e4e9a5c340a"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" markup="none">
 					<font fontName="SansSerif" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 					<paragraph lineSpacing="Single"/>
