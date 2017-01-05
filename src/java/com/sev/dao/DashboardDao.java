@@ -26,10 +26,10 @@ public class DashboardDao {
         PreparedStatement pst;
         try {
             String query = "SELECT  u.CEDULA, u.Nombres, u.Apellidos, ISNULL(p.Cantidad,0) Cantidad "
-                    + "FROM dbo.USUARIO u "
+                    + "FROM USUARIO u "
                     + "INNER JOIN USUARIOROL ur on u.CEDULA = ur.IDUSUARIO "
                     + "LEFT JOIN ( SELECT IdUsuario, COUNT(*) Cantidad "
-                    + "FROM dbo.PROSPECTO "
+                    + "FROM PROSPECTO "
                     + "WHERE estado = 1 "
                     + "AND CEDULA IS NOT NULL "
                     + "GROUP BY IdUsuario) p "

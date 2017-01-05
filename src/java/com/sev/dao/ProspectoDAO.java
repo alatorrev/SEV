@@ -284,9 +284,11 @@ public class ProspectoDAO implements Serializable {
         PreparedStatement pst;
         ResultSet rs;
         try {
-            String query = "select P.CEDULA,P.NOMBRES,P.APELLIDOS,P.CELULAR,P.CASA,P.CORREO,P.ESTABLECIMIENTO, C.IDCANAL,C.DESCRIPCION "
-                    + "from PROSPECTO P inner join CANALCAPTACION C "
-                    + "ON P.IDCANCAP=C.IDCANAL where P.IDUSUARIO=? and P.ESTADO=1 ";
+            String query = "select P.CEDULA,P.NOMBRES,P.APELLIDOS,P.CELULAR,P.CASA,P.CORREO,P.ESTABLECIMIENTO, C.IDCANAL,C.DESCRIPCION,"
+                    + "I.IDINTPROS,I.DESCRIPCION AS DESCRIPCIONINTERES,U.NOMBRES as NOMBRESRESPONSABLES,U.APELLIDOS AS APELLIDOSRESPONSABLES "
+                    + "from INTERESPROSPECTO I inner join PROSPECTO P on I.IDINTPROS=P.IDINTPROS "
+                    + "inner join CANALCAPTACION C ON P.IDCANCAP=C.IDCANAL inner join USUARIO U ON U.CEDULA=P.IDUSUARIO "
+                    + "where P.IDUSUARIO=? and P.ESTADO=1 ";
             pst = con.getConnection().prepareStatement(query);
             pst.setString(1, cedulaUsuario);
             rs = pst.executeQuery();
@@ -301,6 +303,9 @@ public class ProspectoDAO implements Serializable {
                 p.setEstablecimientoProveniente(rs.getString(7));
                 p.setIdcanal(rs.getInt(8));
                 p.setDescripcionCanal(rs.getString(9));
+                p.setIdInteres(rs.getInt(10));
+                p.setDescripcionInteres(rs.getString(11));
+                p.setCaptador(rs.getString(12)+" "+rs.getString(13));
                 lista.add(p);
             }
         } catch (Exception e) {

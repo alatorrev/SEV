@@ -81,7 +81,7 @@ public class ConsultaCitasBean {
     public void exportpdf() throws JRException, IOException {
         nullValidator(usuario, prospecto, producto);
         Conexion con = new Conexion();
-        SimpleDateFormat sdfParam = new SimpleDateFormat("dd/MM/yyyy");
+        SimpleDateFormat sdfParam = new SimpleDateFormat("yyyy-MM-dd");
         SimpleDateFormat sdfh = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
         Map<String, Object> parametros = new HashMap<String, Object>();
         FacesContext context = FacesContext.getCurrentInstance();

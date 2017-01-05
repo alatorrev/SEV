@@ -86,7 +86,7 @@ public class ContactoDetalleDAO {
     public List<ReporteHistorialContactos> listaHistorialContactos(Usuario u, Prospecto p, int via, int interes, Date desde, Date hasta) throws SQLException {
         Conexion con = new Conexion();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        SimpleDateFormat sdfParam = new SimpleDateFormat("dd/MM/yyyy");
+        SimpleDateFormat sdfParam = new SimpleDateFormat("yyyy-MM-dd");
         List<ReporteHistorialContactos> lista = new ArrayList<>();
         PreparedStatement pst;
         ResultSet rs;

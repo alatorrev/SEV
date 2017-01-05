@@ -151,7 +151,7 @@ public class CitaDAO {
     public List<ReporteCitasVentas> listaCitasVentas(Usuario u, Prospecto p, boolean completado, Producto pro, Date desde, Date hasta) throws SQLException {
         List<ReporteCitasVentas> lista = new ArrayList<>();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        SimpleDateFormat sdfParam = new SimpleDateFormat("dd/MM/yyyy");
+        SimpleDateFormat sdfParam = new SimpleDateFormat("yyyy-MM-dd");
         Conexion con = new Conexion();
         PreparedStatement pst;
         ResultSet rs;

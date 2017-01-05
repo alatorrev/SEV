@@ -54,8 +54,8 @@
                             <p:column headerText="Establecimiento" filterBy="#{p.establecimientoProveniente}" filterStyle="display:none" filterMatchMode="contains">
                                 <h:outputText value="#{p.establecimientoProveniente}"/>
                             </p:column>
-                            <p:column headerText="Responsable" filterBy="#{p.captador}" filterStyle="display:none" filterMatchMode="contains">
-                                <h:outputText value="#{p.captador}"/>
+                            <p:column headerText="Interes" filterBy="#{p.descripcionInteres}" filterStyle="display:none" filterMatchMode="contains">
+                                <h:outputText value="#{p.descripcionInteres}"/>
                             </p:column>
                             <p:column style="text-align: center;width: 15%;">
                                 <i class="icon-search-2">
@@ -85,7 +85,7 @@
                                 <p:outputLabel value="Establecimiento"/>
                                 <p:inputText value="#{ejecutivoWorkingListBean.prospecto.establecimientoProveniente}"/>
                                 <p:outputLabel value="Responsable"/>
-                                <p:inputText value="#{ejecutivoWorkingListBean.prospecto.captador}"/>
+                                <p:inputText value="#{ejecutivoWorkingListBean.prospecto.captador}" readonly="true"/>
                                 <p:commandButton value="Cancelar" actionListener="#{ejecutivoWorkingListBean.onCancelDialog()}" immediate="true" oncomplete="PF('wdlgDatos').hide();"/>
                             </h:panelGrid>
                         </h:form>
