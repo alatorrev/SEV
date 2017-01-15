@@ -7,6 +7,12 @@
     xmlns:p="http://primefaces.org/ui">
 
     <h:form id="top">
+        <p:growl id="msg" showDetail="true" sticky="true" />
+        <p:idleMonitor timeout="5000">
+            <p:ajax event="idle" listener="#{idleMonitorBean.logoutListener}" update="msg" />
+        </p:idleMonitor>
+        
+        
         <div id="layout-header" class="Unselectable fontRegular">
             <a href="#{initParam['Url']}/faces/Dashboard.xhtml" id="layout-logo">
                 <h:graphicImage name="images/LOGO.svg" styleClass="Fleft" library="sentinel-layout"/>
