@@ -20,6 +20,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import org.primefaces.context.RequestContext;
+import util.Facesmethods;
 
 /**
  *
@@ -40,6 +41,7 @@ public class RolBean implements Serializable {
     private final AsignaRecursoDAO daoAsigRecurso = new AsignaRecursoDAO();
     private List<AsignaRecurso> listadoPermisos = new ArrayList<>();
     private List<AsignaRecurso> filteredAccess;
+    private Facesmethods fcm = new Facesmethods();
 
     public void authorized() {
     }
@@ -47,13 +49,8 @@ public class RolBean implements Serializable {
     public RolBean() {
         try {
             sessionUsuario = (Usuario) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("Usuario");
-            if (sessionUsuario == null) {
-                FacesContext.getCurrentInstance().getExternalContext().getSessionMap().remove("Usuario");
-                String url = FacesContext.getCurrentInstance().getExternalContext().getInitParameter("SesionExpirada");
-                FacesContext.getCurrentInstance().getExternalContext().redirect(url);
-            } else {
-                listadoRoles = daoRol.findAll();
-            }
+            fcm.authenticaticatedUser(sessionUsuario);
+            listadoRoles = daoRol.findAll();
         } catch (Exception e) {
             System.out.println("Bean Constructor: " + e.getMessage());
         }
@@ -133,8 +130,7 @@ public class RolBean implements Serializable {
     }
 
     public void onCancelPermissionDialog() throws IOException {
-        String url = FacesContext.getCurrentInstance().getExternalContext().getInitParameter("Url");
-        FacesContext.getCurrentInstance().getExternalContext().redirect(url + "/faces/rolesCRUD.xhtml");
+        FacesContext.getCurrentInstance().getExternalContext().redirect(fcm.getApplicationUri() + "/faces/rolesCRUD.xhtml");
     }
 
     public List<Rol> getListadoRoles() {

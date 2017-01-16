@@ -16,13 +16,14 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.faces.context.FacesContext;
+import util.Facesmethods;
 
 /**
- * 
+ *
  * Universidad Politécnica Salesiana
- * @author Axel Latorre, Jorge Castañeda
- * Tutor: Ing. Vanessa Jurado
- * 
+ *
+ * @author Axel Latorre, Jorge Castañeda Tutor: Ing. Vanessa Jurado
+ *
  */
 @ManagedBean
 @ViewScoped
@@ -35,23 +36,16 @@ public class AsignarProspectoBean implements Serializable {
     private List<AsignaProspecto> filteredAccess;
     private ProspectoDAO daoProspecto = new ProspectoDAO();
     private Usuario sessionUsuario;
-    
-    public void authorized(){}
-    
+    private Facesmethods fcm = new Facesmethods();
+
+    public void authorized() {
+    }
+
     public AsignarProspectoBean() {
         try {
             sessionUsuario = (Usuario) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("Usuario");
-            if (sessionUsuario == null) {
-                FacesContext.getCurrentInstance().getExternalContext().getSessionMap().remove("Usuario");
-                String url = FacesContext.getCurrentInstance().getExternalContext().getInitParameter("SesionExpirada");
-                FacesContext.getCurrentInstance().getExternalContext().redirect(url);
-            } else {
-                /**
-                 * se ejecutan las lineas del constructor**
-                 */
-//                listadoIntereses = daoInteres.findAll();
-                listaUsuario = daoUsuario.findAllAsigna();
-            }
+            fcm.authenticaticatedUser(sessionUsuario);
+            listaUsuario = daoUsuario.findAllAsigna();
         } catch (Exception e) {
             System.out.println("Bean Constructor: " + e.getMessage());
         }

@@ -15,7 +15,11 @@ import org.primefaces.model.chart.BarChartSeries;
 import org.primefaces.model.chart.ChartSeries;
 import com.sev.dao.DashboardDao;
 import com.sev.entity.Dashboard;
+import com.sev.entity.Usuario;
+import java.io.IOException;
 import java.util.ArrayList;
+import javax.faces.context.FacesContext;
+import util.Facesmethods;
 
 /**
  *
@@ -32,11 +36,15 @@ public class DashboardBean {
     private BarChartModel barra1;
     private BarChartModel barra2;
     private Dashboard dash = new Dashboard();
+    private Usuario sessionUsuario;
+    private Facesmethods fcm = new Facesmethods();
     ChartSeries serie = new BarChartSeries();
     ChartSeries serie1 = new BarChartSeries();
     ChartSeries serie2 = new BarChartSeries();
 
-    public DashboardBean() {
+    public DashboardBean() throws IOException {
+        sessionUsuario = (Usuario) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("Usuario");
+        fcm.authenticaticatedUser(sessionUsuario);
         listar();
         graficar();
     }
@@ -66,19 +74,17 @@ public class DashboardBean {
 //            serie.setLabel(lista.get(i).getNombres());
 //        }
 //        barra.addSeries(serie);
-
         serie.setLabel("Ejecutivos");
         for (Dashboard dashboard : lista) {
             serie.set(dashboard.getNombres(), dashboard.getCantidad());
         }
-        
+
         barra.addSeries(serie);
         barra.setTitle("Cantidad de prospectos asignados a ejecutivos");
         barra.setLegendPosition("ne");
         barra.setDatatipFormat("%2$d");
         barra.setShowPointLabels(true);
         barra.setAnimate(true);
-        
 
         Axis xAxis = barra.getAxis(AxisType.X);
         xAxis.setLabel("Ejecutivo");
@@ -89,21 +95,17 @@ public class DashboardBean {
         yAxis.setMax(10);
 
         /* ------------------------------------------------------------------------- */
-
         serie1.setLabel("Ejecutivos");
         for (Dashboard dashboard1 : lista1) {
             serie1.set(dashboard1.getNombres(), dashboard1.getSuma());
         }
-        
+
         barra1.addSeries(serie1);
         barra1.setTitle("Ventas realizadas según el ejecutivo en el mes en curso");
         barra1.setLegendPosition("ne");
         barra1.setShowPointLabels(true);
         barra1.setDatatipFormat("$ %2$.2f");
         barra1.setAnimate(true);
-        
-        
-        
 
         Axis xAxis1 = barra1.getAxis(AxisType.X);
         xAxis1.setLabel("Ejecutivo");
@@ -113,21 +115,20 @@ public class DashboardBean {
         yAxis1.setMin(0);
         yAxis1.setMax(2500);
         yAxis1.setTickFormat("%.2f");
-        
-        
+
         /* --------------------------------------------------------------- */
         serie2.setLabel("Prospectos");
         for (Dashboard dashboard2 : lista2) {
             serie2.set(dashboard2.getFecha(), dashboard2.getCantidad());
         }
-        
+
         barra2.addSeries(serie2);
         barra2.setTitle("Cantidad de prospectos que se han convertido en clientes en el mes actual");
         barra2.setLegendPosition("ne");
         barra2.setShowPointLabels(true);
         barra2.setDatatipFormat("%2$d");
         barra2.setAnimate(true);
-        
+
         Axis xAxis2 = barra2.getAxis(AxisType.X);
         xAxis2.setLabel("Mes");
 
@@ -136,7 +137,7 @@ public class DashboardBean {
         yAxis2.setMin(0);
         yAxis2.setMax(30);
         //yAxis2.setTickFormat("%.2f");
-        
+
     }
 
     public List<Dashboard> getLista() {
@@ -154,15 +155,15 @@ public class DashboardBean {
     public void setLista1(List<Dashboard> lista1) {
         this.lista1 = lista1;
     }
-    
-     public List<Dashboard> getLista2() {
+
+    public List<Dashboard> getLista2() {
         return lista2;
     }
 
     public void setLista2(List<Dashboard> lista2) {
         this.lista2 = lista2;
     }
-    
+
     public BarChartModel getBarra() {
         return barra;
     }
@@ -179,7 +180,7 @@ public class DashboardBean {
         this.barra1 = barra1;
     }
 
-   public BarChartModel getBarra2() {
+    public BarChartModel getBarra2() {
         return barra2;
     }
 
@@ -187,5 +188,4 @@ public class DashboardBean {
         this.barra2 = barra2;
     }
 
-    
 }

@@ -247,7 +247,7 @@ public class UsuarioDAO implements Serializable {
                 us.setEstadoClave(rs.getInt(8));
                 us.setActivo(rs.getInt(9));
                 BitacoraDAO daoBitacora = new BitacoraDAO();
-                daoBitacora.crearRegistro("usuario", "Login", u);
+                daoBitacora.crearRegistro("usuario", "Login", us);
                 return us;
             }
         } catch (Exception e) {

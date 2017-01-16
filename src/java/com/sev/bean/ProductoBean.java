@@ -11,57 +11,44 @@ import com.sev.entity.Usuario;
 import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
-import java.text.SimpleDateFormat;
+import util.Facesmethods;
 
 /**
- * 
+ *
  * Universidad Politécnica Salesiana
- * @author Axel Latorre, Jorge Castañeda
- * Tutor: Ing. Vanessa Jurado
- * 
+ *
+ * @author Axel Latorre, Jorge Castañeda Tutor: Ing. Vanessa Jurado
+ *
  */
-
 @ManagedBean
 @ViewScoped
 public class ProductoBean implements Serializable {
-    
+
     private List<Producto> listadoProductos = new ArrayList<>();
     private List<Producto> filteredProductos;
     private Usuario sessionUsuario;
     private Producto producto = new Producto();
     private ProductoDAO daoProducto = new ProductoDAO();
-    
+    private Facesmethods fcm = new Facesmethods();
+
     public void authorized() {
     }
-    
-    public ProductoBean(){
+
+    public ProductoBean() {
         try {
             sessionUsuario = (Usuario) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("Usuario");
-            if (sessionUsuario == null) {
-                FacesContext.getCurrentInstance().getExternalContext().getSessionMap().remove("Usuario");
-                String url = FacesContext.getCurrentInstance().getExternalContext().getInitParameter("SesionExpirada");
-                FacesContext.getCurrentInstance().getExternalContext().redirect(url);
-            } else {
-                /**
-                 * se ejecutan las lineas del constructor**
-                 */
-                listadoProductos = daoProducto.findAll();
-            }
+            fcm.authenticaticatedUser(sessionUsuario);
+            listadoProductos = daoProducto.findAll();
         } catch (Exception e) {
             System.out.println("Bean Constructor: " + e.getMessage());
         }
     }
-    
-//    public java.sql.Date sqlDate(java.util.Date calendarDate) 
-//    {return new java.sql.Date(calendarDate.getTime());}
-    
-    
-        public void showEditDialog(Producto pro) {
+
+    public void showEditDialog(Producto pro) {
         producto = pro;
     }
 
@@ -123,6 +110,5 @@ public class ProductoBean implements Serializable {
     public void setDaoProducto(ProductoDAO daoProducto) {
         this.daoProducto = daoProducto;
     }
-    
-    
+
 }

@@ -15,7 +15,7 @@ import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
-import org.primefaces.context.RequestContext;
+import util.Facesmethods;
 
 /**
  *
@@ -32,22 +32,14 @@ public class CambiarBean implements Serializable {
     private Usuario sessionUsuario;
     private CambiarDAO daoCambiar = new CambiarDAO();
     private Usuario u = new Usuario();
-
+    private Facesmethods fcm = new Facesmethods();
     public void authorized() {
     }
 
     public CambiarBean() {
         try {
             sessionUsuario = (Usuario) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("Usuario");
-            if (sessionUsuario == null) {
-                FacesContext.getCurrentInstance().getExternalContext().getSessionMap().remove("Usuario");
-                String url = FacesContext.getCurrentInstance().getExternalContext().getInitParameter("SesionExpirada");
-                FacesContext.getCurrentInstance().getExternalContext().redirect(url);
-            } else {
-                /**
-                 * se ejecutan las lineas del constructor**
-                 */
-            }
+            fcm.authenticaticatedUser(sessionUsuario);
         } catch (Exception e) {
             System.out.println("Bean Constructor: " + e.getMessage());
         }

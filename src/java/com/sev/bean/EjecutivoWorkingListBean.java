@@ -5,25 +5,23 @@
  */
 package com.sev.bean;
 
-import com.sev.dao.InteresDAO;
 import com.sev.dao.ProspectoDAO;
-import com.sev.entity.InteresProspecto;
 import com.sev.entity.Prospecto;
 import com.sev.entity.Usuario;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
+import util.Facesmethods;
 
 /**
- * 
+ *
  * Universidad Politécnica Salesiana
- * @author Axel Latorre, Jorge Castañeda
- * Tutor: Ing. Vanessa Jurado
- * 
+ *
+ * @author Axel Latorre, Jorge Castañeda Tutor: Ing. Vanessa Jurado
+ *
  */
 @ManagedBean
 @ViewScoped
@@ -32,23 +30,18 @@ public class EjecutivoWorkingListBean implements Serializable {
     private List<Prospecto> listadoProspecto = new ArrayList<>();
     private List<Prospecto> filteredProspecto;
     private Usuario sessionUsuario;
-    
     private ProspectoDAO daoProspecto = new ProspectoDAO();
     private Prospecto prospecto = new Prospecto();
-
+    private Facesmethods fcm = new Facesmethods();
+    
     public void authorized() {
     }
-    
+
     public EjecutivoWorkingListBean() {
         try {
             sessionUsuario = (Usuario) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("Usuario");
-            if (sessionUsuario == null) {
-                FacesContext.getCurrentInstance().getExternalContext().getSessionMap().remove("Usuario");
-                String url = FacesContext.getCurrentInstance().getExternalContext().getInitParameter("SesionExpirada");
-                FacesContext.getCurrentInstance().getExternalContext().redirect(url);
-            } else {
-                listadoProspecto = daoProspecto.readProspectobyUsuario(sessionUsuario.getCedula());
-            }
+            fcm.authenticaticatedUser(sessionUsuario);
+            listadoProspecto = daoProspecto.readProspectobyUsuario(sessionUsuario.getCedula());
         } catch (Exception e) {
             System.out.println("Bean Constructor: " + e.getMessage());
         }

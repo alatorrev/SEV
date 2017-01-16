@@ -34,6 +34,7 @@ import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import org.primefaces.event.SelectEvent;
+import util.Facesmethods;
 
 /**
  *
@@ -59,6 +60,7 @@ public class ConsultaHistorialcontactosBean {
     private Usuario sessionUsuario;
     Date fechaInicio = new Date(), fechaFin = new Date();
     Prospecto prospecto = new Prospecto();
+    Facesmethods fcm = new Facesmethods();
 
     public void authorized() {
     }
@@ -66,15 +68,10 @@ public class ConsultaHistorialcontactosBean {
     public ConsultaHistorialcontactosBean() throws SQLException {
         try {
             sessionUsuario = (Usuario) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("Usuario");
-            if (sessionUsuario == null) {
-                FacesContext.getCurrentInstance().getExternalContext().getSessionMap().remove("Usuario");
-                String url = FacesContext.getCurrentInstance().getExternalContext().getInitParameter("SesionExpirada");
-                FacesContext.getCurrentInstance().getExternalContext().redirect(url);
-            } else {
-                listaViaComunicacion = daoVia.findAll();
-                listaInteresProspecto = daoIntetes.findAll();
-            }
-        } catch (Exception e) {
+            fcm.authenticaticatedUser(sessionUsuario);
+            listaViaComunicacion = daoVia.findAll();
+            listaInteresProspecto = daoIntetes.findAll();
+        } catch (IOException | SQLException e) {
             System.out.println(e.getMessage());
         }
     }
@@ -94,18 +91,18 @@ public class ConsultaHistorialcontactosBean {
         FacesContext context = FacesContext.getCurrentInstance();
         ServletContext servleContext = (ServletContext) context.getExternalContext().getContext();
         parametros.put("RutaImagenes", servleContext.getRealPath("/Reportes"));
-        parametros.put("userName", sessionUsuario.getApellidos()+" "+sessionUsuario.getNombres()+" "+sdfh.format(new Date()));
+        parametros.put("userName", sessionUsuario.getApellidos() + " " + sessionUsuario.getNombres() + " " + sdfh.format(new Date()));
         parametros.put("idusuario", usuario.getCedula());
-        parametros.put("idprospecto", prospecto.getCedula().trim().equals("")?null:prospecto.getCedula());
-        
-        parametros.put("idvia", viaComunicacion.getIdViaComunicacion()==0?null:viaComunicacion.getIdViaComunicacion());
-        parametros.put("viaDescripcion", viaComunicacion.getIdViaComunicacion()==0?null:viaComunicacion.getDescripcion());
-        parametros.put("idinteres", interesProspecto.getIdInteresProspecto()==0?null:interesProspecto.getIdInteresProspecto());
-        parametros.put("interesDescripcion", interesProspecto.getIdInteresProspecto()==0?null:interesProspecto.getDescripcion());
-        
+        parametros.put("idprospecto", prospecto.getCedula().trim().equals("") ? null : prospecto.getCedula());
+
+        parametros.put("idvia", viaComunicacion.getIdViaComunicacion() == 0 ? null : viaComunicacion.getIdViaComunicacion());
+        parametros.put("viaDescripcion", viaComunicacion.getIdViaComunicacion() == 0 ? null : viaComunicacion.getDescripcion());
+        parametros.put("idinteres", interesProspecto.getIdInteresProspecto() == 0 ? null : interesProspecto.getIdInteresProspecto());
+        parametros.put("interesDescripcion", interesProspecto.getIdInteresProspecto() == 0 ? null : interesProspecto.getDescripcion());
+
         parametros.put("fechaini", sdfParam.format(fechaInicio));
         parametros.put("fechafin", sdfParam.format(fechaFin));
-        
+
         String dirReporte = servleContext.getRealPath("/Reportes/HistoricoContactos.jasper");
         HttpServletResponse response = (HttpServletResponse) context.getExternalContext().getResponse();
         response.addHeader("Content-disposition", "attachment;filename=Reporte Historial de Contactos.pdf");

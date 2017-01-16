@@ -24,13 +24,14 @@ import org.primefaces.model.menu.DefaultMenuItem;
 import org.primefaces.model.menu.DefaultMenuModel;
 import org.primefaces.model.menu.DefaultSubMenu;
 import org.primefaces.model.menu.MenuModel;
+import util.Facesmethods;
 
 /**
- * 
+ *
  * Universidad Politécnica Salesiana
- * @author Axel Latorre, Jorge Castañeda
- * Tutor: Ing. Vanessa Jurado
- * 
+ *
+ * @author Axel Latorre, Jorge Castañeda Tutor: Ing. Vanessa Jurado
+ *
  */
 @ManagedBean
 @SessionScoped
@@ -40,18 +41,18 @@ public class LoginBean implements Serializable {
     private RolDAO daorol = new RolDAO();
     private List<Rol> listaRoles = new ArrayList<>();
     private String email;
-    private int idRolSelected=0;
+    private int idRolSelected = 0;
     private MenuModel modelMenu;
     private List<String> subMenuList = new ArrayList<>();
     private String contrasena;
 
     public LoginBean() {
-        listaRoles=daorol.findAll();
+        listaRoles = daorol.findAll();
     }
 
     public String authenticate() throws SQLException {
         UsuarioDAO usuarioDAO = new UsuarioDAO();
-        setSessionUsuario(usuarioDAO.loginAction(email, contrasena, sessionUsuario,idRolSelected));
+        setSessionUsuario(usuarioDAO.loginAction(email, contrasena, sessionUsuario, idRolSelected));
         if (sessionUsuario != null) {
             if (getSessionUsuario().getEstadoClave() == 1) {
                 initMenu(getSessionUsuario());
@@ -62,14 +63,14 @@ public class LoginBean implements Serializable {
             if (getSessionUsuario().getEstadoClave() == 0) {
                 initMenu(getSessionUsuario());
                 FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("Usuario", sessionUsuario);
-                if (sessionUsuario.getDescripcionRol().equals("SUPERADMIN") || sessionUsuario.getDescripcionRol().equals("SUPERVISOR")){
-                    return "dashboard";    
-                }else if (sessionUsuario.getDescripcionRol().equals("EJECUTIVO")){
+                if (sessionUsuario.getDescripcionRol().equals("SUPERADMIN") || sessionUsuario.getDescripcionRol().equals("SUPERVISOR")) {
+                    return "dashboard";
+                } else if (sessionUsuario.getDescripcionRol().equals("EJECUTIVO")) {
                     return "agenda";
-                }else {
+                } else {
                     return "otros";
                 }
-                
+
             }
         } else {
             FacesContext context = FacesContext.getCurrentInstance();
@@ -81,8 +82,9 @@ public class LoginBean implements Serializable {
     }
 
     public void initMenu(Usuario u) throws SQLException {
+        Facesmethods fm = new Facesmethods(); 
         modelMenu = new DefaultMenuModel();
-        String urlBase = FacesContext.getCurrentInstance().getExternalContext().getInitParameter("Url");
+        String urlBase = fm.getApplicationUri();
         RecursoDAO daoRecurso = new RecursoDAO();
         List<Recurso> listaRecursos = daoRecurso.findAllRecursoByRol(u);
         DefaultSubMenu subItemObj = null;

@@ -15,6 +15,7 @@ import java.util.List;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
+import util.Facesmethods;
 
 /**
  *
@@ -32,6 +33,7 @@ public class CanalBean implements Serializable {
     private Usuario sessionUsuario;
     private CanalCaptacion canal = new CanalCaptacion();
     private CanalDAO daoCanal = new CanalDAO();
+    private Facesmethods fcm = new Facesmethods();
 
     public void authorized() {
     }
@@ -39,13 +41,9 @@ public class CanalBean implements Serializable {
     public CanalBean() throws SQLException {
         try {
             sessionUsuario = (Usuario) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("Usuario");
-            if (sessionUsuario == null) {
-                FacesContext.getCurrentInstance().getExternalContext().getSessionMap().remove("Usuario");
-                String url = FacesContext.getCurrentInstance().getExternalContext().getInitParameter("SesionExpirada");
-                FacesContext.getCurrentInstance().getExternalContext().redirect(url);
-            } else {
-                listadoCanales = daoCanal.findAll();
-            }
+            fcm.authenticaticatedUser(sessionUsuario);
+            listadoCanales = daoCanal.findAll();
+
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }

@@ -10,6 +10,7 @@ import com.sev.dao.ProspectoDAO;
 import com.sev.entity.CanalCaptacion;
 import com.sev.entity.Prospecto;
 import com.sev.entity.Usuario;
+import java.io.IOException;
 import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -17,13 +18,14 @@ import java.util.List;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
+import util.Facesmethods;
 
 /**
- * 
+ *
  * Universidad Politécnica Salesiana
- * @author Axel Latorre, Jorge Castañeda
- * Tutor: Ing. Vanessa Jurado
- * 
+ *
+ * @author Axel Latorre, Jorge Castañeda Tutor: Ing. Vanessa Jurado
+ *
  */
 @ManagedBean
 @ViewScoped
@@ -36,26 +38,19 @@ public class ProspectoBean implements Serializable {
     private Usuario sessionUsuario;
     private int idCanalSelected;
     private List<CanalCaptacion> selectorCanal = new ArrayList<>();
-
+    private Facesmethods fcm = new Facesmethods();
+    
     public void authorized() {
     }
-    
+
     public ProspectoBean() {
         try {
             sessionUsuario = (Usuario) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("Usuario");
-            if (sessionUsuario == null) {
-                FacesContext.getCurrentInstance().getExternalContext().getSessionMap().remove("Usuario");
-                String url = FacesContext.getCurrentInstance().getExternalContext().getInitParameter("SesionExpirada");
-                FacesContext.getCurrentInstance().getExternalContext().redirect(url);
-            } else {
-                /**
-                 * se ejecutan las lineas del constructor**
-                 */
-                CanalDAO daoCanal = new CanalDAO();
-                selectorCanal = daoCanal.findAll();
-                listadoProspecto = daoProspecto.findAll();
-            }
-        } catch (Exception e) {
+            fcm.authenticaticatedUser(sessionUsuario);
+            CanalDAO daoCanal = new CanalDAO();
+            selectorCanal = daoCanal.findAll();
+            listadoProspecto = daoProspecto.findAll();
+        } catch (IOException | SQLException e) {
             System.out.println("Bean Constructor: " + e.getMessage());
         }
 

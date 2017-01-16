@@ -23,6 +23,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import org.primefaces.context.RequestContext;
+import util.Facesmethods;
 
 /**
  *
@@ -46,6 +47,7 @@ public class ContactarProspectoBean implements Serializable {
     private String cedulaProspecto, observaciones;
     private int idInteresSelected, idViaComunicacionSelected, keyGenerated;
     private List<ReporteHistorialContactos> listaActividadesRecientes = new ArrayList();
+    private Facesmethods fcm = new Facesmethods();
 
     public void authorized() {
     }
@@ -53,18 +55,13 @@ public class ContactarProspectoBean implements Serializable {
     public ContactarProspectoBean() {
         try {
             sessionUsuario = (Usuario) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("Usuario");
-            if (sessionUsuario == null) {
-                FacesContext.getCurrentInstance().getExternalContext().getSessionMap().remove("Usuario");
-                String url = FacesContext.getCurrentInstance().getExternalContext().getInitParameter("SesionExpirada");
-                FacesContext.getCurrentInstance().getExternalContext().redirect(url);
-            } else {
-                cedulaProspecto = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("cedulaProspecto");
-                prospecto = daoProspecto.readProspectoContact(cedulaProspecto, sessionUsuario.getCedula());
-                listaActividadesRecientes=daoContactoDetalle.latestProspectoWork(sessionUsuario.getCedula(), cedulaProspecto);
-                idInteresSelected = prospecto.getIdInteres();
-                interesProspectoList = daoInteres.findAll();
-                viaComunicacionList = viaDao.findAll();
-            }
+            fcm.authenticaticatedUser(sessionUsuario);
+            cedulaProspecto = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("cedulaProspecto");
+            prospecto = daoProspecto.readProspectoContact(cedulaProspecto, sessionUsuario.getCedula());
+            listaActividadesRecientes = daoContactoDetalle.latestProspectoWork(sessionUsuario.getCedula(), cedulaProspecto);
+            idInteresSelected = prospecto.getIdInteres();
+            interesProspectoList = daoInteres.findAll();
+            viaComunicacionList = viaDao.findAll();
         } catch (Exception e) {
             System.out.println("Bean Constructor: " + e.getMessage());
         }
@@ -90,9 +87,8 @@ public class ContactarProspectoBean implements Serializable {
 
     public void declineCitaDialog() {
         try {
-            String urlBase = FacesContext.getCurrentInstance().getExternalContext().getInitParameter("Url");
             String url = "/faces/workingList.xhtml";
-            FacesContext.getCurrentInstance().getExternalContext().redirect(urlBase + url);
+            FacesContext.getCurrentInstance().getExternalContext().redirect(fcm.getApplicationUri() + url);
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }

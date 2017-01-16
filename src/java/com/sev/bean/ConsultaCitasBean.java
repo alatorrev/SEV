@@ -32,6 +32,7 @@ import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import org.primefaces.event.SelectEvent;
+import util.Facesmethods;
 
 /**
  *
@@ -56,18 +57,14 @@ public class ConsultaCitasBean {
     Usuario usuario = new Usuario();
     Prospecto prospecto = new Prospecto();
     Producto producto = new Producto();
-
+    Facesmethods fcm = new Facesmethods();
     public void authorized() {
     }
 
     public ConsultaCitasBean() {
         try {
             sessionUsuario = (Usuario) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("Usuario");
-            if (sessionUsuario == null) {
-                FacesContext.getCurrentInstance().getExternalContext().getSessionMap().remove("Usuario");
-                String url = FacesContext.getCurrentInstance().getExternalContext().getInitParameter("SesionExpirada");
-                FacesContext.getCurrentInstance().getExternalContext().redirect(url);
-            }
+            fcm.authenticaticatedUser(sessionUsuario);
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
@@ -88,11 +85,11 @@ public class ConsultaCitasBean {
         ServletContext servleContext = (ServletContext) context.getExternalContext().getContext();
         parametros.put("RutaImagenes", servleContext.getRealPath("/Reportes"));
         parametros.put("idusuario", usuario.getCedula());
-        parametros.put("userName", sessionUsuario.getApellidos()+" "+sessionUsuario.getNombres()+" "+sdfh.format(new Date()));
-        parametros.put("idprospecto", prospecto.getCedula().trim().equals("")?null:prospecto.getCedula());
+        parametros.put("userName", sessionUsuario.getApellidos() + " " + sessionUsuario.getNombres() + " " + sdfh.format(new Date()));
+        parametros.put("idprospecto", prospecto.getCedula().trim().equals("") ? null : prospecto.getCedula());
         parametros.put("idproducto", producto.getIdprod() == 0 ? null : producto.getIdprod());
         parametros.put("productoDescripcion", producto.getIdprod() == 0 ? null : producto.getDescripcion());
-        parametros.put("completado", completado==true?1:0);
+        parametros.put("completado", completado == true ? 1 : 0);
         parametros.put("fechaini", sdfParam.format(desde));
         parametros.put("fechafin", sdfParam.format(hasta));
 

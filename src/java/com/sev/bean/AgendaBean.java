@@ -32,6 +32,7 @@ import org.primefaces.event.SelectEvent;
 import org.primefaces.model.DefaultScheduleEvent;
 import org.primefaces.model.DefaultScheduleModel;
 import org.primefaces.model.ScheduleEvent;
+import util.Facesmethods;
 
 /**
  *
@@ -61,6 +62,7 @@ public class AgendaBean implements Serializable {
     private List<Producto> listadoProducto = new ArrayList<>();
     private List<String> listadoFechasInicial = new ArrayList<>();
     private List<HorarioCitas> listadoFechaFinal = new ArrayList();
+    private Facesmethods fcm = new Facesmethods();
 
     public void authorized() {
     }
@@ -68,19 +70,15 @@ public class AgendaBean implements Serializable {
     public AgendaBean() {
         try {
             sessionUsuario = (Usuario) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("Usuario");
-            if (sessionUsuario == null) {
-                FacesContext.getCurrentInstance().getExternalContext().getSessionMap().remove("Usuario");
-                String url = FacesContext.getCurrentInstance().getExternalContext().getInitParameter("SesionExpirada");
-                FacesContext.getCurrentInstance().getExternalContext().redirect(url);
-            } else {
-                String id = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("id");
-                idProspecto = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("idprospecto");
-                if (id != null) {
-                    idContactoDetalle = Integer.parseInt(id);
-                }
-                listaProspectos = daoProspecto.readProspectobyUsuario(sessionUsuario.getCedula());
-                buildScheduler();
+            fcm.authenticaticatedUser(sessionUsuario);
+            String id = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("id");
+            idProspecto = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("idprospecto");
+            if (id != null) {
+                idContactoDetalle = Integer.parseInt(id);
             }
+            listaProspectos = daoProspecto.readProspectobyUsuario(sessionUsuario.getCedula());
+            buildScheduler();
+
         } catch (Exception e) {
             System.out.println("Bean Constructor: " + e.getMessage());
         }

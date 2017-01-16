@@ -33,13 +33,14 @@ import org.primefaces.context.RequestContext;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
+import util.Facesmethods;
 
 /**
- * 
+ *
  * Universidad Politécnica Salesiana
- * @author Axel Latorre, Jorge Castañeda
- * Tutor: Ing. Vanessa Jurado
- * 
+ *
+ * @author Axel Latorre, Jorge Castañeda Tutor: Ing. Vanessa Jurado
+ *
  */
 @ManagedBean
 @ViewScoped
@@ -56,24 +57,18 @@ public class CargarProspectoBean implements Serializable {
     private ProspectoDAO daoProspecto = new ProspectoDAO();
     private int idCanalSelected, cantidadProspectosRepetidos = 0;
     private List<CanalCaptacion> selectorCanal = new ArrayList<>();
-    
+    private Facesmethods fcm = new Facesmethods();
+
     public void authorized() {
     }
-    
-    public CargarProspectoBean(){
+
+    public CargarProspectoBean() {
         try {
             sessionUsuario = (Usuario) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("Usuario");
-            if (sessionUsuario == null) {
-                FacesContext.getCurrentInstance().getExternalContext().getSessionMap().remove("Usuario");
-                String url = FacesContext.getCurrentInstance().getExternalContext().getInitParameter("SesionExpirada");
-                FacesContext.getCurrentInstance().getExternalContext().redirect(url);
-            } else {
-                /**
-                 * se ejecutan las lineas del constructor**
-                 */
-                InputStream stream = FacesContext.getCurrentInstance().getExternalContext().getResourceAsStream("/resources/matriz/prospectos.xlsx");
-                downloadableFile = new DefaultStreamedContent(stream, "application/xlsx", "matriz_prospectos.xlsx");
-            }
+            fcm.authenticaticatedUser(sessionUsuario);
+            InputStream stream = FacesContext.getCurrentInstance().getExternalContext().getResourceAsStream("/resources/matriz/prospectos.xlsx");
+            downloadableFile = new DefaultStreamedContent(stream, "application/xlsx", "matriz_prospectos.xlsx");
+
         } catch (Exception e) {
             System.out.println("Bean Constructor: " + e.getMessage());
         }

@@ -8,6 +8,7 @@ package com.sev.bean;
 import com.sev.dao.InteresDAO;
 import com.sev.entity.InteresProspecto;
 import com.sev.entity.Usuario;
+import java.io.IOException;
 import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -15,13 +16,14 @@ import java.util.List;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
+import util.Facesmethods;
 
 /**
- * 
+ *
  * Universidad Politécnica Salesiana
- * @author Axel Latorre, Jorge Castañeda
- * Tutor: Ing. Vanessa Jurado
- * 
+ *
+ * @author Axel Latorre, Jorge Castañeda Tutor: Ing. Vanessa Jurado
+ *
  */
 @ManagedBean
 @ViewScoped
@@ -32,24 +34,17 @@ public class InteresBean implements Serializable {
     private List<InteresProspecto> filteredIntereses;
     private InteresProspecto interes = new InteresProspecto();
     private InteresDAO daoInteres = new InteresDAO();
+    private Facesmethods fcm = new Facesmethods();
 
     public void authorized() {
     }
-    
-    public InteresBean(){
+
+    public InteresBean() {
         try {
             sessionUsuario = (Usuario) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("Usuario");
-            if (sessionUsuario == null) {
-                FacesContext.getCurrentInstance().getExternalContext().getSessionMap().remove("Usuario");
-                String url = FacesContext.getCurrentInstance().getExternalContext().getInitParameter("SesionExpirada");
-                FacesContext.getCurrentInstance().getExternalContext().redirect(url);
-            } else {
-                /**
-                 * se ejecutan las lineas del constructor**
-                 */
-                listadoIntereses = daoInteres.findAll();
-            }
-        } catch (Exception e) {
+            fcm.authenticaticatedUser(sessionUsuario);
+            listadoIntereses = daoInteres.findAll();
+        } catch (IOException | SQLException e) {
             System.out.println("Bean Constructor: " + e.getMessage());
         }
     }

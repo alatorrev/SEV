@@ -6,22 +6,20 @@
 package com.sev.bean;
 
 import com.sev.dao.AsignaRolDAO;
-import com.sev.dao.RolDAO;
 import com.sev.dao.UsuarioDAO;
 import com.sev.entity.AsignaRol;
-import com.sev.entity.Rol;
 import com.sev.entity.Usuario;
 import java.io.IOException;
 import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import org.primefaces.context.RequestContext;
+import util.Facesmethods;
 
 /**
  *
@@ -42,6 +40,7 @@ public class UsuarioBean implements Serializable {
     private List<AsignaRol> listadoPermisos = new ArrayList<>();
     private List<AsignaRol> filteredAccess;
     private AsignaRolDAO daoAsignaRol = new AsignaRolDAO();
+    private Facesmethods fcm = new Facesmethods();
 
     public void authorized() {
     }
@@ -49,13 +48,8 @@ public class UsuarioBean implements Serializable {
     public UsuarioBean() {
         try {
             sessionUsuario = (Usuario) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("Usuario");
-            if (sessionUsuario == null) {
-                FacesContext.getCurrentInstance().getExternalContext().getSessionMap().remove("Usuario");
-                String url = FacesContext.getCurrentInstance().getExternalContext().getInitParameter("SesionExpirada");
-                FacesContext.getCurrentInstance().getExternalContext().redirect(url);
-            } else {
-                listadoUsuarios = daoUsuario.findAll();
-            }
+            fcm.authenticaticatedUser(sessionUsuario);
+            listadoUsuarios = daoUsuario.findAll();
         } catch (Exception e) {
             System.out.println("Bean Constructor: " + e.getMessage());
         }
@@ -139,8 +133,7 @@ public class UsuarioBean implements Serializable {
     }
 
     public void onCancelProfileDialog() throws IOException {
-        String url = FacesContext.getCurrentInstance().getExternalContext().getInitParameter("Url");
-        FacesContext.getCurrentInstance().getExternalContext().redirect(url + "/faces/usuarioCRUD.xhtml");
+        FacesContext.getCurrentInstance().getExternalContext().redirect(fcm.getApplicationUri() + "/faces/usuarioCRUD.xhtml");
     }
 
     public boolean validateProfiles() {

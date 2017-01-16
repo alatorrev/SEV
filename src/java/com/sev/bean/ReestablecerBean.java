@@ -8,6 +8,7 @@ package com.sev.bean;
 import com.sev.dao.ReestablecerDAO;
 import com.sev.entity.Usuario;
 import com.sev.entity.ReestablecerContra;
+import java.io.IOException;
 import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -16,6 +17,7 @@ import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
+import util.Facesmethods;
 
 /**
  *
@@ -33,27 +35,19 @@ public class ReestablecerBean implements Serializable {
     private Usuario sessionUsuario;
     private ReestablecerContra reestablecer = new ReestablecerContra();
     private ReestablecerDAO daoReestablecer = new ReestablecerDAO();
-
+    private Facesmethods fcm = new Facesmethods();
+    
     public void authorized() {
     }
 
     public ReestablecerBean() {
         try {
             sessionUsuario = (Usuario) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("Usuario");
-            if (sessionUsuario == null) {
-                FacesContext.getCurrentInstance().getExternalContext().getSessionMap().remove("Usuario");
-                String url = FacesContext.getCurrentInstance().getExternalContext().getInitParameter("SesionExpirada");
-                FacesContext.getCurrentInstance().getExternalContext().redirect(url);
-            } else {
-                /**
-                 * se ejecutan las lineas del constructor**
-                 */
-                listadoUsuarios = daoReestablecer.findAll();
-            }
-        } catch (Exception e) {
+            fcm.authenticaticatedUser(sessionUsuario);
+            listadoUsuarios = daoReestablecer.findAll();
+        } catch (IOException | SQLException e) {
             System.out.println("Bean Constructor: " + e.getMessage());
         }
-
     }
 
     public void showEditDialog(ReestablecerContra r) {
