@@ -44,13 +44,13 @@
                                     <p:outputLabel value="Estado"/>
                                     <p:selectOneMenu value="#{contactarProspectoBean.idInteresSelected}">
                                         <f:selectItem itemLabel="Seleccionar..." itemValue="0"/>
-                                        <f:selectItems value="#{contactarProspectoBean.interesProspectoList}" var="interes" 
+                                        <f:selectItems value="#{contactarProspectoBean.interesProspectoList}" var="interes"
                                                        itemLabel="#{interes.descripcion}" itemValue="#{interes.idInteresProspecto}"/>
                                     </p:selectOneMenu>
                                     <p:outputLabel value="Vía de Comunicación"/>
                                     <p:selectOneMenu value="#{contactarProspectoBean.idViaComunicacionSelected}">
                                         <f:selectItem itemLabel="Seleccionar..." itemValue="0"/>
-                                        <f:selectItems value="#{contactarProspectoBean.viaComunicacionList}" var="via" 
+                                        <f:selectItems value="#{contactarProspectoBean.viaComunicacionList}" var="via"
                                                        itemLabel="#{via.descripcion}" itemValue="#{via.idViaComunicacion}"/>
                                     </p:selectOneMenu>
 
@@ -64,20 +64,26 @@
                                     </p:commandButton>
                                 </h:panelGrid>
                             </p:panel>
-                            <p:panel toggleable="true" header="Actividad Reciente" style="width: 100%; height: 300px; position: relative;">
-                                <p:accordionPanel value="#{contactarProspectoBean.listaActividadesRecientes}" var="act" 
-                                                  widgetVar="accordion">
-                                    <p:tab title="Contactado el #{act.formatFechacontacto}" >
-                                        <h:panelGrid columns="2">
+                            <p:panel header="Actividad Reciente" style="width: 420px; height: 300px; position: relative;" toggleOrientation="horizontal">
+                                <p:dataTable value="#{contactarProspectoBean.listaActividadesRecientes}" var="act" style="height: 250px"
+                                             scrollRows="7" scrollable="true" liveScroll="true" scrollHeight="225">
+                                    <p:column  style="width:30px">
+                                        <p:rowToggler />
+                                    </p:column>
+                                    <p:column headerText="Detalle">
+                                        <h:outputText value="Contactado el #{act.formatFechacontacto}" />
+                                    </p:column>
+                                    <p:rowExpansion>
+                                        <p:panelGrid columns="2">
                                             <h:outputLabel value="Via de Comunicación:" style="font-weight: bold!important"/>
                                             <h:outputLabel value="#{act.descripcionVia}"/>
                                             <h:outputLabel value="Interes Prospecto:" style="font-weight: bold!important"/>
                                             <h:outputLabel value="#{act.descripcioInteres}"/>
                                             <h:outputLabel value="Observación:" style="font-weight: bold!important"/>
                                             <p:inputTextarea rows="5" cols="30" autoResize="false" readonly="true" value="#{act.observacion}"/>
-                                        </h:panelGrid>
-                                    </p:tab>
-                                </p:accordionPanel>
+                                        </p:panelGrid>
+                                    </p:rowExpansion>
+                                </p:dataTable>
                             </p:panel>
                         </h:panelGrid>
                         <p:spacer height="10"/>
@@ -105,7 +111,7 @@
             function desactivateTab() {
                 PF('accordion').unselect(0);
             }
-        </script> 
+        </script>
     </ui:define>
 
 </ui:composition>

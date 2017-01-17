@@ -48,7 +48,6 @@ public class ContactoDetalleDAO {
             rs = pst.getGeneratedKeys();
             if (rs.next()) {
                 autoIncrementidContactoDetalle = rs.getInt(1);
-                System.out.println(autoIncrementidContactoDetalle);
             }
 
             String sqlUpdateProspecto = "update prospecto set idcancap=?,nombres=?,apellidos=?,celular=?,casa=?,correo=?,"
@@ -148,7 +147,7 @@ public class ContactoDetalleDAO {
         Conexion con = new Conexion();
         PreparedStatement pst;
         ResultSet rs;
-        String sql = "SELECT TOP 5 DC.FECHACONTACTO,I.DESCRIPCION AS INTERESDESCRIPCION,"
+        String sql = "SELECT DC.FECHACONTACTO,I.DESCRIPCION AS INTERESDESCRIPCION,"
                 + "V.DESCRIPCION AS VIADESCRIPCION,DC.OBSERVACION "
                 + "from DETALLECONTACTO DC INNER JOIN VIACOMUNICACION V "
                 + "ON V.IDVIA= DC.IDVIA INNER JOIN INTERESPROSPECTO I ON I.IDINTPROS=DC.IDINTPROS "

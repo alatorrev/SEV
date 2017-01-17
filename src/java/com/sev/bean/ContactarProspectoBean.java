@@ -14,6 +14,7 @@ import com.sev.entity.Prospecto;
 import com.sev.entity.ReporteHistorialContactos;
 import com.sev.entity.Usuario;
 import com.sev.entity.ViaComunicacion;
+import java.io.IOException;
 import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -62,7 +63,7 @@ public class ContactarProspectoBean implements Serializable {
             idInteresSelected = prospecto.getIdInteres();
             interesProspectoList = daoInteres.findAll();
             viaComunicacionList = viaDao.findAll();
-        } catch (Exception e) {
+        } catch (IOException | SQLException e) {
             System.out.println("Bean Constructor: " + e.getMessage());
         }
 
@@ -92,10 +93,6 @@ public class ContactarProspectoBean implements Serializable {
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
-    }
-
-    public void verValues() {
-        System.out.println(cedulaProspecto);
     }
 
     public String getCedulaProspecto() {

@@ -17,7 +17,7 @@
     </context-param>
     <context-param>
         <param-name>environment</param-name>
-        <param-value>produccion</param-value>
+        <param-value>desarrollo</param-value>
     </context-param>
     <filter>
         <filter-name>PrimeFaces FileUpload Filter</filter-name>
