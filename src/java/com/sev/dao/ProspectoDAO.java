@@ -37,8 +37,8 @@ public class ProspectoDAO implements Serializable {
         ResultSet rs = null;
         String query = "  select p.IDCANCAP, p.CEDULA, p.NOMBRES, p.APELLIDOS, p.CELULAR, p.CASA, p.CORREO, p.ESTABLECIMIENTO, p.RESPONSABLE, c.DESCRIPCION"
                 + "  from PROSPECTO p"
-                + "  inner join CANALCAPTACION c on p.IDCANCAP = c.IDCANAL"
-                + "  where p.estado = 1";
+                + "  left join CANALCAPTACION c on p.IDCANCAP = c.IDCANAL"
+                + "  where p.estado = 1 order by p.cedula";
         pst = con.getConnection().prepareStatement(query);
         try {
             rs = pst.executeQuery();
@@ -164,12 +164,12 @@ public class ProspectoDAO implements Serializable {
         try {
             pst.setString(1, pros.getCedula());
             pst.setString(2, pros.getDescripcionCanal().toUpperCase());
-            pst.setString(3, pros.getNombres().toUpperCase());
-            pst.setString(4, pros.getApellidos().toUpperCase());
+            pst.setString(3, pros.getNombres()==null?null:pros.getNombres().toUpperCase());
+            pst.setString(4, pros.getApellidos()==null?null:pros.getApellidos().toUpperCase());
             pst.setString(5, pros.getCelular());
             pst.setString(6, pros.getCasa());
-            pst.setString(7, pros.getEmail().toUpperCase());
-            pst.setString(8, pros.getEstablecimientoProveniente().toUpperCase());
+            pst.setString(7, pros.getEmail()==null?null:pros.getEmail().toUpperCase());
+            pst.setString(8, pros.getEstablecimientoProveniente()==null?null:pros.getEstablecimientoProveniente().toUpperCase());
             pst.setString(9, pros.getCaptador());
             pst.setString(10, fmt.format(new Date()));
             pst.setString(11, null/*for now lolz*/);
