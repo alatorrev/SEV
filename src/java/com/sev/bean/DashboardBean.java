@@ -92,7 +92,6 @@ public class DashboardBean {
         Axis yAxis = barra.getAxis(AxisType.Y);
         yAxis.setLabel("Prospectos");
         yAxis.setMin(0);
-        yAxis.setMax(10);
 
         /* ------------------------------------------------------------------------- */
         serie1.setLabel("Ejecutivos");

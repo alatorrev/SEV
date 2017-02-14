@@ -50,7 +50,8 @@
 
                         <p:dataTable id="asignacionTbl" value="#{asignarProspectoBean.listadoProspecto}" var="asignacion" widgetVar="asignacionTable" rows="10"
                                      paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
-                                     paginatorPosition="bottom" filteredValue="#{asignarProspectoBean.filteredAccess}" lazy="false">
+                                     paginatorPosition="bottom" filteredValue="#{asignarProspectoBean.filteredAccess}" 
+                                     rowsPerPageTemplate="5,10,15" paginator="true" lazy="false">
                             <f:facet name="header">
                                 <p:outputPanel style="text-align: right;">
                                     <table>
